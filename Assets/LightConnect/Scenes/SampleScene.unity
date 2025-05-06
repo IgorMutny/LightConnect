@@ -370,12 +370,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd4cd09aaf3def3408cc923a26528a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilePrefab: {fileID: 7312466725435617674, guid: 318c3e8710a71fa4f933ba5e4921d800, type: 3}
-  _tilePositions:
-  - {x: 0, y: 0}
-  - {x: 0, y: 1}
-  - {x: 1, y: 1}
-  - {x: 1, y: 0}
+  _tileIPrefab: {fileID: 7312466725435617674, guid: 63d36de87c3a8dd488d81cffa599b1ab, type: 3}
+  _tileLPrefab: {fileID: 7312466725435617674, guid: 318c3e8710a71fa4f933ba5e4921d800, type: 3}
+  _tileTPrefab: {fileID: 7312466725435617674, guid: da4d9238be596724886d6fae78e74e2b, type: 3}
+  _fieldSize: {x: 5, y: 5}
 --- !u!4 &2015374679
 Transform:
   m_ObjectHideFlags: 0

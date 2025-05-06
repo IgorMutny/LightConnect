@@ -15,6 +15,8 @@ namespace LightConnect.Core
 
             _view.Clicked += _model.Rotate;
             _model.Rotated += RotateView;
+
+            RotateView();
         }
 
         public void Dispose()
@@ -23,9 +25,9 @@ namespace LightConnect.Core
             _model.Rotated -= RotateView;
         }
 
-        private void RotateView(int degree)
+        private void RotateView()
         {
-            var rotation = Quaternion.Euler(0, 0, -degree * 90f);
+            var rotation = Quaternion.Euler(0, 0, -_model.Orientation * 90f);
             _view.RotateTo(rotation);
         }
     }

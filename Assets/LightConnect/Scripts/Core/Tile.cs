@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LightConnect.Core
 {
@@ -6,8 +7,17 @@ namespace LightConnect.Core
     {
         private const int ORIENTATION_COUNT = 4;
         private int _orientation;
+        private List<int> _connectors;
 
-        public event Action<int> Rotated;
+        public event Action Rotated;
+
+        public Tile(int orientation, List<int> connectors)
+        {
+            _orientation = orientation;
+            _connectors = connectors;
+        }
+
+        public int Orientation => _orientation;
 
         public void Rotate()
         {
@@ -16,7 +26,7 @@ namespace LightConnect.Core
             if (_orientation == ORIENTATION_COUNT)
                 _orientation = 0;
 
-            Rotated?.Invoke(_orientation);
+            Rotated?.Invoke();
         }
     }
 }
