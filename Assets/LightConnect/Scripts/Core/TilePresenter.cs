@@ -13,7 +13,7 @@ namespace LightConnect.Core
             _model = model;
             _view = view;
 
-            _view.Clicked += _model.Rotate;
+            _view.Clicked += _model.RotateClockwise;
             _model.Rotated += RotateView;
 
             RotateView();
@@ -21,13 +21,13 @@ namespace LightConnect.Core
 
         public void Dispose()
         {
-            _view.Clicked -= _model.Rotate;
+            _view.Clicked -= _model.RotateClockwise;
             _model.Rotated -= RotateView;
         }
 
         private void RotateView()
         {
-            var rotation = Quaternion.Euler(0, 0, -_model.Orientation * 90f);
+            var rotation = Quaternion.Euler(0, 0, -(int)_model.Direction.CurrentValue * 90f);
             _view.RotateTo(rotation);
         }
     }
