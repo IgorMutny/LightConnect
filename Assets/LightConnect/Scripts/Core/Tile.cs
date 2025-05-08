@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using R3;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UI;
 
 namespace LightConnect.Core
 {
@@ -38,6 +36,13 @@ namespace LightConnect.Core
                 connector.RotateClockwise();
 
             _direction.RotateClockwise();
+        }
+
+        public void RotateRandomly()
+        {
+            var rotationsCount = UnityEngine.Random.Range(0, Core.Direction.DIRECTIONS_COUNT);
+            for (int i = 0; i < rotationsCount; i++)
+                RotateClockwise();
         }
 
         public bool HasConnectorInDirection(Directions direction)

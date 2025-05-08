@@ -23,13 +23,28 @@ namespace LightConnect.Core
         public void SetTile(Tile tile, Vector2Int position)
         {
             _tiles[position.x, position.y] = tile;
-            tile.Direction.Subscribe(_ => OnTileRotated()).AddTo(_disposables);
 
             if (tile.Type == TileTypes.BATTERY)
                 _batteries.Add(tile);
 
             if (tile.Type is TileTypes.LAMP)
                 _lamps.Add(tile);
+        }
+
+        public void Initialize()
+        {
+            Randomize();
+
+            foreach (var tile in _tiles)
+                tile.Direction.Skip(1).Subscribe(_ => OnTileRotated()).AddTo(_disposables);
+
+            OnTileRotated();
+        }
+
+        private void Randomize()
+        {
+            foreach (var tile in _tiles)
+                tile.RotateRandomly();
         }
 
         private void OnTileRotated()

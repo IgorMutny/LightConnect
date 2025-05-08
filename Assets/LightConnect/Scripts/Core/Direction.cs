@@ -4,7 +4,8 @@ namespace LightConnect.Core
 {
     public class Direction
     {
-        private const int DIRECTIONS_COUNT = 4;
+        public const int DIRECTIONS_COUNT = 4;
+        
         private readonly ReactiveProperty<Directions> _value = new();
 
         public Direction(Directions initialDirection)

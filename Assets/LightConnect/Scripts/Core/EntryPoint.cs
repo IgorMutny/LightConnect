@@ -12,6 +12,8 @@ namespace LightConnect.Core
         private void Start()
         {
             var map = _mapSettings.Create();
+            map.Initialize();
+
             _presenter = new MapPresenter(map, _mapView);
 
             var cameraPosition = Camera.main.transform.position;
