@@ -1,10 +1,11 @@
 using System;
-using UnityEngine;
+using R3;
 
 namespace LightConnect.Core
 {
     public class TilePresenter : IDisposable
     {
+        private CompositeDisposable _disposables = new();
         private Tile _model;
         private TileView _view;
 
@@ -14,21 +15,19 @@ namespace LightConnect.Core
             _view = view;
 
             _view.Clicked += _model.RotateClockwise;
-            _model.Rotated += RotateView;
-
-            RotateView();
+            _model.Direction.Subscribe(value => _view.RotateTo(CalculateRotation(value))).AddTo(_disposables);
+            _model.Powered.Subscribe(_view.SetPower).AddTo(_disposables);
         }
 
         public void Dispose()
         {
             _view.Clicked -= _model.RotateClockwise;
-            _model.Rotated -= RotateView;
+            _disposables.Dispose();
         }
 
-        private void RotateView()
+        private float CalculateRotation(Directions direction)
         {
-            var rotation = Quaternion.Euler(0, 0, -(int)_model.Direction.CurrentValue * 90f);
-            _view.RotateTo(rotation);
+            return -(int)direction * 90f;
         }
     }
 }

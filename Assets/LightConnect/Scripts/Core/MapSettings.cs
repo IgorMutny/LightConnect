@@ -20,7 +20,8 @@ namespace LightConnect.Core
 
             foreach (var tile in _tiles)
             {
-                map.SetTile(tile.Create(), new Vector2Int(x, y));
+                var position = new Vector2Int(x, y);
+                map.SetTile(tile.Create(position), position);
 
                 x += 1;
                 if (x == _size.x)

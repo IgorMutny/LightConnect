@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace LightConnect.Core
 {
@@ -19,9 +20,18 @@ namespace LightConnect.Core
             _renderer.sprite = sprite;
         }
 
-        public void RotateTo(Quaternion quaternion)
+        public void SetPower(bool powered)
         {
-            transform.rotation = quaternion;
+            if (powered)
+                _renderer.color = Color.red;
+            else
+                _renderer.color = Color.white;
+        }
+
+        public void RotateTo(float angle)
+        {
+            var rotation = Quaternion.Euler(0, 0, angle);
+            transform.rotation = rotation;
         }
     }
 }
