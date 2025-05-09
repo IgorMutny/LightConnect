@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: BlueBattery
   m_EditorClassIdentifier: 
   _type: 1
-  _typeId: battery
+  _typeId: BATTERY
   _connectors: 00000000
   _sprite: {fileID: 21300000, guid: 3c1070554ba978447a0a827a3544a5d0, type: 3}
   _color: 3

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: StraightWire
   m_EditorClassIdentifier: 
   _type: 0
-  _typeId: straightWire
+  _typeId: STRAIGHT_WIRE
   _connectors: 0000000002000000
   _sprite: {fileID: 21300000, guid: 2f6b5262b7b46b24d9db003d625f777a, type: 3}
+  _color: 0

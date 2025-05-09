@@ -172,6 +172,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilePrefab: {fileID: 1439450302151463159, guid: 2d57a2b8a60f3654ca44e5c67fde0d30, type: 3}
   _sizePanel: {fileID: 2003980868}
+  _elementsPanel: {fileID: 2130216684}
 --- !u!1 &56131593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1987,7 +1988,7 @@ GameObject:
   m_Component:
   - component: {fileID: 804093447}
   m_Layer: 5
-  m_Name: ElementsPanel
+  m_Name: ToolsPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

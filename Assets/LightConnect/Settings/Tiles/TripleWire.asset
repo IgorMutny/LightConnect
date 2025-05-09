@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TripleWire
   m_EditorClassIdentifier: 
   _type: 0
-  _typeId: tripleWire
+  _typeId: TRIPLE_WIRE
   _connectors: 000000000100000002000000
   _sprite: {fileID: 21300000, guid: 70327ed8041e7e145b558dcc78a54524, type: 3}
+  _color: 0
