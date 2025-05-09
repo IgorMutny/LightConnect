@@ -20,12 +20,9 @@ namespace LightConnect.Core
             _renderer.sprite = sprite;
         }
 
-        public void SetPower(bool powered)
+        public void SetColor(Color color)
         {
-            if (powered)
-                _renderer.color = Color.red;
-            else
-                _renderer.color = Color.white;
+            _renderer.color = color;
         }
 
         public void RotateTo(float angle)

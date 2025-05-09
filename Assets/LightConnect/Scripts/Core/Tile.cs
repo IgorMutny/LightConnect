@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using R3;
@@ -6,21 +5,22 @@ using UnityEngine;
 
 namespace LightConnect.Core
 {
-    public class Tile
+    public abstract class Tile
     {
-        public readonly TileTypes Type;
         public readonly string TypeId;
         public readonly Vector2Int Position;
-        public readonly ReactiveProperty<bool> Powered = new();
 
+        protected readonly ReactiveProperty<bool> _powered = new();
+        protected readonly List<Colors> _appliedColors = new();
+        protected Colors _color;
         private readonly Direction _direction;
         private readonly List<Direction> _connectors = new();
 
-        public Tile(TileTypes type, string typeId, Vector2Int position, Directions initialDirection, List<Directions> connectors)
+        public Tile(string typeId, Colors color, Vector2Int position, Directions initialDirection, List<Directions> connectors)
         {
-            Type = type;
             TypeId = typeId;
             Position = position;
+            _color = color;
 
             _direction = new Direction(initialDirection);
 
@@ -29,6 +29,8 @@ namespace LightConnect.Core
         }
 
         public ReadOnlyReactiveProperty<Directions> Direction => _direction.Value;
+        public ReadOnlyReactiveProperty<bool> Powered => _powered;
+        public Colors Color => _color;
 
         public void RotateClockwise()
         {
@@ -48,6 +50,24 @@ namespace LightConnect.Core
         public bool HasConnectorInDirection(Directions direction)
         {
             return _connectors.Any(connector => connector.Value.CurrentValue == direction);
+        }
+
+        public abstract void AddPower(Colors color);
+
+        public abstract void ResetPower();
+
+        protected bool AllPowersAreOfSameColor()
+        {
+            if (_appliedColors.Count == 0)
+                return false;
+
+            Colors firstColor = _appliedColors[0];
+
+            foreach (var color in _appliedColors)
+                if (color != firstColor)
+                    return false;
+
+            return true;
         }
     }
 }

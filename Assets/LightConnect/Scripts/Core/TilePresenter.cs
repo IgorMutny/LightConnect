@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using R3;
 
 namespace LightConnect.Core
@@ -16,7 +17,7 @@ namespace LightConnect.Core
 
             _view.Clicked += _model.RotateClockwise;
             _model.Direction.Subscribe(value => _view.RotateTo(CalculateRotation(value))).AddTo(_disposables);
-            _model.Powered.Subscribe(_view.SetPower).AddTo(_disposables);
+            _model.Powered.Subscribe(SetPowerColor).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -28,6 +29,24 @@ namespace LightConnect.Core
         private float CalculateRotation(Directions direction)
         {
             return -(int)direction * 90f;
+        }
+
+        private void SetPowerColor(bool powered)
+        {
+            Color color = Color.black;
+
+            switch (_model.Color, powered)
+            {
+                case (Colors.RED, true): color = Color.red; break;
+                case (Colors.RED, false): color = new Color(0.5f, 0f, 0f); break;
+                case (Colors.GREEN, true): color = Color.green; break;
+                case (Colors.GREEN, false): color = new Color(0f, 0.5f, 0f); break;
+                case (Colors.BLUE, true): color = Color.blue; break;
+                case (Colors.BLUE, false): color = new Color(0f, 0f, 0.5f); break;
+                default: color = Color.white; break;
+            }
+
+            _view.SetColor(color);
         }
     }
 }

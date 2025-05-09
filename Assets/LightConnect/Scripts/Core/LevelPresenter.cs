@@ -3,13 +3,13 @@ using UnityEngine;
 
 namespace LightConnect.Core
 {
-    public class MapPresenter
+    public class LevelPresenter
     {
-        private Map _model;
-        private MapView _view;
+        private Level _model;
+        private LevelView _view;
         private List<TilePresenter> _presenters = new();
 
-        public MapPresenter(Map model, MapView view)
+        public LevelPresenter(Level model, LevelView view)
         {
             _model = model;
             _view = view;

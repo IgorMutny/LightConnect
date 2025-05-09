@@ -1,19 +1,18 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace LightConnect.Core
 {
-    [CreateAssetMenu(menuName = nameof(MapSettings))]
+    [CreateAssetMenu(menuName = nameof(LevelSettings))]
 
-    public class MapSettings : ScriptableObject
+    public class LevelSettings : ScriptableObject
     {
         [SerializeField] private Vector2Int _size;
         [SerializeField] private List<TileSettings> _tiles;
 
-        public Map Create()
+        public Level Create()
         {
-            var map = new Map(_size);
+            var map = new Level(_size);
 
             int x = 0;
             int y = 0;

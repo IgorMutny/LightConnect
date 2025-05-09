@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LightConnect.Core
 {
-    public class MapView : MonoBehaviour
+    public class LevelView : MonoBehaviour
     {
         [SerializeField] private AllTilesSettings _allTilesSettings;
         [SerializeField] private GameObject _tilePrefab;

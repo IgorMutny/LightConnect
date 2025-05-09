@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace LightConnect.Core
 {
-    public class Map
+    public class Level
     {
         private readonly CompositeDisposable _disposables = new();
         public readonly Vector2Int Size;
@@ -12,7 +12,7 @@ namespace LightConnect.Core
         private readonly List<Tile> _batteries = new();
         private readonly List<Tile> _lamps = new();
 
-        public Map(Vector2Int size)
+        public Level(Vector2Int size)
         {
             Size = size;
             _tiles = new Tile[size.x, size.y];
@@ -24,10 +24,10 @@ namespace LightConnect.Core
         {
             _tiles[position.x, position.y] = tile;
 
-            if (tile.Type == TileTypes.BATTERY)
+            if (tile is Battery)
                 _batteries.Add(tile);
 
-            if (tile.Type is TileTypes.LAMP)
+            if (tile is Lamp)
                 _lamps.Add(tile);
         }
 
@@ -50,11 +50,11 @@ namespace LightConnect.Core
         private void OnTileRotated()
         {
             foreach (var tile in _tiles)
-                tile.Powered.Value = false;
+                tile.ResetPower();
 
             foreach (var battery in _batteries)
             {
-                battery.Powered.Value = true;
+                battery.AddPower(Colors.NONE);
                 HandleBattery(battery);
             }
         }
@@ -64,12 +64,12 @@ namespace LightConnect.Core
             var handledTiles = new List<Tile>();
             var tilesToHandle = new List<Tile>();
 
-            HandleTile(battery, handledTiles, tilesToHandle);
+            HandleTile(battery, battery.Color, handledTiles, tilesToHandle);
         }
 
-        private void HandleTile(Tile origin, List<Tile> handledTiles, List<Tile> tilesToHandle)
+        private void HandleTile(Tile origin, Colors color, List<Tile> handledTiles, List<Tile> tilesToHandle)
         {
-            var hasConnectedTiles = HandleAdjacentTiles(origin, out List<Tile> connectedTiles);
+            var hasConnectedTiles = HandleAdjacentTiles(origin, color, out List<Tile> connectedTiles);
 
             if (hasConnectedTiles)
             {
@@ -84,27 +84,21 @@ namespace LightConnect.Core
                 return;
             }
 
-            if (tilesToHandle.Count > 0)
+            while (tilesToHandle.Count > 0)
             {
-                foreach (var tile in tilesToHandle)
-                {
-                    tilesToHandle.Remove(tile);
-                    handledTiles.Add(tile);
-                    HandleTile(tile, handledTiles, tilesToHandle);
-                }
-            }
-            else
-            {
-                return;
+                var tile = tilesToHandle[0];
+                handledTiles.Add(tile);
+                tilesToHandle.Remove(tile);
+                HandleTile(tile, color, handledTiles, tilesToHandle);
             }
         }
 
-        private bool HandleAdjacentTiles(Tile origin, out List<Tile> connectedTiles)
+        private bool HandleAdjacentTiles(Tile origin, Colors color, out List<Tile> connectedTiles)
         {
             EvaluateAdjacentTiles(origin, out connectedTiles);
 
             foreach (var tile in connectedTiles)
-                tile.Powered.Value = true;
+                tile.AddPower(color);
 
             return connectedTiles.Count > 0;
         }
@@ -154,8 +148,6 @@ namespace LightConnect.Core
                 result = true;
             else if (direction == Directions.LEFT && from.HasConnectorInDirection(Directions.LEFT) && to.HasConnectorInDirection(Directions.RIGHT))
                 result = true;
-
-            Debug.Log($"{from.Position} {to.Position} {result}");
 
             return result;
         }
