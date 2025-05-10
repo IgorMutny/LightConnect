@@ -35,9 +35,9 @@ namespace LightConnect.Core
         public void RotateClockwise()
         {
             foreach (var connector in _connectors)
-                connector.RotateClockwise();
+                connector.RotateRight();
 
-            _direction.RotateClockwise();
+            _direction.RotateRight();
         }
 
         public void RotateRandomly()

@@ -12,9 +12,9 @@ namespace LightConnect.Core
             var worldPosition = new Vector3(position.x, position.y, 0);
             var tileObject = Instantiate(_tilePrefab, worldPosition, Quaternion.identity, transform);
             var tile = tileObject.GetComponent<TileView>();
-            var settings = _allTilesSettings.GetTile(typeId);
+            /* var settings = _allTilesSettings.GetTile(typeId);
             var sprite = settings.Sprite;
-            tile.SetSprite(sprite);
+            tile.SetSprite(sprite); */
 
             return tile;
         }

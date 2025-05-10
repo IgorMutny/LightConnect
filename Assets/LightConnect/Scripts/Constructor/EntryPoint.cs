@@ -6,18 +6,20 @@ namespace LightConnect.Constructor
     {
         [SerializeField] private MainPanel _mainPanel;
         [SerializeField] private ElementsPanel _elementsPanel;
+        [SerializeField] private WiresPanel _wiresPanel;
         [SerializeField] private SizePanel _sizePanel;
         [SerializeField] private ColorsPanel _colorsPanel;
-        [SerializeField] private ActionsPanel _actionsPanel;
+        [SerializeField] private RotationsPanel _rotationsPanel;
         [SerializeField] private LevelView _levelView;
 
         private void Start()
         {
             _mainPanel.Initialize();
             _elementsPanel.Initialize();
+            _wiresPanel.Initialize();
             _sizePanel.Initialize();
             _colorsPanel.Initialize();
-            _actionsPanel.Initialize();
+            _rotationsPanel.Initialize();
             _levelView.Initialize();
         }
 
@@ -25,9 +27,10 @@ namespace LightConnect.Constructor
         {
             _mainPanel.Dispose();
             _elementsPanel.Dispose();
+            _wiresPanel.Dispose();
             _sizePanel.Dispose();
             _colorsPanel.Dispose();
-            _actionsPanel.Dispose();
+            _rotationsPanel.Dispose();
             _levelView.Dispose();
         }
 

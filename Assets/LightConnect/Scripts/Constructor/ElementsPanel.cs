@@ -7,61 +7,45 @@ namespace LightConnect.Constructor
 {
     public class ElementsPanel : MonoBehaviour
     {
+        [SerializeField] private Button _none;
         [SerializeField] private Button _battery;
         [SerializeField] private Button _lamp;
-        [SerializeField] private Button _straightWire;
-        [SerializeField] private Button _bentWire;
-        [SerializeField] private Button _tripleWire;
 
-        private Subject<string> _elementSelected = new();
-        public Observable<string> ElementSelected => _elementSelected;
+        private Subject<ElementTypes> _elementSelected = new();
+        public Observable<ElementTypes> ElementSelected => _elementSelected;
 
         public void Initialize()
         {
+            _none.onClick.AddListener(SelectNone);
             _battery.onClick.AddListener(SelectBattery);
             _lamp.onClick.AddListener(SelectLamp);
-            _straightWire.onClick.AddListener(SelectStraightWire);
-            _bentWire.onClick.AddListener(SelectBentWire);
-            _tripleWire.onClick.AddListener(SelectTripleWire);
         }
 
         public void Dispose()
         {
+            _none.onClick.RemoveListener(SelectNone);
             _battery.onClick.RemoveListener(SelectBattery);
             _lamp.onClick.RemoveListener(SelectLamp);
-            _straightWire.onClick.RemoveListener(SelectStraightWire);
-            _bentWire.onClick.RemoveListener(SelectBentWire);
-            _tripleWire.onClick.RemoveListener(SelectTripleWire);
         }
 
-        private void SelectElement(string name)
+        private void SelectElement(ElementTypes type)
         {
-            _elementSelected.OnNext(name);
+            _elementSelected.OnNext(type);
         }
 
         private void SelectBattery()
         {
-            SelectElement(TileNames.BATTERY);
+            SelectElement(ElementTypes.BATTERY);
         }
 
         private void SelectLamp()
         {
-            SelectElement(TileNames.LAMP);
+            SelectElement(ElementTypes.LAMP);
         }
 
-        private void SelectStraightWire()
+        private void SelectNone()
         {
-            SelectElement(TileNames.STRAIGHT_WIRE);
-        }
-
-        private void SelectBentWire()
-        {
-            SelectElement(TileNames.BENT_WIRE);
-        }
-
-        private void SelectTripleWire()
-        {
-            SelectElement(TileNames.TRIPLE_WIRE);
+            SelectElement(ElementTypes.NONE);
         }
     }
 }

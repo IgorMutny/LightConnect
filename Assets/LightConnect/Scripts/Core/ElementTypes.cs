@@ -1,8 +1,8 @@
 namespace LightConnect.Core
 {
-    public enum TileTypes
+    public enum ElementTypes
     {
-        WIRE = 0,
+        NONE = 0,
         BATTERY = 1,
         LAMP = 2
     }

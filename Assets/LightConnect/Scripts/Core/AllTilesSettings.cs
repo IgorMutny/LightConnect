@@ -8,11 +8,17 @@ namespace LightConnect.Core
 
     public class AllTilesSettings : ScriptableObject
     {
-        [SerializeField] private List<TileSettings> _tiles;
+        [SerializeField] private List<ElementSettings> _elements;
+        [SerializeField] private List<WireSettings> _wires;
 
-        public TileSettings GetTile(string typeId)
+        public ElementSettings ElementSettings(ElementTypes type)
         {
-            return _tiles.First(tile => tile.TypeId == typeId);
+            return _elements.First(element => element.Type == type);
+        }
+
+        public WireSettings WireSettings(WireTypes type)
+        {
+            return _wires.First(wire => wire.Type == type);
         }
     }
 }

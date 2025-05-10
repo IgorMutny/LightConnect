@@ -14,19 +14,14 @@ namespace LightConnect.Core
             _model = model;
             _view = view;
 
-            for (int y = 0; y < _model.Size.x; y++)
+            foreach (var tile in _model.Tiles())
             {
-                for (int x = 0; x < _model.Size.x; x++)
-                {
-                    var tile = _model.Tiles[x, y];
+                if (tile == null)
+                    continue;
 
-                    if (tile == null)
-                        continue;
-
-                    var tileView = _view.CreateTile(tile.TypeId, new Vector2Int(x, y));
-                    var tilePresenter = new TilePresenter(tile, tileView);
-                    _presenters.Add(tilePresenter);
-                }
+                var tileView = _view.CreateTile(tile.TypeId, new Vector2Int(tile.Position.x, tile.Position.y));
+                var tilePresenter = new TilePresenter(tile, tileView);
+                _presenters.Add(tilePresenter);
             }
         }
     }

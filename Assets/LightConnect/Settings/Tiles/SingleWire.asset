@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04c0482b237c0c8439d65569c924ea10, type: 3}
-  m_Name: BlueBattery
+  m_Script: {fileID: 11500000, guid: 5f57153449c82af4ba7a91735ec7494b, type: 3}
+  m_Name: SingleWire
   m_EditorClassIdentifier: 
-  _type: 1
-  _typeId: BATTERY
-  _connectors: 00000000
-  _sprite: {fileID: 21300000, guid: 3c1070554ba978447a0a827a3544a5d0, type: 3}
-  _color: 3
+  <Type>k__BackingField: 1
+  <Directions>k__BackingField: 00000000
+  <Sprite>k__BackingField: {fileID: 21300000, guid: 0ac6b2431ac23c846b561b449d0d4527, type: 3}

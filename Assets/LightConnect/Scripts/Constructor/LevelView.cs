@@ -1,4 +1,7 @@
+using System;
+using LightConnect.Core;
 using R3;
+using Unity.Collections;
 using UnityEngine;
 
 namespace LightConnect.Constructor
@@ -11,7 +14,10 @@ namespace LightConnect.Constructor
 
         [SerializeField] private GameObject _tilePrefab;
         [SerializeField] private SizePanel _sizePanel;
+        [SerializeField] private WiresPanel _wiresPanel;
+        [SerializeField] private ColorsPanel _colorsPanel;
         [SerializeField] private ElementsPanel _elementsPanel;
+        [SerializeField] private RotationsPanel _rotationsPanel;
 
         private CompositeDisposable _disposables = new();
         private TileView[,] _tiles = new TileView[MAX_SIZE, MAX_SIZE];
@@ -30,7 +36,15 @@ namespace LightConnect.Constructor
                 {
                     Vector3 position = new Vector3(initialPosition.x + x * TILE_SIZE, initialPosition.y + y * TILE_SIZE, 0);
                     _tiles[x, y] = Instantiate(_tilePrefab, position, Quaternion.identity, transform).GetComponent<TileView>();
-                    _tiles[x, y].Initialize(new Vector2Int(x, y), null);
+                    _tiles[x, y].gameObject.name = $"Tile {x}-{y}";
+
+                    _tiles[x, y].Initialize(
+                        new Vector2Int(x, y),
+                        WireTypes.NONE,
+                        Directions.UP,
+                        ElementTypes.NONE,
+                        Colors.NONE);
+
                     _tiles[x, y].Clicked.Subscribe(OnTileClicked).AddTo(_disposables);
                 }
             }
@@ -39,8 +53,10 @@ namespace LightConnect.Constructor
 
             _sizePanel.Width.Subscribe(_ => OnSizeChanged()).AddTo(_disposables);
             _sizePanel.Height.Subscribe(_ => OnSizeChanged()).AddTo(_disposables);
-
+            _wiresPanel.WireSelected.Subscribe(OnWireSelected).AddTo(_disposables);
+            _colorsPanel.ColorSelected.Subscribe(OnColorSelected).AddTo(_disposables);
             _elementsPanel.ElementSelected.Subscribe(OnElementSelected).AddTo(_disposables);
+            _rotationsPanel.RotationRequested.Subscribe(RotateSelectedTile).AddTo(_disposables);
         }
 
         public void Dispose()
@@ -79,12 +95,36 @@ namespace LightConnect.Constructor
                 tile.SetSelected(tile == _selectedTile);
         }
 
-        private void OnElementSelected(string name)
+        private void OnElementSelected(ElementTypes type)
         {
             if (_selectedTile == null)
                 return;
 
-            _selectedTile.SetElement(name);
+            _selectedTile.SetElement(type);
+        }
+
+        private void OnWireSelected(WireTypes type)
+        {
+            if (_selectedTile == null)
+                return;
+
+            _selectedTile.SetWire(type);
+        }
+
+        private void OnColorSelected(Colors color)
+        {
+            if (_selectedTile == null)
+                return;
+
+            _selectedTile.SetColor(color);
+        }
+
+        private void RotateSelectedTile(Directions direction)
+        {
+            if (_selectedTile == null)
+                return;
+
+            _selectedTile.Rotate(direction);
         }
     }
 }

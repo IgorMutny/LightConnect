@@ -18,7 +18,11 @@ namespace LightConnect.Core
             _tiles = new Tile[size.x, size.y];
         }
 
-        public Tile[,] Tiles => _tiles;
+        public IEnumerable<Tile> Tiles()
+        {
+            foreach (var tile in _tiles)
+                yield return tile;
+        }
 
         public void SetTile(Tile tile, Vector2Int position)
         {

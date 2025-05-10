@@ -8,13 +8,13 @@ namespace LightConnect.Core
     public class LevelSettings : ScriptableObject
     {
         [SerializeField] private Vector2Int _size;
-        [SerializeField] private List<TileSettings> _tiles;
+        [SerializeField] private List<ElementSettings> _tiles;
 
         public Level Create()
         {
             var map = new Level(_size);
 
-            int x = 0;
+            /* int x = 0;
             int y = 0;
 
             foreach (var tile in _tiles)
@@ -28,7 +28,7 @@ namespace LightConnect.Core
                     x = 0;
                     y += 1;
                 }
-            }
+            } */
 
             return map;
         }

@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d0cf68264cd28d40ab7c838d87c3aaf, type: 3}
-  m_Name: All Tiles Settings
+  m_Name: All
   m_EditorClassIdentifier: 
-  _tiles:
-  - {fileID: 11400000, guid: 02b7995cb0a19cc43b8c049fc89f2e32, type: 2}
-  - {fileID: 11400000, guid: 3718a3d4ec2a1cd409bcaa77e3e3ba8a, type: 2}
+  _elements:
   - {fileID: 11400000, guid: f394b83a62fa26346b5b11fa7dcc0d6f, type: 2}
-  - {fileID: 11400000, guid: 6b2a4e387a1a8f541933d2cc447a172b, type: 2}
-  - {fileID: 11400000, guid: 597bb608d8c9e9645a9edc703fc1a87b, type: 2}
+  - {fileID: 11400000, guid: 6a550203e7e1870499086f82e84f06d2, type: 2}
+  _wires:
+  - {fileID: 11400000, guid: 5e1fb7df49e70084aa47626769a2c5e6, type: 2}
+  - {fileID: 11400000, guid: 918ec20cc6c5af64d869a89b5a2361ce, type: 2}
+  - {fileID: 11400000, guid: 33c4237f5a1e9db40b9e76b138e01453, type: 2}
+  - {fileID: 11400000, guid: f55a457471edb7e43a872b14c7f05d21, type: 2}
