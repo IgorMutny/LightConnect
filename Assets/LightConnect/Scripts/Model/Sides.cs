@@ -1,6 +1,6 @@
-namespace LightConnect.Core
+namespace LightConnect.Model
 {
-    public enum Directions
+    public enum Sides
     {
         UP = 0,
         RIGHT = 1,

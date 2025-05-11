@@ -1,5 +1,6 @@
 using System;
 using LightConnect.Core;
+using LightConnect.Model;
 using R3;
 using Unity.Collections;
 using UnityEngine;
@@ -8,8 +9,6 @@ namespace LightConnect.Constructor
 {
     public class LevelView : MonoBehaviour
     {
-        public const int MAX_SIZE = 16;
-
         private const float TILE_SIZE = 50f;
 
         [SerializeField] private GameObject _tilePrefab;
@@ -20,19 +19,19 @@ namespace LightConnect.Constructor
         [SerializeField] private RotationsPanel _rotationsPanel;
 
         private CompositeDisposable _disposables = new();
-        private TileView[,] _tiles = new TileView[MAX_SIZE, MAX_SIZE];
+        private TileView[,] _tiles = new TileView[Level.MAX_SIZE, Level.MAX_SIZE];
         private TileView _selectedTile;
 
         public void Initialize()
         {
             Vector3 initialPosition = new Vector3(
-                transform.position.x - MAX_SIZE * TILE_SIZE / 2,
-                transform.position.y - MAX_SIZE * TILE_SIZE / 2,
+                transform.position.x - Level.MAX_SIZE * TILE_SIZE / 2,
+                transform.position.y - Level.MAX_SIZE * TILE_SIZE / 2,
                 0f);
 
-            for (int x = 0; x < MAX_SIZE; x++)
+            for (int x = 0; x < Level.MAX_SIZE; x++)
             {
-                for (int y = 0; y < MAX_SIZE; y++)
+                for (int y = 0; y < Level.MAX_SIZE; y++)
                 {
                     Vector3 position = new Vector3(initialPosition.x + x * TILE_SIZE, initialPosition.y + y * TILE_SIZE, 0);
                     _tiles[x, y] = Instantiate(_tilePrefab, position, Quaternion.identity, transform).GetComponent<TileView>();
@@ -41,7 +40,7 @@ namespace LightConnect.Constructor
                     _tiles[x, y].Initialize(
                         new Vector2Int(x, y),
                         WireTypes.NONE,
-                        Directions.UP,
+                        Sides.UP,
                         ElementTypes.NONE,
                         Colors.NONE);
 
@@ -66,9 +65,9 @@ namespace LightConnect.Constructor
 
         private void OnSizeChanged()
         {
-            for (int x = 0; x < MAX_SIZE; x++)
+            for (int x = 0; x < Level.MAX_SIZE; x++)
             {
-                for (int y = 0; y < MAX_SIZE; y++)
+                for (int y = 0; y < Level.MAX_SIZE; y++)
                 {
                     bool isActive = x < _sizePanel.Width.CurrentValue && y < _sizePanel.Height.CurrentValue;
                     _tiles[x, y].SetActive(isActive);
@@ -119,7 +118,7 @@ namespace LightConnect.Constructor
             _selectedTile.SetColor(color);
         }
 
-        private void RotateSelectedTile(Directions direction)
+        private void RotateSelectedTile(Sides direction)
         {
             if (_selectedTile == null)
                 return;

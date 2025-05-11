@@ -1,4 +1,4 @@
-namespace LightConnect.Core
+namespace LightConnect.Model
 {
     public enum Colors
     {

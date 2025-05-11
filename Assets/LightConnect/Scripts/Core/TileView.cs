@@ -1,6 +1,5 @@
-using System;
+using R3;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace LightConnect.Core
 {
@@ -8,11 +7,13 @@ namespace LightConnect.Core
     {
         [SerializeField] private SpriteRenderer _renderer;
 
-        public event Action Clicked;
+        private Subject<Unit> _clicked = new();
+
+        public Observable<Unit> Clicked => _clicked;
 
         public void OnMouseDown()
         {
-            Clicked?.Invoke();
+            _clicked.OnNext(Unit.Default);
         }
 
         public void SetSprite(Sprite sprite)
@@ -20,9 +21,9 @@ namespace LightConnect.Core
             _renderer.sprite = sprite;
         }
 
-        public void SetColor(Color color)
+        public void SetColors(Color wireColor, Color elementColor)
         {
-            _renderer.color = color;
+            _renderer.color = wireColor;
         }
 
         public void RotateTo(float angle)

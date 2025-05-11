@@ -1,4 +1,5 @@
 using LightConnect.Core;
+using LightConnect.Model;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;

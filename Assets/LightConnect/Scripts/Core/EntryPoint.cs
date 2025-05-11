@@ -11,7 +11,7 @@ namespace LightConnect.Core
 
         private void Start()
         {
-            var map = _mapSettings.Create();
+            /* var map = _mapSettings.Create();
             map.Initialize();
 
             _presenter = new LevelPresenter(map, _mapView);
@@ -19,7 +19,7 @@ namespace LightConnect.Core
             var cameraPosition = Camera.main.transform.position;
             cameraPosition.x = map.Size.x / 2;
             cameraPosition.y = map.Size.y / 2;
-            Camera.main.transform.position = cameraPosition;
+            Camera.main.transform.position = cameraPosition; */
         }
     }
 }

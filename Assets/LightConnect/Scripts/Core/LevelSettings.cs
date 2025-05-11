@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LightConnect.Model;
 using UnityEngine;
 
 namespace LightConnect.Core

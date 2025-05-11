@@ -1,5 +1,6 @@
 using System;
 using LightConnect.Core;
+using LightConnect.Model;
 using R3;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,8 +12,8 @@ namespace LightConnect.Constructor
         [SerializeField] private Button _rotateRight;
         [SerializeField] private Button _rotateLeft;
 
-        private Subject<Directions> _rotationRequested = new();
-        public Observable<Directions> RotationRequested => _rotationRequested;
+        private Subject<Sides> _rotationRequested = new();
+        public Observable<Sides> RotationRequested => _rotationRequested;
 
         public void Initialize()
         {
@@ -28,12 +29,12 @@ namespace LightConnect.Constructor
 
         private void RotateRight()
         {
-            _rotationRequested.OnNext(Directions.RIGHT);
+            _rotationRequested.OnNext(Sides.RIGHT);
         }
 
         private void RotateLeft()
         {
-            _rotationRequested.OnNext(Directions.LEFT);
+            _rotationRequested.OnNext(Sides.LEFT);
         }
     }
 }

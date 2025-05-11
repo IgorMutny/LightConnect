@@ -1,3 +1,4 @@
+using LightConnect.Model;
 using UnityEngine;
 
 namespace LightConnect.Core

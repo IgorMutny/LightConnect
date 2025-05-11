@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using R3;
+using LightConnect.Model;
 
 namespace LightConnect.Core
 {
@@ -15,38 +16,46 @@ namespace LightConnect.Core
             _model = model;
             _view = view;
 
-            _view.Clicked += _model.RotateClockwise;
-            _model.Direction.Subscribe(value => _view.RotateTo(CalculateRotation(value))).AddTo(_disposables);
-            _model.Powered.Subscribe(SetPowerColor).AddTo(_disposables);
+            _view.Clicked.Subscribe(_ => _model.RotateRight());
+            _model.Orientation.Subscribe(value => _view.RotateTo(CalculateRotation(value))).AddTo(_disposables);
+            _model.Powered.Subscribe(SetColors).AddTo(_disposables);
         }
 
         public void Dispose()
         {
-            _view.Clicked -= _model.RotateClockwise;
             _disposables.Dispose();
         }
 
-        private float CalculateRotation(Directions direction)
+        private float CalculateRotation(Sides direction)
         {
             return -(int)direction * 90f;
         }
 
-        private void SetPowerColor(bool powered)
+        private void SetColors(bool powered)
         {
-            Color color = Color.black;
+            Color wireColor;
+            Color elementColor;
 
-            switch (_model.Color, powered)
+            switch (_model.WireColor)
             {
-                case (Colors.RED, true): color = Color.red; break;
-                case (Colors.RED, false): color = new Color(0.5f, 0f, 0f); break;
-                case (Colors.GREEN, true): color = Color.green; break;
-                case (Colors.GREEN, false): color = new Color(0f, 0.5f, 0f); break;
-                case (Colors.BLUE, true): color = Color.blue; break;
-                case (Colors.BLUE, false): color = new Color(0f, 0f, 0.5f); break;
-                default: color = Color.white; break;
+                case Colors.RED: wireColor = Color.red; break;
+                case Colors.GREEN: wireColor = Color.green; break;
+                case Colors.BLUE: wireColor = Color.blue; break;
+                default: wireColor = Color.white; break;
             }
 
-            _view.SetColor(color);
+            switch (_model.ElementColor, powered)
+            {
+                case (Colors.RED, true): elementColor = Color.red; break;
+                case (Colors.RED, false): elementColor = new Color(0.5f, 0f, 0f); break;
+                case (Colors.GREEN, true): elementColor = Color.green; break;
+                case (Colors.GREEN, false): elementColor = new Color(0f, 0.5f, 0f); break;
+                case (Colors.BLUE, true): elementColor = Color.blue; break;
+                case (Colors.BLUE, false): elementColor = new Color(0f, 0f, 0.5f); break;
+                default: elementColor = Color.white; break;
+            }
+
+            _view.SetColors(wireColor, elementColor);
         }
     }
 }

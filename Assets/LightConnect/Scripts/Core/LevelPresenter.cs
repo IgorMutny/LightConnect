@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LightConnect.Model;
 using UnityEngine;
 
 namespace LightConnect.Core
@@ -11,7 +12,7 @@ namespace LightConnect.Core
 
         public LevelPresenter(Level model, LevelView view)
         {
-            _model = model;
+            /* _model = model;
             _view = view;
 
             foreach (var tile in _model.Tiles())
@@ -22,7 +23,7 @@ namespace LightConnect.Core
                 var tileView = _view.CreateTile(tile.TypeId, new Vector2Int(tile.Position.x, tile.Position.y));
                 var tilePresenter = new TilePresenter(tile, tileView);
                 _presenters.Add(tilePresenter);
-            }
+            } */
         }
     }
 }

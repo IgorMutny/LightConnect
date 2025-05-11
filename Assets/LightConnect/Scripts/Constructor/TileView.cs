@@ -1,4 +1,5 @@
 using LightConnect.Core;
+using LightConnect.Model;
 using R3;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,7 +23,12 @@ namespace LightConnect.Constructor
         public Observable<Vector2Int> Clicked => _clicked;
         public bool IsActive { get; private set; }
 
-        public void Initialize(Vector2Int position, WireTypes wireType, Directions direction, ElementTypes elementType, Colors color)
+        public void Initialize(
+            Vector2Int position,
+            WireTypes wireType,
+            Sides direction,
+            ElementTypes elementType,
+            Colors color)
         {
             _position = position;
             _wireImage = _wire.GetComponent<Image>();
@@ -88,18 +94,18 @@ namespace LightConnect.Constructor
             }
         }
 
-        public void Rotate(Directions direction)
+        public void Rotate(Sides direction)
         {
             switch (direction)
             {
-                case Directions.RIGHT: _direction.RotateRight(); break;
-                case Directions.LEFT: _direction.RotateLeft(); break;
+                case Sides.RIGHT: _direction.RotateRight(); break;
+                case Sides.LEFT: _direction.RotateLeft(); break;
             }
 
             OnDirectionChanged();
         }
 
-        private void SetDirection(Directions direction)
+        private void SetDirection(Sides direction)
         {
             _direction = new Direction(direction);
 
@@ -108,7 +114,7 @@ namespace LightConnect.Constructor
 
         private void OnDirectionChanged()
         {
-            float angle = -(int)_direction.Value.CurrentValue * 90f;
+            float angle = -(int)_direction.Side * 90f;
             var rotation = Quaternion.Euler(0, 0, angle);
             _wire.transform.rotation = rotation;
         }
