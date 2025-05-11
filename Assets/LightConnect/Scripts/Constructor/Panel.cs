@@ -12,6 +12,11 @@ namespace LightConnect.Constructor
             Subscribe();
         }
 
+        public void Reinitialize(LevelPresenter levelPresenter)
+        {
+            LevelPresenter = levelPresenter;
+        }
+
         private void OnDestroy()
         {
             Unsubscribe();

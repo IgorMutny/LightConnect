@@ -31,5 +31,13 @@ namespace LightConnect.Constructor
             _tiles.Add(tile);
             return tile;
         }
+
+        public void Clear()
+        {
+            foreach (var tile in _tiles)
+                Destroy(tile.gameObject);
+
+            _tiles.Clear();
+        }
     }
 }

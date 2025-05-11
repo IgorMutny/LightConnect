@@ -1,3 +1,4 @@
+using LightConnect.Meta;
 using R3;
 using UnityEngine;
 
@@ -25,6 +26,20 @@ namespace LightConnect.Model
         public Colors ElementColor => _element != null ? _element.Color : Colors.NONE;
         public WireTypes WireType => _wire != null ? _wire.Type : WireTypes.NONE;
         public ElementTypes ElementType => _element != null ? _element.Type : ElementTypes.NONE;
+
+        public TileData GetData()
+        {
+            var data = new TileData();
+
+            data.PositionX = Position.x;
+            data.PositionY = Position.y;
+            data.WireType = (int)WireType;
+            data.Orientation = (int)_orientation.Value;
+            data.ElementType = (int)ElementType;
+            data.Color = (int)ElementColor;
+
+            return data;
+        }
 
         public void SetWire(Wire wire)
         {

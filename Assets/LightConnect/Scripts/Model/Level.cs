@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using R3;
+using LightConnect.Meta;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -46,6 +46,32 @@ namespace LightConnect.Model
         public Tile GetTile(int x, int y)
         {
             return _tiles[x, y];
+        }
+
+        public LevelData GetData()
+        {
+            var data = new LevelData();
+            data.SizeX = _currentSize.x;
+            data.SizeY = _currentSize.y;
+
+            var filledTiles = new List<TileData>();
+            foreach (var tile in _tiles)
+                if (tile.ElementType != ElementTypes.NONE || tile.WireType != WireTypes.NONE)
+                    filledTiles.Add(tile.GetData());
+
+            data.Tiles = filledTiles.ToArray();
+
+            return data;
+        }
+
+        public void SetData(LevelData data)
+        {
+            foreach (var tileData in data.Tiles)
+            {
+                var position = new Vector2Int(tileData.PositionX, tileData.PositionY);
+                SetWire(position, (WireTypes)tileData.WireType, (Sides)tileData.Orientation);
+                SetElement(position, (ElementTypes)tileData.ElementType, (Colors)tileData.Color);
+            }
         }
 
         public void SetCurrentSize(Vector2Int size)
@@ -108,7 +134,7 @@ namespace LightConnect.Model
             Evaluate();
         }
 
-        public bool Evaluate()
+        private bool Evaluate()
         {
             _powerEvaluator.UpdateElements();
             _powerEvaluator.Execute();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LightConnect.Meta;
 using LightConnect.Model;
 using R3;
 using UnityEngine;
@@ -26,6 +27,15 @@ namespace LightConnect.Constructor
                 var tilePresenter = new TilePresenter(tile, tileView);
                 tilePresenter.Clicked.Subscribe(SelectTile).AddTo(_disposables);
                 tilePresenter.SetSelected(false);
+
+                tilePresenter.SetElement(tile.ElementType);
+                if (tile.ElementType != ElementTypes.NONE)
+                    tilePresenter.SetColor(tile.ElementColor);
+
+                tilePresenter.SetWire(tile.WireType);
+                if (tile.WireType != WireTypes.NONE)
+                    tilePresenter.SetRotation(tile.Orientation.CurrentValue);
+
                 _tiles.Add(tilePresenter);
             }
 
