@@ -5,14 +5,17 @@ namespace LightConnect.Model
 {
     public class Wire
     {
+        public readonly WireTypes Type;
+
         private List<Direction> _connectors;
         private List<Colors> _appliedColors;
         private Direction _orientation;
 
-        public Wire(Direction orientation, List<Direction> connectors)
+        public Wire(WireTypes type, Direction orientation)
         {
+            Type = type;
             _orientation = orientation;
-            _connectors = connectors;
+            _connectors = ConnectorHelper.ConnectorsOfWire(type);
             _appliedColors = new();
             CurrentColor = Colors.NONE;
         }
@@ -24,12 +27,16 @@ namespace LightConnect.Model
         {
             foreach (var connector in _connectors)
                 connector.RotateRight();
+
+            _orientation.RotateRight();
         }
 
         public void RotateLeft()
         {
             foreach (var connector in _connectors)
                 connector.RotateLeft();
+
+            _orientation.RotateLeft();
         }
 
         public void AddPower(Colors color)

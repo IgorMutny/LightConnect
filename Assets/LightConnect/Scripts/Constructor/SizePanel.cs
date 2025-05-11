@@ -4,28 +4,21 @@ using UnityEngine.UI;
 
 namespace LightConnect.Constructor
 {
-    public class SizePanel : MonoBehaviour
+    public class SizePanel : Panel
     {
         [SerializeField] private Slider _width;
         [SerializeField] private Slider _height;
 
-        private ReactiveProperty<int> _widthValue;
-        private ReactiveProperty<int> _heightValue;
-
-
-        public ReadOnlyReactiveProperty<int> Width => _widthValue;
-        public ReadOnlyReactiveProperty<int> Height => _heightValue;
-
-        public void Initialize()
+        protected override void Subscribe()
         {
-            _widthValue = new ReactiveProperty<int>((int)_width.value);
-            _heightValue = new ReactiveProperty<int>((int)_height.value);
+            _width.value = LevelPresenter.CurrentSize.x;
+            _height.value = LevelPresenter.CurrentSize.y;
 
             _width.onValueChanged.AddListener(OnWidthChanged);
             _height.onValueChanged.AddListener(OnHeightChanged);
         }
 
-        public void Dispose()
+        protected override void Unsubscribe()
         {
             _width.onValueChanged.RemoveListener(OnWidthChanged);
             _height.onValueChanged.RemoveListener(OnHeightChanged);
@@ -33,12 +26,12 @@ namespace LightConnect.Constructor
 
         private void OnWidthChanged(float value)
         {
-            _widthValue.Value = (int)value;
+            LevelPresenter.ChangeWidth((int)value);
         }
 
         private void OnHeightChanged(float value)
         {
-            _heightValue.Value = (int)value;
+            LevelPresenter.ChangeHeight((int)value);
         }
     }
 }

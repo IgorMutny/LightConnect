@@ -13,7 +13,7 @@ namespace LightConnect.Core
 
         public Level Create()
         {
-            var map = new Level(_size);
+            //var map = new Level(_size);
 
             /* int x = 0;
             int y = 0;
@@ -31,7 +31,7 @@ namespace LightConnect.Core
                 }
             } */
 
-            return map;
+            return null;
         }
     }
 }

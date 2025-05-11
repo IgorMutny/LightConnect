@@ -1,27 +1,22 @@
 using System;
-using LightConnect.Core;
 using LightConnect.Model;
-using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace LightConnect.Constructor
 {
-    public class RotationsPanel : MonoBehaviour
+    public class RotationsPanel : Panel
     {
         [SerializeField] private Button _rotateRight;
         [SerializeField] private Button _rotateLeft;
 
-        private Subject<Sides> _rotationRequested = new();
-        public Observable<Sides> RotationRequested => _rotationRequested;
-
-        public void Initialize()
+        protected override void Subscribe()
         {
             _rotateLeft.onClick.AddListener(RotateLeft);
             _rotateRight.onClick.AddListener(RotateRight);
         }
 
-        public void Dispose()
+        protected override void Unsubscribe()
         {
             _rotateLeft.onClick.RemoveListener(RotateLeft);
             _rotateRight.onClick.RemoveListener(RotateRight);
@@ -29,12 +24,14 @@ namespace LightConnect.Constructor
 
         private void RotateRight()
         {
-            _rotationRequested.OnNext(Sides.RIGHT);
+            LevelPresenter.Rotate(Sides.RIGHT);
         }
 
         private void RotateLeft()
         {
-            _rotationRequested.OnNext(Sides.LEFT);
+            LevelPresenter.Rotate(Sides.LEFT);
         }
+
+
     }
 }

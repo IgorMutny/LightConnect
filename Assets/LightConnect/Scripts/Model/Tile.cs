@@ -11,7 +11,6 @@ namespace LightConnect.Model
         private ReactiveProperty<bool> _powered = new();
         private Wire _wire;
         private Element _element;
-        private ElementTypes _elementType;
 
         public Tile(Vector2Int position)
         {
@@ -24,7 +23,8 @@ namespace LightConnect.Model
         public ReadOnlyReactiveProperty<bool> Powered => _powered;
         public Colors WireColor => _wire != null ? _wire.CurrentColor : Colors.NONE;
         public Colors ElementColor => _element != null ? _element.Color : Colors.NONE;
-        public ElementTypes ElementType => _elementType;
+        public WireTypes WireType => _wire != null ? _wire.Type : WireTypes.NONE;
+        public ElementTypes ElementType => _element != null ? _element.Type : ElementTypes.NONE;
 
         public void SetWire(Wire wire)
         {
@@ -39,33 +39,29 @@ namespace LightConnect.Model
         public void SetElement(Element element)
         {
             _element = element;
-
-            if (_element is Battery)
-            {
-                _wire.AddPower(_element.Color);
-                _powered.Value = true;
-            }
-            else
-            {
-                _powered.Value = false;
-            }
         }
 
         public void RotateRight()
         {
+            if (_wire == null)
+                return;
+
             _wire.RotateRight();
             _orientation.Value = _wire.Orientation;
         }
 
         public void RotateLeft()
         {
+            if (_wire == null)
+                return;
+
             _wire.RotateLeft();
             _orientation.Value = _wire.Orientation;
         }
 
         public bool HasConnectorInDirection(Sides direction)
         {
-            return _wire.HasConnectorInDirection(direction);
+            return _wire != null ? _wire.HasConnectorInDirection(direction) : false;
         }
 
         public void AddPower(Colors color)
@@ -73,7 +69,7 @@ namespace LightConnect.Model
             if (_element is Battery)
                 return;
 
-            _wire.AddPower(color);
+            _wire?.AddPower(color);
 
             if (_element == null)
                 _powered.Value = _wire.CurrentColor != Colors.NONE;
@@ -86,7 +82,7 @@ namespace LightConnect.Model
             if (_element is Battery)
                 return;
 
-            _wire.ResetPower();
+            _wire?.ResetPower();
             _powered.Value = false;
         }
     }

@@ -6,23 +6,20 @@ using UnityEngine.UI;
 
 namespace LightConnect.Constructor
 {
-    public class ColorsPanel : MonoBehaviour
+    public class ColorsPanel : Panel
     {
         [SerializeField] private Button _red;
         [SerializeField] private Button _green;
         [SerializeField] private Button _blue;
 
-        private Subject<Colors> _colorSelected = new();
-        public Observable<Colors> ColorSelected => _colorSelected;
-
-        public void Initialize()
+        protected override void Subscribe()
         {
             _red.onClick.AddListener(SelectRed);
             _green.onClick.AddListener(SelectGreen);
             _blue.onClick.AddListener(SelectBlue);
         }
 
-        public void Dispose()
+        protected override void Unsubscribe()
         {
             _red.onClick.RemoveListener(SelectRed);
             _green.onClick.RemoveListener(SelectGreen);
@@ -31,7 +28,7 @@ namespace LightConnect.Constructor
 
         private void SelectColor(Colors color)
         {
-            _colorSelected.OnNext(color);
+            LevelPresenter.SetColor(color);
         }
 
         private void SelectGreen()

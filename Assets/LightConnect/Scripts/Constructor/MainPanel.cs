@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace LightConnect.Constructor
 {
-    public class MainPanel : MonoBehaviour
+    public class MainPanel : Panel
     {
         [SerializeField] private Button _new;
         [SerializeField] private Button _load;
@@ -13,14 +13,14 @@ namespace LightConnect.Constructor
         [SerializeField] private TMP_InputField _levelNumber;
         [SerializeField] private TextMeshProUGUI _warning;
 
-        public void Initialize()
+        protected override void Subscribe()
         {
-
+            
         }
 
-        public void Dispose()
+        protected override void Unsubscribe()
         {
-
+            
         }
     }
 }

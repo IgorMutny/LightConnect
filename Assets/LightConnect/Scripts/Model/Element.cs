@@ -8,5 +8,7 @@ namespace LightConnect.Model
         {
             Color = color;
         }
+
+        public abstract ElementTypes Type { get; }
     }
 }

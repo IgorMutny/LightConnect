@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace LightConnect.Constructor
 {
-    public class WiresPanel : MonoBehaviour
+    public class WiresPanel : Panel
     {
         [SerializeField] private Button _none;
         [SerializeField] private Button _single;
@@ -14,10 +14,7 @@ namespace LightConnect.Constructor
         [SerializeField] private Button _bent;
         [SerializeField] private Button _triple;
 
-        private Subject<WireTypes> _wireSelected = new();
-        public Observable<WireTypes> WireSelected => _wireSelected;
-
-        public void Initialize()
+        protected override void Subscribe()
         {
             _none.onClick.AddListener(SelectNone);
             _single.onClick.AddListener(SelectSingle);
@@ -26,7 +23,7 @@ namespace LightConnect.Constructor
             _triple.onClick.AddListener(SelectTriple);
         }
 
-        public void Dispose()
+        protected override void Unsubscribe()
         {
             _none.onClick.RemoveListener(SelectNone);
             _single.onClick.RemoveListener(SelectSingle);
@@ -37,7 +34,7 @@ namespace LightConnect.Constructor
 
         private void SelectWire(WireTypes type)
         {
-            _wireSelected.OnNext(type);
+            LevelPresenter.SetWire(type);
         }
 
         private void SelectSingle()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -19,22 +20,40 @@ namespace LightConnect.Model
                 for (int y = 0; y < MAX_SIZE; y++)
                     _tiles[x, y] = new Tile(new Vector2Int(x, y));
 
-            _powerEvaluator = new PowerEvaluator(_tiles);
+            _powerEvaluator = new PowerEvaluator(this);
         }
+
+        public Vector2Int CurrentSize => _currentSize;
 
         public IEnumerable<Tile> Tiles()
         {
             foreach (var tile in _tiles)
-                if (ContainsTileInCurrentSize(tile, _currentSize))
+                if (ContainsTileInCurrentSize(tile))
                     yield return tile;
         }
 
-        public void SetCurrentSize(Vector2Int newSize)
+        public IEnumerable<Tile> AllExistingTiles()
         {
-            if (newSize.x > MAX_SIZE || newSize.y > MAX_SIZE)
+            foreach (var tile in _tiles)
+                yield return tile;
+        }
+
+        public Tile GetTile(Vector2Int position)
+        {
+            return _tiles[position.x, position.y];
+        }
+
+        public Tile GetTile(int x, int y)
+        {
+            return _tiles[x, y];
+        }
+
+        public void SetCurrentSize(Vector2Int size)
+        {
+            if (size.x > MAX_SIZE || size.y > MAX_SIZE)
                 throw new System.Exception("New size is too big");
 
-            _currentSize = newSize;
+            _currentSize = size;
             Evaluate();
         }
 
@@ -44,11 +63,10 @@ namespace LightConnect.Model
             Evaluate();
         }
 
-        public void SetWire(Vector2Int position, Sides orientationSide, WireTypes wireType)
+        public void SetWire(Vector2Int position, WireTypes wireType, Sides orientationSide)
         {
-            var connectors = ConnectorHelper.ConnectorsOfWire(wireType);
             var orientation = new Direction(orientationSide);
-            var wire = new Wire(orientation, connectors);
+            var wire = new Wire(wireType, orientation);
             SetWire(position, wire);
         }
 
@@ -56,6 +74,12 @@ namespace LightConnect.Model
         {
             _tiles[position.x, position.y].SetElement(element);
             Evaluate();
+        }
+
+        public void SetElement(Vector2Int position, ElementTypes type)
+        {
+            Colors color = _tiles[position.x, position.y].ElementColor;
+            SetElement(position, type, color);
         }
 
         public void SetElement(Vector2Int position, ElementTypes type, Colors color)
@@ -72,27 +96,28 @@ namespace LightConnect.Model
             SetElement(position, element);
         }
 
-        public void RotateRight(Vector2Int position)
+        public void RotateRight(int x, int y)
         {
-            _tiles[position.x, position.y].RotateRight();
+            _tiles[x, y].RotateRight();
             Evaluate();
         }
 
-        public void RotateLeft(Vector2Int position)
+        public void RotateLeft(int x, int y)
         {
-            _tiles[position.x, position.y].RotateLeft();
+            _tiles[x, y].RotateLeft();
             Evaluate();
         }
 
         public bool Evaluate()
         {
-            _powerEvaluator.Execute(_currentSize);
+            _powerEvaluator.UpdateElements();
+            _powerEvaluator.Execute();
             return _powerEvaluator.AllLampsArePowered();
         }
 
-        public static bool ContainsTileInCurrentSize(Tile tile, Vector2Int currentSize)
+        private bool ContainsTileInCurrentSize(Tile tile)
         {
-            return tile.Position.x < currentSize.x && tile.Position.y < currentSize.y;
+            return tile.Position.x < _currentSize.x && tile.Position.y < _currentSize.y;
         }
     }
 }

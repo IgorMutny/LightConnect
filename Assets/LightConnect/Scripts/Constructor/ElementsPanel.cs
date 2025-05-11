@@ -1,4 +1,3 @@
-using LightConnect.Core;
 using LightConnect.Model;
 using R3;
 using UnityEngine;
@@ -6,23 +5,20 @@ using UnityEngine.UI;
 
 namespace LightConnect.Constructor
 {
-    public class ElementsPanel : MonoBehaviour
+    public class ElementsPanel : Panel
     {
         [SerializeField] private Button _none;
         [SerializeField] private Button _battery;
         [SerializeField] private Button _lamp;
 
-        private Subject<ElementTypes> _elementSelected = new();
-        public Observable<ElementTypes> ElementSelected => _elementSelected;
-
-        public void Initialize()
+        protected override void Subscribe()
         {
             _none.onClick.AddListener(SelectNone);
             _battery.onClick.AddListener(SelectBattery);
             _lamp.onClick.AddListener(SelectLamp);
         }
 
-        public void Dispose()
+        protected override void Unsubscribe()
         {
             _none.onClick.RemoveListener(SelectNone);
             _battery.onClick.RemoveListener(SelectBattery);
@@ -31,7 +27,7 @@ namespace LightConnect.Constructor
 
         private void SelectElement(ElementTypes type)
         {
-            _elementSelected.OnNext(type);
+            LevelPresenter.SetElement(type);
         }
 
         private void SelectBattery()

@@ -14,34 +14,25 @@ namespace LightConnect.Constructor
         [SerializeField] private GameObject _wire;
         [SerializeField] private GameObject _element;
 
-        private Vector2Int _position;
-        private Subject<Vector2Int> _clicked = new();
+        private Subject<Unit> _clicked = new();
         private Image _elementImage;
         private Image _wireImage;
         private Direction _direction;
 
-        public Observable<Vector2Int> Clicked => _clicked;
+        public Observable<Unit> Clicked => _clicked;
         public bool IsActive { get; private set; }
 
-        public void Initialize(
-            Vector2Int position,
-            WireTypes wireType,
-            Sides direction,
-            ElementTypes elementType,
-            Colors color)
+        public void Initialize()
         {
-            _position = position;
+            _wire.SetActive(false);
+            _element.SetActive(false);
             _wireImage = _wire.GetComponent<Image>();
             _elementImage = _element.GetComponent<Image>();
-            SetWire(wireType);
-            SetElement(elementType);
-            SetColor(color);
-            SetDirection(direction);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            _clicked.OnNext(_position);
+            _clicked.OnNext(Unit.Default);
         }
 
         public void SetActive(bool value)
@@ -60,6 +51,7 @@ namespace LightConnect.Constructor
             if (type == ElementTypes.NONE)
             {
                 _element.SetActive(false);
+                SetColor(Colors.NONE);
             }
             else
             {
@@ -88,33 +80,15 @@ namespace LightConnect.Constructor
             switch (color)
             {
                 case Colors.NONE: _elementImage.color = Color.white; break;
-                case Colors.RED: _elementImage.color = Color.red + Color.gray; break;
+                case Colors.RED: _elementImage.color = Color.red; break;
                 case Colors.GREEN: _elementImage.color = Color.green; break;
-                case Colors.BLUE: _elementImage.color = Color.blue + Color.gray; break;
+                case Colors.BLUE: _elementImage.color = Color.blue; break;
             }
         }
 
-        public void Rotate(Sides direction)
+        public void SetRotation(Sides side)
         {
-            switch (direction)
-            {
-                case Sides.RIGHT: _direction.RotateRight(); break;
-                case Sides.LEFT: _direction.RotateLeft(); break;
-            }
-
-            OnDirectionChanged();
-        }
-
-        private void SetDirection(Sides direction)
-        {
-            _direction = new Direction(direction);
-
-            OnDirectionChanged();
-        }
-
-        private void OnDirectionChanged()
-        {
-            float angle = -(int)_direction.Side * 90f;
+            float angle = -(int)side * 90f;
             var rotation = Quaternion.Euler(0, 0, angle);
             _wire.transform.rotation = rotation;
         }

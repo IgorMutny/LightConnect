@@ -1,22 +1,26 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace LightConnect.Model
 {
     public class PowerEvaluator
     {
-        private Tile[,] _tiles;
+        private Level _level;
         private List<Tile> _batteryTiles = new();
         private List<Tile> _lampTiles = new();
         private List<Tile> _handledTiles = new();
         private List<Tile> _tilesToHandle = new();
-        private Vector2Int _currentSize;
 
-        public PowerEvaluator(Tile[,] tiles)
+        public PowerEvaluator(Level level)
         {
-            _tiles = tiles;
+            _level = level;
+        }
 
-            foreach (var tile in _tiles)
+        public void UpdateElements()
+        {
+            _batteryTiles.Clear();
+            _lampTiles.Clear();
+
+            foreach (var tile in _level.Tiles())
             {
                 if (tile.ElementType == ElementTypes.BATTERY)
                     _batteryTiles.Add(tile);
@@ -38,16 +42,13 @@ namespace LightConnect.Model
             return true;
         }
 
-        public void Execute(Vector2Int currentSize)
+        public void Execute()
         {
-            _currentSize = currentSize;
-
-            foreach (var tile in _tiles)
+            foreach (var tile in _level.Tiles())
                 tile.ResetPower();
 
             foreach (var batteryTile in _batteryTiles)
-                if (Level.ContainsTileInCurrentSize(batteryTile, _currentSize))
-                    HandleBatteryTile(batteryTile);
+                HandleBatteryTile(batteryTile);
         }
 
         private void HandleBatteryTile(Tile batteryTile)
@@ -104,16 +105,16 @@ namespace LightConnect.Model
             var position = origin.Position;
 
             if (position.x > 0)
-                adjacentTiles.Add(_tiles[position.x - 1, position.y]);
+                adjacentTiles.Add(_level.GetTile(position.x - 1, position.y));
 
-            if (position.x < _currentSize.x - 1)
-                adjacentTiles.Add(_tiles[position.x + 1, position.y]);
+            if (position.x < _level.CurrentSize.x - 1)
+                adjacentTiles.Add(_level.GetTile(position.x + 1, position.y));
 
             if (position.y > 0)
-                adjacentTiles.Add(_tiles[position.x, position.y - 1]);
+                adjacentTiles.Add(_level.GetTile(position.x, position.y - 1));
 
-            if (position.y < _currentSize.y - 1)
-                adjacentTiles.Add(_tiles[position.x, position.y + 1]);
+            if (position.y < _level.CurrentSize.y - 1)
+                adjacentTiles.Add(_level.GetTile(position.x, position.y + 1));
 
             return adjacentTiles;
         }
