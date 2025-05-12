@@ -16,9 +16,9 @@ namespace LightConnect.Core
             _model = model;
             _view = view;
 
-            _view.Clicked.Subscribe(_ => _model.RotateRight());
+            /* _view.Clicked.Subscribe(_ => _model.RotateRight());
             _model.Orientation.Subscribe(value => _view.RotateTo(CalculateRotation(value))).AddTo(_disposables);
-            _model.Powered.Subscribe(SetColors).AddTo(_disposables);
+            _model.Powered.Subscribe(SetColors).AddTo(_disposables); */
         }
 
         public void Dispose()
@@ -36,7 +36,7 @@ namespace LightConnect.Core
             Color wireColor;
             Color elementColor;
 
-            switch (_model.WireColor)
+            /* switch (_model.WireColor)
             {
                 case Colors.RED: wireColor = Color.red; break;
                 case Colors.GREEN: wireColor = Color.green; break;
@@ -55,7 +55,7 @@ namespace LightConnect.Core
                 default: elementColor = Color.white; break;
             }
 
-            _view.SetColors(wireColor, elementColor);
+            _view.SetColors(wireColor, elementColor); */
         }
     }
 }

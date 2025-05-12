@@ -22,10 +22,10 @@ namespace LightConnect.Model
 
             foreach (var tile in _level.Tiles())
             {
-                if (tile.ElementType == ElementTypes.BATTERY)
+                if (tile.ElementType.CurrentValue == ElementTypes.BATTERY)
                     _batteryTiles.Add(tile);
 
-                if (tile.ElementType == ElementTypes.LAMP)
+                if (tile.ElementType.CurrentValue == ElementTypes.LAMP)
                     _lampTiles.Add(tile);
             }
         }
@@ -53,7 +53,7 @@ namespace LightConnect.Model
 
         private void HandleBatteryTile(Tile batteryTile)
         {
-            HandleTile(batteryTile, batteryTile.ElementColor);
+            HandleTile(batteryTile, batteryTile.ElementColor.CurrentValue);
 
             _handledTiles.Clear();
             _tilesToHandle.Clear();
@@ -70,7 +70,7 @@ namespace LightConnect.Model
             {
                 if (!_handledTiles.Contains(connectedTile))
                 {
-                    connectedTile.AddPower(color);
+                    connectedTile.AddColor(color);
 
                     if (connectedTile.Powered.CurrentValue)
                         _tilesToHandle.Add(connectedTile);
@@ -107,13 +107,13 @@ namespace LightConnect.Model
             if (position.x > 0)
                 adjacentTiles.Add(_level.GetTile(position.x - 1, position.y));
 
-            if (position.x < _level.CurrentSize.x - 1)
+            if (position.x < _level.CurrentSize.CurrentValue.x - 1)
                 adjacentTiles.Add(_level.GetTile(position.x + 1, position.y));
 
             if (position.y > 0)
                 adjacentTiles.Add(_level.GetTile(position.x, position.y - 1));
 
-            if (position.y < _level.CurrentSize.y - 1)
+            if (position.y < _level.CurrentSize.CurrentValue.y - 1)
                 adjacentTiles.Add(_level.GetTile(position.x, position.y + 1));
 
             return adjacentTiles;

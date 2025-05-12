@@ -23,7 +23,7 @@ namespace LightConnect.Constructor
             _saveLoader = new SaveLoader();
 
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
-            _level = new Level(size);
+           /*  _level = new Level(size); */
 
             _levelPresenter = new LevelPresenter(_level, _levelView);
 
@@ -51,7 +51,7 @@ namespace LightConnect.Constructor
 
             var levelData = _saveLoader.Load(levelNumber);
             var size = new Vector2Int(levelData.SizeX, levelData.SizeY);
-            _level = new Level(size);
+           /*  _level = new Level(size); */
             _level.SetData(levelData);
 
             _levelPresenter = new LevelPresenter(_level, _levelView);
@@ -70,7 +70,7 @@ namespace LightConnect.Constructor
             Clear();
 
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
-            _level = new Level(size);
+            /* _level = new Level(size); */
 
             _levelPresenter = new LevelPresenter(_level, _levelView);
 
@@ -87,6 +87,7 @@ namespace LightConnect.Constructor
             _levelView.Clear();
             _levelPresenter.Dispose();
             _levelPresenter = null;
+            _level.Dispose();
             _level = null;
         }
     }

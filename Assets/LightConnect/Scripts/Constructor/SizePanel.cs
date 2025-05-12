@@ -11,8 +11,8 @@ namespace LightConnect.Constructor
 
         protected override void Subscribe()
         {
-            _width.value = LevelPresenter.CurrentSize.x;
-            _height.value = LevelPresenter.CurrentSize.y;
+            /* _width.value = LevelPresenter.CurrentSize.x;
+            _height.value = LevelPresenter.CurrentSize.y; */
 
             _width.onValueChanged.AddListener(OnWidthChanged);
             _height.onValueChanged.AddListener(OnHeightChanged);

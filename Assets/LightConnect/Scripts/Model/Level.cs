@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using LightConnect.Meta;
+using R3;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -8,22 +9,26 @@ namespace LightConnect.Model
     {
         public const int MAX_SIZE = 16;
 
+        private CompositeDisposable _disposables = new();
         private Tile[,] _tiles = new Tile[MAX_SIZE, MAX_SIZE];
+        private ReactiveProperty<Vector2Int> _currentSize = new();
         private PowerEvaluator _powerEvaluator;
-        private Vector2Int _currentSize;
 
-        public Level(Vector2Int size)
+        public Level()
         {
-            _currentSize = size;
-
             for (int x = 0; x < MAX_SIZE; x++)
                 for (int y = 0; y < MAX_SIZE; y++)
-                    _tiles[x, y] = new Tile(new Vector2Int(x, y));
+                    CreateTile(x, y);
 
             _powerEvaluator = new PowerEvaluator(this);
         }
 
-        public Vector2Int CurrentSize => _currentSize;
+        public ReadOnlyReactiveProperty<Vector2Int> CurrentSize => _currentSize;
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+        }
 
         public IEnumerable<Tile> Tiles()
         {
@@ -51,12 +56,12 @@ namespace LightConnect.Model
         public LevelData GetData()
         {
             var data = new LevelData();
-            data.SizeX = _currentSize.x;
-            data.SizeY = _currentSize.y;
+            data.SizeX = _currentSize.Value.x;
+            data.SizeY = _currentSize.Value.y;
 
             var filledTiles = new List<TileData>();
             foreach (var tile in _tiles)
-                if (tile.ElementType != ElementTypes.NONE || tile.WireType != WireTypes.NONE)
+                if (tile.ElementType.CurrentValue != ElementTypes.NONE || tile.WireType.CurrentValue != WireTypes.NONE)
                     filledTiles.Add(tile.GetData());
 
             data.Tiles = filledTiles.ToArray();
@@ -67,11 +72,7 @@ namespace LightConnect.Model
         public void SetData(LevelData data)
         {
             foreach (var tileData in data.Tiles)
-            {
-                var position = new Vector2Int(tileData.PositionX, tileData.PositionY);
-                SetWire(position, (WireTypes)tileData.WireType, (Sides)tileData.Orientation);
-                SetElement(position, (ElementTypes)tileData.ElementType, (Colors)tileData.Color);
-            }
+                _tiles[tileData.PositionX, tileData.PositionY].SetData(tileData);
         }
 
         public void SetCurrentSize(Vector2Int size)
@@ -79,71 +80,32 @@ namespace LightConnect.Model
             if (size.x > MAX_SIZE || size.y > MAX_SIZE)
                 throw new System.Exception("New size is too big");
 
-            _currentSize = size;
+            _currentSize.Value = size;
             Evaluate();
         }
 
-        public void SetWire(Vector2Int position, Wire wire)
+        private void Evaluate()
         {
-            _tiles[position.x, position.y].SetWire(wire);
-            Evaluate();
-        }
+            if (_powerEvaluator == null)
+                return;
 
-        public void SetWire(Vector2Int position, WireTypes wireType, Sides orientationSide)
-        {
-            var orientation = new Direction(orientationSide);
-            var wire = new Wire(wireType, orientation);
-            SetWire(position, wire);
-        }
-
-        public void SetElement(Vector2Int position, Element element)
-        {
-            _tiles[position.x, position.y].SetElement(element);
-            Evaluate();
-        }
-
-        public void SetElement(Vector2Int position, ElementTypes type)
-        {
-            Colors color = _tiles[position.x, position.y].ElementColor;
-            SetElement(position, type, color);
-        }
-
-        public void SetElement(Vector2Int position, ElementTypes type, Colors color)
-        {
-            Element element;
-
-            switch (type)
-            {
-                case ElementTypes.BATTERY: element = new Battery(color); break;
-                case ElementTypes.LAMP: element = new Lamp(color); break;
-                default: element = null; break;
-            }
-
-            SetElement(position, element);
-        }
-
-        public void RotateRight(int x, int y)
-        {
-            _tiles[x, y].RotateRight();
-            Evaluate();
-        }
-
-        public void RotateLeft(int x, int y)
-        {
-            _tiles[x, y].RotateLeft();
-            Evaluate();
-        }
-
-        private bool Evaluate()
-        {
             _powerEvaluator.UpdateElements();
             _powerEvaluator.Execute();
-            return _powerEvaluator.AllLampsArePowered();
+            //_powerEvaluator.AllLampsArePowered();
         }
 
         private bool ContainsTileInCurrentSize(Tile tile)
         {
-            return tile.Position.x < _currentSize.x && tile.Position.y < _currentSize.y;
+            return tile.Position.x < _currentSize.Value.x && tile.Position.y < _currentSize.Value.y;
+        }
+
+        private void CreateTile(int x, int y)
+        {
+            _tiles[x, y] = new Tile(new Vector2Int(x, y));
+            _tiles[x, y].WireType.Subscribe(_ => Evaluate()).AddTo(_disposables);
+            _tiles[x, y].Orientation.Subscribe(_ => Evaluate()).AddTo(_disposables);
+            _tiles[x, y].ElementType.Subscribe(_ => Evaluate()).AddTo(_disposables);
+            _tiles[x, y].ElementColor.Subscribe(_ => Evaluate()).AddTo(_disposables);
         }
     }
 }

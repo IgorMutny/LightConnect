@@ -1,38 +1,52 @@
+using System;
+
 namespace LightConnect.Model
 {
-    public class Direction
+    public struct Direction : IEquatable<Direction>
     {
-        public const int SIDES_COUNT = 4;
-
-        private Sides _side;
+        private const int SIDES_COUNT = 4;
 
         public Direction(Sides initialDirection)
         {
-            _side = initialDirection;
+            Side = initialDirection;
         }
 
-        public Sides Side => _side;
+        public Sides Side { get; private set; }
 
-        public void RotateRight()
+        public static Direction operator +(Direction a, Direction b)
         {
-            _side = Add(_side, Sides.RIGHT);
+            return a + b.Side;
         }
 
-        public void RotateLeft()
+        public static Direction operator +(Direction a, Sides b)
         {
-            _side = Add(_side, Sides.LEFT);
+            int newSide = ((int)a.Side + (int)b) % SIDES_COUNT;
+            return new Direction((Sides)newSide);
         }
 
-        public static Sides Add(Sides side1, Sides side2)
+        public static bool operator ==(Direction a, Sides b) => a.Side == b;
+        public static bool operator !=(Direction a, Sides b) => a.Side != b;
+        public static bool operator ==(Direction a, Direction b) => a.Side == b.Side;
+        public static bool operator !=(Direction a, Direction b) => a.Side != b.Side;
+
+        public bool Equals(Direction other)
         {
-            int a = (int)side1;
-            int b = (int)side2;
+            return Side == other.Side;
+        }
 
-            int newSide = a + b;
-            if (newSide >= SIDES_COUNT)
-                newSide -= SIDES_COUNT;
+        public bool Equals(Sides side)
+        {
+            return Side == side;
+        }
 
-            return (Sides)newSide;
+        public override bool Equals(object obj)
+        {
+            return obj is Direction dir && Equals(dir);
+        }
+
+        public override int GetHashCode()
+        {
+            return Side.GetHashCode();
         }
     }
 }

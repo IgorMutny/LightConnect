@@ -21,7 +21,7 @@ namespace LightConnect.Constructor
 
             _view.Initialize();
 
-            foreach (var tile in _model.AllExistingTiles())
+            /* foreach (var tile in _model.AllExistingTiles())
             {
                 var tileView = _view.AddTile(tile.Position);
                 var tilePresenter = new TilePresenter(tile, tileView);
@@ -30,7 +30,7 @@ namespace LightConnect.Constructor
 
                 tilePresenter.SetElement(tile.ElementType);
                 if (tile.ElementType != ElementTypes.NONE)
-                    tilePresenter.SetColor(tile.ElementColor);
+                    tilePresenter.ResetColors();
 
                 tilePresenter.SetWire(tile.WireType);
                 if (tile.WireType != WireTypes.NONE)
@@ -39,10 +39,10 @@ namespace LightConnect.Constructor
                 _tiles.Add(tilePresenter);
             }
 
-            OnCurrentSizeChanged(_model.CurrentSize);
+            OnCurrentSizeChanged(_model.CurrentSize); */
         }
 
-        public Vector2Int CurrentSize => _model.CurrentSize;
+        /* public Vector2Int CurrentSize => _model.CurrentSize; */
 
         public void Dispose()
         {
@@ -70,18 +70,18 @@ namespace LightConnect.Constructor
 
         public void ChangeWidth(int value)
         {
-            int y = _model.CurrentSize.y;
+            /* int y = _model.CurrentSize.y;
             var newSize = new Vector2Int(value, y);
             _model.SetCurrentSize(newSize);
-            OnCurrentSizeChanged(newSize);
+            OnCurrentSizeChanged(newSize); */
         }
 
         public void ChangeHeight(int value)
         {
-            int x = _model.CurrentSize.x;
+            /* int x = _model.CurrentSize.x;
             var newSize = new Vector2Int(x, value);
             _model.SetCurrentSize(newSize);
-            OnCurrentSizeChanged(newSize);
+            OnCurrentSizeChanged(newSize); */
         }
 
         public void SetElement(ElementTypes type)
@@ -89,7 +89,7 @@ namespace LightConnect.Constructor
             if (_selectedTile == null)
                 return;
 
-            _model.SetElement(_selectedTile.Position, type);
+            /* _model.SetElement(_selectedTile.Position, type); */
             _selectedTile.SetElement(type);
         }
 
@@ -98,7 +98,7 @@ namespace LightConnect.Constructor
             if (_selectedTile == null)
                 return;
 
-            _model.SetWire(_selectedTile.Position, type, Sides.UP);
+            /* _model.SetWire(_selectedTile.Position, type, Sides.UP); */
             _selectedTile.SetWire(type);
         }
 
@@ -109,12 +109,12 @@ namespace LightConnect.Constructor
 
             var tile = _model.GetTile(_selectedTile.Position);
 
-            if (tile.ElementType != ElementTypes.NONE)
+            /* if (tile.ElementType != ElementTypes.NONE)
             {
                 var elementType = tile.ElementType;
                 _model.SetElement(_selectedTile.Position, elementType, color);
-                _selectedTile.SetColor(color);
-            }
+                _selectedTile.ResetColors();
+            } */
         }
 
         public void Rotate(Sides side)
@@ -124,13 +124,13 @@ namespace LightConnect.Constructor
 
             var tile = _model.GetTile(_selectedTile.Position);
 
-            if (tile.WireType != WireTypes.NONE)
+            /* if (tile.WireType != WireTypes.NONE)
             {
                 var newOrientationSide = Direction.Add(tile.Orientation.CurrentValue, side);
                 var wireType = tile.WireType;
                 _model.SetWire(_selectedTile.Position, wireType, newOrientationSide);
                 _selectedTile.SetRotation(newOrientationSide);
-            }
+            } */
         }
 
         private void OnCurrentSizeChanged(Vector2Int newSize)

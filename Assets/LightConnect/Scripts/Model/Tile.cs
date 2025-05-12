@@ -1,5 +1,6 @@
 using LightConnect.Meta;
 using R3;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -8,24 +9,22 @@ namespace LightConnect.Model
     {
         public readonly Vector2Int Position;
 
-        private ReactiveProperty<Sides> _orientation = new();
         private ReactiveProperty<bool> _powered = new();
-        private Wire _wire;
-        private Element _element;
+        private Wire _wire = new();
+        private Element _element = new();
 
         public Tile(Vector2Int position)
         {
             Position = position;
-            _orientation.Value = Sides.UP;
             _powered.Value = false;
         }
 
-        public ReadOnlyReactiveProperty<Sides> Orientation => _orientation;
+        public ReadOnlyReactiveProperty<Direction> Orientation => _wire.Orientation;
         public ReadOnlyReactiveProperty<bool> Powered => _powered;
-        public Colors WireColor => _wire != null ? _wire.CurrentColor : Colors.NONE;
-        public Colors ElementColor => _element != null ? _element.Color : Colors.NONE;
-        public WireTypes WireType => _wire != null ? _wire.Type : WireTypes.NONE;
-        public ElementTypes ElementType => _element != null ? _element.Type : ElementTypes.NONE;
+        public ReadOnlyReactiveProperty<WireTypes> WireType => _wire.Type;
+        public ReadOnlyReactiveProperty<ElementTypes> ElementType => _element.Type;
+        public ReadOnlyReactiveProperty<Colors> WireColor => _wire.Color;
+        public ReadOnlyReactiveProperty<Colors> ElementColor => _element.Color;
 
         public TileData GetData()
         {
@@ -33,71 +32,76 @@ namespace LightConnect.Model
 
             data.PositionX = Position.x;
             data.PositionY = Position.y;
-            data.WireType = (int)WireType;
-            data.Orientation = (int)_orientation.Value;
-            data.ElementType = (int)ElementType;
-            data.Color = (int)ElementColor;
+            data.WireType = (int)WireType.CurrentValue;
+            data.Orientation = (int)Orientation.CurrentValue.Side;
+            data.ElementType = (int)ElementType.CurrentValue;
+            data.Color = (int)ElementColor.CurrentValue;
 
             return data;
         }
 
-        public void SetWire(Wire wire)
+        public void SetData(TileData data)
         {
-            _wire = wire;
-
-            if (_wire != null)
-                _orientation.Value = _wire.Orientation;
-            else
-                _orientation.Value = Sides.UP;
+            SetWireType((WireTypes)data.WireType);
+            SetOrientation((Sides)data.Orientation);
+            SetElementType((ElementTypes)data.ElementType);
+            SetColor((Colors)data.Color);
         }
 
-        public void SetElement(Element element)
+        public void SetWireType(WireTypes type)
         {
-            _element = element;
+            _wire.SetType(type);
+        }
+
+        public void SetOrientation(Sides side)
+        {
+            _wire.SetOrientation(side);
+        }
+
+        public void SetElementType(ElementTypes type)
+        {
+            _element.SetType(type);
+        }
+
+        public void SetColor(Colors color)
+        {
+            _element.SetColor(color);
         }
 
         public void RotateRight()
         {
-            if (_wire == null)
-                return;
-
-            _wire.RotateRight();
-            _orientation.Value = _wire.Orientation;
+            _wire.Rotate(Sides.RIGHT);
         }
 
         public void RotateLeft()
         {
-            if (_wire == null)
-                return;
-
-            _wire.RotateLeft();
-            _orientation.Value = _wire.Orientation;
+            _wire.Rotate(Sides.LEFT);
         }
 
         public bool HasConnectorInDirection(Sides direction)
         {
-            return _wire != null ? _wire.HasConnectorInDirection(direction) : false;
+            return _wire.HasConnectorInDirection(direction);
         }
 
-        public void AddPower(Colors color)
+        public void AddColor(Colors color)
         {
-            if (_element is Battery)
+            if (ElementType.CurrentValue == ElementTypes.BATTERY || WireType.CurrentValue == WireTypes.NONE)
                 return;
 
-            _wire?.AddPower(color);
+            _wire.AddColor(color);
 
             if (_element == null)
-                _powered.Value = _wire.CurrentColor != Colors.NONE;
+                _powered.Value = WireColor.CurrentValue != Colors.NONE;
             else
-                _powered.Value = _wire.CurrentColor != Colors.NONE && _wire.CurrentColor == _element.Color;
+                _powered.Value = WireColor.CurrentValue != Colors.NONE && WireColor.CurrentValue != ElementColor.CurrentValue;
         }
 
         public void ResetPower()
         {
-            if (_element is Battery)
+            if (ElementType.CurrentValue == ElementTypes.BATTERY)
                 return;
 
-            _wire?.ResetPower();
+            _wire.ResetColors();
             _powered.Value = false;
         }
     }

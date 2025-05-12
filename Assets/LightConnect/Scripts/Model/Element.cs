@@ -1,14 +1,29 @@
+using R3;
+
 namespace LightConnect.Model
 {
-    public abstract class Element
+    public class Element
     {
-        public readonly Colors Color;
+        private ReactiveProperty<ElementTypes> _type = new();
+        private ReactiveProperty<Colors> _color = new();
 
-        public Element(Colors color)
+        public Element()
         {
-            Color = color;
+            _type.Value = ElementTypes.NONE;
+            _color.Value = Colors.NONE;
         }
 
-        public abstract ElementTypes Type { get; }
+        public ReadOnlyReactiveProperty<ElementTypes> Type => _type;
+        public ReadOnlyReactiveProperty<Colors> Color => _color;
+
+        public void SetType(ElementTypes type)
+        {
+            _type.Value = type;
+        }
+
+        public void SetColor(Colors color)
+        {
+            _color.Value = color;
+        }
     }
 }

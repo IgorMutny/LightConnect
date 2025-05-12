@@ -51,7 +51,6 @@ namespace LightConnect.Constructor
             if (type == ElementTypes.NONE)
             {
                 _element.SetActive(false);
-                SetColor(Colors.NONE);
             }
             else
             {
@@ -75,15 +74,10 @@ namespace LightConnect.Constructor
             }
         }
 
-        public void SetColor(Colors color)
+        public void SetColors(Color wireColor, Color elementColor)
         {
-            switch (color)
-            {
-                case Colors.NONE: _elementImage.color = Color.white; break;
-                case Colors.RED: _elementImage.color = Color.red; break;
-                case Colors.GREEN: _elementImage.color = Color.green; break;
-                case Colors.BLUE: _elementImage.color = Color.blue; break;
-            }
+            _wireImage.color = wireColor;
+            _elementImage.color = elementColor;
         }
 
         public void SetRotation(Sides side)

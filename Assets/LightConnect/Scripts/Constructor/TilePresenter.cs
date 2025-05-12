@@ -19,6 +19,8 @@ namespace LightConnect.Constructor
 
             _view.Initialize();
             _view.Clicked.Subscribe(_ => _clicked.OnNext(_model.Position)).AddTo(_disposables);
+
+            _model.Powered.Subscribe(SetColors).AddTo(_disposables);
         }
 
         public Vector2Int Position => _model.Position;
@@ -41,21 +43,50 @@ namespace LightConnect.Constructor
         public void SetElement(ElementTypes type)
         {
             _view.SetElement(type);
+            SetColors(_model.Powered.CurrentValue);
         }
 
         public void SetWire(WireTypes type)
         {
             _view.SetWire(type);
-        }
-
-        public void SetColor(Colors color)
-        {
-            _view.SetColor(color);
+            SetColors(_model.Powered.CurrentValue);
         }
 
         public void SetRotation(Sides side)
         {
             _view.SetRotation(side);
+        }
+
+        public void ResetColors()
+        {
+            SetColors(_model.Powered.CurrentValue);
+        }
+
+        public void SetColors(bool powered)
+        {
+            Color wireColor;
+            Color elementColor;
+
+            /* switch (_model.WireColor)
+            {
+                case Colors.RED: wireColor = Color.red; break;
+                case Colors.GREEN: wireColor = Color.green; break;
+                case Colors.BLUE: wireColor = Color.blue; break;
+                default: wireColor = Color.white; break;
+            }
+
+            switch (_model.ElementColor, powered)
+            {
+                case (Colors.RED, true): elementColor = Color.red; break;
+                case (Colors.RED, false): elementColor = new Color(0.5f, 0f, 0f); break;
+                case (Colors.GREEN, true): elementColor = Color.green; break;
+                case (Colors.GREEN, false): elementColor = new Color(0f, 0.5f, 0f); break;
+                case (Colors.BLUE, true): elementColor = Color.blue; break;
+                case (Colors.BLUE, false): elementColor = new Color(0f, 0f, 0.5f); break;
+                default: elementColor = Color.white; break;
+            } */
+
+            /* _view.SetColors(wireColor, elementColor); */
         }
     }
 }
