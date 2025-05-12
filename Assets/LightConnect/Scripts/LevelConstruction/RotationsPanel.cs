@@ -1,9 +1,8 @@
-using System;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class RotationsPanel : Panel
     {
@@ -24,12 +23,12 @@ namespace LightConnect.Constructor
 
         private void RotateRight()
         {
-            LevelPresenter.Rotate(Sides.RIGHT);
+            Constructor.Rotate(Sides.RIGHT);
         }
 
         private void RotateLeft()
         {
-            LevelPresenter.Rotate(Sides.LEFT);
+            Constructor.Rotate(Sides.LEFT);
         }
 
 

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class LevelView : MonoBehaviour
     {
@@ -35,7 +35,8 @@ namespace LightConnect.Constructor
         public void Clear()
         {
             foreach (var tile in _tiles)
-                Destroy(tile.gameObject);
+                if (tile != null && tile.gameObject != null)
+                    Destroy(tile.gameObject);
 
             _tiles.Clear();
         }

@@ -1,6 +1,4 @@
-using LightConnect.Meta;
 using R3;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -8,6 +6,8 @@ namespace LightConnect.Model
     public class Tile
     {
         public readonly Vector2Int Position;
+        public ReactiveProperty<bool> IsActive = new();
+        public ReactiveProperty<bool> IsSelected = new();
 
         private ReactiveProperty<bool> _powered = new();
         private Wire _wire = new();
@@ -68,14 +68,9 @@ namespace LightConnect.Model
             _element.SetColor(color);
         }
 
-        public void RotateRight()
+        public void Rotate(Sides side)
         {
-            _wire.Rotate(Sides.RIGHT);
-        }
-
-        public void RotateLeft()
-        {
-            _wire.Rotate(Sides.LEFT);
+            _wire.Rotate(side);
         }
 
         public bool HasConnectorInDirection(Sides direction)
@@ -85,15 +80,18 @@ namespace LightConnect.Model
 
         public void AddColor(Colors color)
         {
-            if (ElementType.CurrentValue == ElementTypes.BATTERY || WireType.CurrentValue == WireTypes.NONE)
+            if (WireType.CurrentValue == WireTypes.NONE)
                 return;
 
-            _wire.AddColor(color);
+            if (ElementType.CurrentValue == ElementTypes.BATTERY)
+                _wire.AddColor(ElementColor.CurrentValue);
+            else
+                _wire.AddColor(color);
 
-            if (_element == null)
+            if (ElementType.CurrentValue == ElementTypes.NONE)
                 _powered.Value = WireColor.CurrentValue != Colors.NONE;
             else
-                _powered.Value = WireColor.CurrentValue != Colors.NONE && WireColor.CurrentValue != ElementColor.CurrentValue;
+                _powered.Value = WireColor.CurrentValue != Colors.NONE && WireColor.CurrentValue == ElementColor.CurrentValue;
         }
 
         public void ResetPower()

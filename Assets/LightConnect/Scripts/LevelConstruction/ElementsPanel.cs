@@ -3,7 +3,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class ElementsPanel : Panel
     {
@@ -27,7 +27,7 @@ namespace LightConnect.Constructor
 
         private void SelectElement(ElementTypes type)
         {
-            LevelPresenter.SetElement(type);
+            Constructor.SetElement(type);
         }
 
         private void SelectBattery()

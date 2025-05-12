@@ -1,10 +1,8 @@
-using LightConnect.Core;
 using LightConnect.Model;
-using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class WiresPanel : Panel
     {
@@ -34,7 +32,7 @@ namespace LightConnect.Constructor
 
         private void SelectWire(WireTypes type)
         {
-            LevelPresenter.SetWire(type);
+            Constructor.SetWire(type);
         }
 
         private void SelectSingle()

@@ -2,13 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class MainPanel : Panel
     {
         private const string NOT_NUMBER_MESSAGE = "Not number!";
 
-        [SerializeField] private EntryPoint _entryPoint;
         [SerializeField] private Button _new;
         [SerializeField] private Button _load;
         [SerializeField] private Button _save;
@@ -50,17 +49,17 @@ namespace LightConnect.Constructor
 
         private void Save()
         {
-            _entryPoint.Save(_levelNumber);
+            Constructor.Save(_levelNumber);
         }
 
         private void Load()
         {
-            _entryPoint.Load(_levelNumber);
+            Constructor.Load(_levelNumber);
         }
 
         private void New()
         {
-            _entryPoint.New();
+            Constructor.CreateNewLevel();
         }
     }
 }

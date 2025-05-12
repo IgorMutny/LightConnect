@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class SliderDescription : MonoBehaviour
     {

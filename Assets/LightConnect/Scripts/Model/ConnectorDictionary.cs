@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace LightConnect.Model
 {
-    public static class ConnectorHelper
+    public static class ConnectorDictionary
     {
         public static List<Direction> ConnectorsOfWire(WireTypes wireType)
         {

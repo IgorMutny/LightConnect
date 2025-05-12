@@ -4,7 +4,7 @@ using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class ColorsPanel : Panel
     {
@@ -28,7 +28,7 @@ namespace LightConnect.Constructor
 
         private void SelectColor(Colors color)
         {
-            LevelPresenter.SetColor(color);
+            Constructor.SetTileColor(color);
         }
 
         private void SelectGreen()

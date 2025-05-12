@@ -25,13 +25,14 @@ namespace LightConnect.Model
 
         public void SetType(WireTypes type)
         {
-            _type.Value = type;
-            _connectors = ConnectorHelper.ConnectorsOfWire(type);
+            _orientation.Value = new Direction(Sides.UP);
+            _connectors = ConnectorDictionary.ConnectorsOfWire(type);
 
             for (int i = 0; i < _connectors.Count; i++)
                 _connectors[i] += _orientation.Value;
 
             _color.Value = Colors.NONE;
+            _type.Value = type;
         }
 
         public void SetOrientation(Sides side)
@@ -54,10 +55,11 @@ namespace LightConnect.Model
 
         public void AddColor(Colors color)
         {
-            _appliedColors.Add(color);
+            if (!_appliedColors.Contains(color))
+                _appliedColors.Add(color);
 
-            if (_appliedColors.All(appliedColor => appliedColor == color))
-                _color.Value = _appliedColors[0];
+            if (_appliedColors.Count == 1)
+                _color.Value = _appliedColors.First();
             else
                 _color.Value = Colors.NONE;
         }

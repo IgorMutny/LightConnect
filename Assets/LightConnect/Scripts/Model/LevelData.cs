@@ -1,6 +1,6 @@
 using System;
 
-namespace LightConnect.Meta
+namespace LightConnect.Model
 {
     [Serializable]
     public class LevelData

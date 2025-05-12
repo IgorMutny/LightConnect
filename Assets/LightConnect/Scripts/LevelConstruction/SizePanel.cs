@@ -1,8 +1,7 @@
-using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Constructor
+namespace LightConnect.LevelConstruction
 {
     public class SizePanel : Panel
     {
@@ -11,8 +10,8 @@ namespace LightConnect.Constructor
 
         protected override void Subscribe()
         {
-            /* _width.value = LevelPresenter.CurrentSize.x;
-            _height.value = LevelPresenter.CurrentSize.y; */
+            _width.value = Constructor.CurrentSize.CurrentValue.x;
+            _height.value = Constructor.CurrentSize.CurrentValue.y;
 
             _width.onValueChanged.AddListener(OnWidthChanged);
             _height.onValueChanged.AddListener(OnHeightChanged);
@@ -26,12 +25,20 @@ namespace LightConnect.Constructor
 
         private void OnWidthChanged(float value)
         {
-            LevelPresenter.ChangeWidth((int)value);
+            ResizeLevel();
         }
 
         private void OnHeightChanged(float value)
         {
-            LevelPresenter.ChangeHeight((int)value);
+            ResizeLevel();
+        }
+
+        private void ResizeLevel()
+        {
+            int x = (int)_width.value;
+            int y = (int)_height.value;
+            var size = new Vector2Int(x,y);
+            Constructor.ResizeLevel(size);
         }
     }
 }

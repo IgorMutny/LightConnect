@@ -18,6 +18,7 @@ namespace LightConnect.Model
 
         public void SetType(ElementTypes type)
         {
+            _color.Value = Colors.NONE;
             _type.Value = type;
         }
 
