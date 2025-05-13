@@ -10,7 +10,7 @@ namespace LightConnect.Model
         private ReactiveProperty<Direction> _orientation = new();
         private ReactiveProperty<Colors> _color = new();
         private List<Direction> _connectors = new();
-        private List<Colors> _appliedColors = new();
+        private ColorList _addedColors = new();
 
         public Wire()
         {
@@ -55,19 +55,14 @@ namespace LightConnect.Model
 
         public void AddColor(Colors color)
         {
-            if (!_appliedColors.Contains(color))
-                _appliedColors.Add(color);
-
-            if (_appliedColors.Count == 1)
-                _color.Value = _appliedColors.First();
-            else
-                _color.Value = Colors.NONE;
+            _addedColors.Add(color);
+            _color.Value = _addedColors.GetCurrentColor();
         }
 
         public void ResetColors()
         {
-            _appliedColors.Clear();
-            _color.Value = Colors.NONE;
+            _addedColors.Clear();
+            _color.Value = _addedColors.GetCurrentColor();
         }
 
         public bool HasConnectorInDirection(Sides direction)

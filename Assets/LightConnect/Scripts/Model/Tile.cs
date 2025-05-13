@@ -51,21 +51,25 @@ namespace LightConnect.Model
         public void SetWireType(WireTypes type)
         {
             _wire.SetType(type);
+            OnContentChanged();
         }
 
         public void SetOrientation(Sides side)
         {
             _wire.SetOrientation(side);
+            OnContentChanged();
         }
 
         public void SetElementType(ElementTypes type)
         {
             _element.SetType(type);
+            OnContentChanged();
         }
 
         public void SetColor(Colors color)
         {
             _element.SetColor(color);
+            OnContentChanged();
         }
 
         public void Rotate(Sides side)
@@ -80,13 +84,10 @@ namespace LightConnect.Model
 
         public void AddColor(Colors color)
         {
-            if (WireType.CurrentValue == WireTypes.NONE)
+            if (WireType.CurrentValue == WireTypes.NONE || ElementType.CurrentValue == ElementTypes.BATTERY)
                 return;
 
-            if (ElementType.CurrentValue == ElementTypes.BATTERY)
-                _wire.AddColor(ElementColor.CurrentValue);
-            else
-                _wire.AddColor(color);
+            _wire.AddColor(color);
 
             if (ElementType.CurrentValue == ElementTypes.NONE)
                 _powered.Value = WireColor.CurrentValue != Colors.NONE;
@@ -101,6 +102,15 @@ namespace LightConnect.Model
 
             _wire.ResetColors();
             _powered.Value = false;
+        }
+
+        private void OnContentChanged()
+        {
+            if (ElementType.CurrentValue == ElementTypes.BATTERY)
+            {
+                _wire.AddColor(ElementColor.CurrentValue);
+                _powered.Value = true;
+            }
         }
     }
 }
