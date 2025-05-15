@@ -1,7 +1,7 @@
 using System;
 using LightConnect.Model;
-using R3;
 using UnityEngine;
+using Color = LightConnect.Model.Color;
 
 namespace LightConnect.LevelConstruction
 {
@@ -14,7 +14,7 @@ namespace LightConnect.LevelConstruction
         private LevelView _levelView;
         private LevelSaveLoader _levelSaveLoader;
 
-        public ReadOnlyReactiveProperty<Vector2Int> CurrentSize => _level.CurrentSize;
+        public Vector2Int CurrentSize => _level.CurrentSize;
 
         public Constructor(LevelView levelView)
         {
@@ -30,7 +30,7 @@ namespace LightConnect.LevelConstruction
 
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
             _level = new Level();
-            _disposable = _level.TileSelected.Subscribe(OnTileSelected);
+            _level.TileSelected += OnTileSelected;
             _level.SetSize(size);
             _levelPresenter = new LevelPresenter(_level, _levelView);
         }
@@ -46,7 +46,7 @@ namespace LightConnect.LevelConstruction
 
             var levelData = _levelSaveLoader.Load(levelNumber);
             _level = new Level();
-            _disposable = _level.TileSelected.Subscribe(OnTileSelected);
+            _level.TileSelected += OnTileSelected;
             _level.SetData(levelData);
             _levelPresenter = new LevelPresenter(_level, _levelView);
         }
@@ -58,6 +58,10 @@ namespace LightConnect.LevelConstruction
             _levelView?.Clear();
             _levelPresenter?.Dispose();
             _levelPresenter = null;
+
+            if (_level != null)
+                _level.TileSelected -= OnTileSelected;
+
             _level?.Dispose();
             _level = null;
         }
@@ -75,23 +79,23 @@ namespace LightConnect.LevelConstruction
             _selectedTile.SetElementType(type);
         }
 
-        public void SetWire(WireTypes type)
+        public void SetWire(WireSetTypes type)
         {
             if (_selectedTile == null)
                 return;
 
-            _selectedTile.SetWireType(type);
+            _selectedTile.SetWireSetType(type);
         }
 
-        public void SetTileColor(Colors color)
+        public void SetTileColor(Color color)
         {
             if (_selectedTile == null)
                 return;
 
-            _selectedTile.SetColor(color);
+            _selectedTile.SetElementColor(color);
         }
 
-        public void Rotate(Sides side)
+        public void Rotate(Direction side)
         {
             if (_selectedTile == null)
                 return;
@@ -99,12 +103,14 @@ namespace LightConnect.LevelConstruction
             _selectedTile.Rotate(side);
         }
 
+        [Obsolete]
         private void OnTileSelected(Tile tile)
         {
             if (_selectedTile != null)
-                _selectedTile.IsSelected.Value = false;
+                _selectedTile.IsSelected = false;
 
-            _selectedTile = tile;
+            if (tile.IsSelected)
+                _selectedTile = tile;
         }
     }
 }

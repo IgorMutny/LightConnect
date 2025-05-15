@@ -1,6 +1,6 @@
 namespace LightConnect.Model
 {
-    public enum WireTypes
+    public enum WireSetTypes
     {
         NONE = 0,
         SINGLE = 1,

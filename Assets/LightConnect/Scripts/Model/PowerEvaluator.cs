@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace LightConnect.Model
 {
@@ -22,10 +24,10 @@ namespace LightConnect.Model
 
             foreach (var tile in _level.Tiles())
             {
-                if (tile.ElementType.CurrentValue == ElementTypes.BATTERY)
+                if (tile.ElementType == ElementTypes.BATTERY)
                     _batteryTiles.Add(tile);
 
-                if (tile.ElementType.CurrentValue == ElementTypes.LAMP)
+                if (tile.ElementType == ElementTypes.LAMP)
                     _lampTiles.Add(tile);
             }
         }
@@ -36,7 +38,7 @@ namespace LightConnect.Model
                 return false;
 
             foreach (var lampTile in _lampTiles)
-                if (!lampTile.Powered.CurrentValue)
+                if (!lampTile.ElementPowered)
                     return false;
 
             return true;
@@ -45,7 +47,7 @@ namespace LightConnect.Model
         public void Execute()
         {
             foreach (var tile in _level.Tiles())
-                tile.ResetPower();
+                tile.ResetColors();
 
             foreach (var batteryTile in _batteryTiles)
                 HandleBatteryTile(batteryTile);
@@ -53,101 +55,70 @@ namespace LightConnect.Model
 
         private void HandleBatteryTile(Tile batteryTile)
         {
-            HandleTile(batteryTile, batteryTile.ElementColor.CurrentValue);
+            HandleTile(batteryTile, batteryTile.ElementColor);
 
             _handledTiles.Clear();
             _tilesToHandle.Clear();
         }
 
-        private void HandleTile(Tile origin, Colors color)
+        private void HandleTile(Tile origin, Color color)
         {
-            var connectedTiles = GetConnectedTiles(origin);
-
-            if (connectedTiles.Count == 0)
-                return;
-
-            foreach (var connectedTile in connectedTiles)
+            foreach ((var connectedTile, var direction) in GetConnectedTiles(origin))
             {
                 if (!_handledTiles.Contains(connectedTile))
                 {
-                    connectedTile.AddColor(color);
-
-                    if (connectedTile.Powered.CurrentValue)
-                        _tilesToHandle.Add(connectedTile);
+                    origin.HasWire(direction, out Color addedColor);
+                    connectedTile.AddColor(-direction, addedColor);
+                    _tilesToHandle.Add(connectedTile);
                 }
             }
 
             while (_tilesToHandle.Count > 0)
             {
-                var tile = _tilesToHandle[0];
+                var tile = _tilesToHandle.Last();
                 _handledTiles.Add(tile);
                 _tilesToHandle.Remove(tile);
                 HandleTile(tile, color);
             }
         }
 
-        private List<Tile> GetConnectedTiles(Tile origin)
+        private Dictionary<Tile, Direction> GetConnectedTiles(Tile origin)
         {
-            var result = new List<Tile>();
+            var result = new Dictionary<Tile, Direction>();
             var adjacentTiles = GetAdjacentTiles(origin);
 
-            foreach (var adjacentTile in adjacentTiles)
-                if (AreConnected(origin, adjacentTile))
-                    result.Add(adjacentTile);
+            foreach ((var adjacentTile, var direction) in adjacentTiles)
+                if (AreConnected(origin, adjacentTile, direction))
+                    result.Add(adjacentTile, direction);
 
             return result;
         }
 
-        private List<Tile> GetAdjacentTiles(Tile origin)
+        private Dictionary<Tile, Direction> GetAdjacentTiles(Tile origin)
         {
-            var adjacentTiles = new List<Tile>();
+            var result = new Dictionary<Tile, Direction>();
 
             var position = origin.Position;
 
-            if (position.x > 0)
-                adjacentTiles.Add(_level.GetTile(position.x - 1, position.y));
+            if (_level.TryGetTile(position + Vector2Int.up, out Tile upperTile))
+                result.Add(upperTile, Direction.Up);
 
-            if (position.x < _level.CurrentSize.CurrentValue.x - 1)
-                adjacentTiles.Add(_level.GetTile(position.x + 1, position.y));
+            if (_level.TryGetTile(position + Vector2Int.down, out Tile lowerTile))
+                result.Add(lowerTile, Direction.Down);
 
-            if (position.y > 0)
-                adjacentTiles.Add(_level.GetTile(position.x, position.y - 1));
+            if (_level.TryGetTile(position + Vector2Int.left, out Tile leftTile))
+                result.Add(leftTile, Direction.Left);
 
-            if (position.y < _level.CurrentSize.CurrentValue.y - 1)
-                adjacentTiles.Add(_level.GetTile(position.x, position.y + 1));
-
-            return adjacentTiles;
-        }
-
-        private bool AreConnected(Tile from, Tile to)
-        {
-            bool result = false;
-            var direction = GetDirection(from, to);
-
-            if (direction == Sides.UP && from.HasConnectorInDirection(Sides.UP) && to.HasConnectorInDirection(Sides.DOWN))
-                result = true;
-            else if (direction == Sides.DOWN && from.HasConnectorInDirection(Sides.DOWN) && to.HasConnectorInDirection(Sides.UP))
-                result = true;
-            else if (direction == Sides.RIGHT && from.HasConnectorInDirection(Sides.RIGHT) && to.HasConnectorInDirection(Sides.LEFT))
-                result = true;
-            else if (direction == Sides.LEFT && from.HasConnectorInDirection(Sides.LEFT) && to.HasConnectorInDirection(Sides.RIGHT))
-                result = true;
+            if (_level.TryGetTile(position + Vector2Int.right, out Tile rightTile))
+                result.Add(rightTile, Direction.Right);
 
             return result;
         }
 
-        private Sides GetDirection(Tile from, Tile to)
+        private bool AreConnected(Tile from, Tile to, Direction direction)
         {
-            if (from.Position.x == to.Position.x && from.Position.y == to.Position.y - 1)
-                return Sides.UP;
-            else if (from.Position.x == to.Position.x && from.Position.y == to.Position.y + 1)
-                return Sides.DOWN;
-            else if (from.Position.x == to.Position.x - 1 && from.Position.y == to.Position.y)
-                return Sides.RIGHT;
-            else if (from.Position.x == to.Position.x + 1 && from.Position.y == to.Position.y)
-                return Sides.LEFT;
-            else
-                throw new System.Exception($"Tiles {from.Position} & {to.Position} are not adjacent");
+            return from.HasWire(direction) && to.HasWire(-direction);
         }
     }
 }
+

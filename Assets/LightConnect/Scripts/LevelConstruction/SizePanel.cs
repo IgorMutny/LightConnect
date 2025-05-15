@@ -10,8 +10,8 @@ namespace LightConnect.LevelConstruction
 
         protected override void Subscribe()
         {
-            _width.value = Constructor.CurrentSize.CurrentValue.x;
-            _height.value = Constructor.CurrentSize.CurrentValue.y;
+            _width.value = Constructor.CurrentSize.x;
+            _height.value = Constructor.CurrentSize.y;
 
             _width.onValueChanged.AddListener(OnWidthChanged);
             _height.onValueChanged.AddListener(OnHeightChanged);

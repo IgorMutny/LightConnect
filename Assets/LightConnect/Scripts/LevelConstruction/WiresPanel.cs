@@ -30,34 +30,34 @@ namespace LightConnect.LevelConstruction
             _triple.onClick.RemoveListener(SelectTriple);
         }
 
-        private void SelectWire(WireTypes type)
+        private void SelectWire(WireSetTypes type)
         {
             Constructor.SetWire(type);
         }
 
         private void SelectSingle()
         {
-            SelectWire(WireTypes.SINGLE);
+            SelectWire(WireSetTypes.SINGLE);
         }
 
         private void SelectStraight()
         {
-            SelectWire(WireTypes.STRAIGHT);
+            SelectWire(WireSetTypes.STRAIGHT);
         }
 
         private void SelectBent()
         {
-            SelectWire(WireTypes.BENT);
+            SelectWire(WireSetTypes.BENT);
         }
 
         private void SelectTriple()
         {
-            SelectWire(WireTypes.TRIPLE);
+            SelectWire(WireSetTypes.TRIPLE);
         }
 
         private void SelectNone()
         {
-            SelectWire(WireTypes.NONE);
+            SelectWire(WireSetTypes.NONE);
         }
     }
 }

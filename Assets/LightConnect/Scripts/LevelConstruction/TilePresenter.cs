@@ -1,5 +1,8 @@
 using R3;
 using LightConnect.Model;
+using UnityEngine;
+using Color = LightConnect.Model.Color;
+using System;
 
 namespace LightConnect.LevelConstruction
 {
@@ -15,28 +18,36 @@ namespace LightConnect.LevelConstruction
             _view = view;
 
             _view.Initialize();
-            _view.Clicked.Subscribe(_ => _model.IsSelected.Value = true).AddTo(_disposables);
-            _model.IsActive.Subscribe(_view.SetActive).AddTo(_disposables);
-            _model.IsSelected.Subscribe(_view.SetSelected).AddTo(_disposables);
-            _model.WireType.Subscribe(_view.SetWire).AddTo(_disposables);
-            _model.Orientation.Subscribe(orientation => _view.SetRotation(orientation.Side)).AddTo(_disposables);
-            _model.ElementType.Subscribe(_view.SetElement).AddTo(_disposables);
-            _model.ElementColor.Subscribe(_ => ResetColors()).AddTo(_disposables);
-            _model.WireColor.Subscribe(_ => ResetColors()).AddTo(_disposables);
-            _model.Powered.Subscribe(_ => ResetColors()).AddTo(_disposables);
+            _view.Clicked.Subscribe(_ => _model.IsSelected = true).AddTo(_disposables);
+            _model.UpdatedInternal += Redraw;
+            _model.Selected += SetSelection;
+
+            Redraw();
         }
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            _model.UpdatedInternal -= Redraw;
+            _model.Selected -= SetSelection;
         }
 
-        private void ResetColors()
+        private void Redraw()
         {
-            _view.SetColors(
-                _model.WireColor.CurrentValue,
-                _model.ElementColor.CurrentValue,
-                _model.Powered.CurrentValue);
+            _view.SetActive(_model.IsActive);
+            _view.SetSelected(_model.IsSelected);
+            _view.SetElement(_model.ElementType);
+            _view.SetElementColor(_model.ElementColor, _model.ElementPowered);
+
+            for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
+            {
+                bool hasWire = _model.HasWire((Direction)i, out Color color);
+                _view.SetWire(hasWire, i, color);
+            }
+        }
+
+        private void SetSelection(Tile tile)
+        {
+            _view.SetSelected(_model.IsSelected);
         }
     }
 }

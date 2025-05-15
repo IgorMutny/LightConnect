@@ -11,20 +11,22 @@ namespace LightConnect.LevelConstruction
     {
         [SerializeField] private AllTilesSettings _allTilesSettings;
         [SerializeField] private GameObject _selection;
-        [SerializeField] private GameObject _wire;
+        [SerializeField] private GameObject[] _wires;
         [SerializeField] private GameObject _element;
 
         private Subject<Unit> _clicked = new();
         private Image _elementImage;
-        private Image _wireImage;
+        private Image[] _wireImages;
 
         public Observable<Unit> Clicked => _clicked;
         public bool IsActive { get; private set; }
 
         public void Initialize()
         {
-            _wireImage = _wire.GetComponent<Image>();
             _elementImage = _element.GetComponent<Image>();
+            _wireImages = new Image[_wires.Length];
+            for (int i = 0; i < _wires.Length; i++)
+                _wireImages[i] = _wires[i].GetComponent<Image>();
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -57,31 +59,22 @@ namespace LightConnect.LevelConstruction
             }
         }
 
-        public void SetWire(WireTypes type)
+        public void SetWire(bool hasWire, int direction, Model.Color color)
         {
-            if (type == WireTypes.NONE)
+            if (hasWire)
             {
-                _wire.SetActive(false);
+                _wires[direction].SetActive(true);
+                _wireImages[direction].color = ColorDictionary.GetColor(color, true);
             }
             else
             {
-                _wire.SetActive(true);
-                var sprite = _allTilesSettings.WireSettings(type).Sprite;
-                _wireImage.sprite = sprite;
+                _wires[direction].SetActive(false);
             }
         }
 
-        public void SetColors(Colors wireColor, Colors elementColor, bool powered)
+        public void SetElementColor(Model.Color elementColor, bool powered)
         {
-            _wireImage.color = ColorDictionary.ColorOfWire(wireColor);
-            _elementImage.color = ColorDictionary.ColorOfElement(elementColor, powered);
-        }
-
-        public void SetRotation(Sides side)
-        {
-            float angle = -(int)side * 90f;
-            var rotation = Quaternion.Euler(0, 0, angle);
-            _wire.transform.rotation = rotation;
+            _elementImage.color = ColorDictionary.GetColor(elementColor, powered);
         }
     }
 }

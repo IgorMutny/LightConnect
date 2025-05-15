@@ -26,15 +26,15 @@ namespace LightConnect.Core
             _disposables.Dispose();
         }
 
-        private float CalculateRotation(Sides direction)
+        /* private float CalculateRotation(Directions direction)
         {
             return -(int)direction * 90f;
-        }
+        } */
 
         private void SetColors(bool powered)
         {
-            Color wireColor;
-            Color elementColor;
+            /* Color wireColor;
+            Color elementColor; */
 
             /* switch (_model.WireColor)
             {

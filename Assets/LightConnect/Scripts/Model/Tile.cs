@@ -1,30 +1,43 @@
-using R3;
+using System;
 using UnityEngine;
 
 namespace LightConnect.Model
 {
     public class Tile
     {
-        public readonly Vector2Int Position;
-        public ReactiveProperty<bool> IsActive = new();
-        public ReactiveProperty<bool> IsSelected = new();
-
-        private ReactiveProperty<bool> _powered = new();
-        private Wire _wire = new();
+        private bool _isActive;
+        private bool _isSelected;
         private Element _element = new();
+        private WireSet _wireSet = new();
+
+        public event Action<Vector2Int> Updated;
+        public event Action UpdatedInternal;
+        public event Action<Tile> Selected;
 
         public Tile(Vector2Int position)
         {
             Position = position;
-            _powered.Value = false;
+            ElementPowered = false;
         }
 
-        public ReadOnlyReactiveProperty<Direction> Orientation => _wire.Orientation;
-        public ReadOnlyReactiveProperty<bool> Powered => _powered;
-        public ReadOnlyReactiveProperty<WireTypes> WireType => _wire.Type;
-        public ReadOnlyReactiveProperty<ElementTypes> ElementType => _element.Type;
-        public ReadOnlyReactiveProperty<Colors> WireColor => _wire.Color;
-        public ReadOnlyReactiveProperty<Colors> ElementColor => _element.Color;
+        public bool IsActive
+        {
+            get => _isActive;
+            set { _isActive = value; Updated?.Invoke(Position); }
+        }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set { _isSelected = value; Selected?.Invoke(this); }
+        }
+
+        public Vector2Int Position { get; private set; }
+        public bool ElementPowered { get; private set; }
+        public WireSetTypes WireSetType => _wireSet.Type;
+        public Direction Orientation => _wireSet.Orientation;
+        public ElementTypes ElementType => _element.Type;
+        public Color ElementColor => _element.Color;
 
         public TileData GetData()
         {
@@ -32,85 +45,103 @@ namespace LightConnect.Model
 
             data.PositionX = Position.x;
             data.PositionY = Position.y;
-            data.WireType = (int)WireType.CurrentValue;
-            data.Orientation = (int)Orientation.CurrentValue.Side;
-            data.ElementType = (int)ElementType.CurrentValue;
-            data.Color = (int)ElementColor.CurrentValue;
+            data.WireType = (int)WireSetType;
+            data.Orientation = (int)Orientation;
+            data.ElementType = (int)ElementType;
+            data.Color = (int)ElementColor;
 
             return data;
         }
 
         public void SetData(TileData data)
         {
-            SetWireType((WireTypes)data.WireType);
-            SetOrientation((Sides)data.Orientation);
+            SetWireSetType((WireSetTypes)data.WireType);
+            SetOrientation((Direction)data.Orientation);
             SetElementType((ElementTypes)data.ElementType);
-            SetColor((Colors)data.Color);
+            SetElementColor((Color)data.Color);
+
+            OnStateChanged();
         }
 
-        public void SetWireType(WireTypes type)
+        public void SetWireSetType(WireSetTypes type)
         {
-            _wire.SetType(type);
-            OnContentChanged();
+            _wireSet.SetType(type);
+            OnStateChanged();
         }
 
-        public void SetOrientation(Sides side)
+        public void SetOrientation(Direction orientation)
         {
-            _wire.SetOrientation(side);
-            OnContentChanged();
+            _wireSet.SetOrientation(orientation);
+            OnStateChanged();
         }
 
         public void SetElementType(ElementTypes type)
         {
             _element.SetType(type);
-            OnContentChanged();
+            OnStateChanged();
         }
 
-        public void SetColor(Colors color)
+        public void SetElementColor(Color color)
         {
             _element.SetColor(color);
-            OnContentChanged();
+            OnStateChanged();
         }
 
-        public void Rotate(Sides side)
+        public void Rotate(Direction side)
         {
-            _wire.Rotate(side);
+            _wireSet.Rotate(side);
+            OnStateChanged();
         }
 
-        public bool HasConnectorInDirection(Sides direction)
+        public bool HasWire(Direction direction)
         {
-            return _wire.HasConnectorInDirection(direction);
+            return _wireSet.HasWire(direction);
         }
 
-        public void AddColor(Colors color)
+        public bool HasWire(Direction direction, out Color color)
         {
-            if (WireType.CurrentValue == WireTypes.NONE || ElementType.CurrentValue == ElementTypes.BATTERY)
-                return;
-
-            _wire.AddColor(color);
-
-            if (ElementType.CurrentValue == ElementTypes.NONE)
-                _powered.Value = WireColor.CurrentValue != Colors.NONE;
-            else
-                _powered.Value = WireColor.CurrentValue != Colors.NONE && WireColor.CurrentValue == ElementColor.CurrentValue;
+            return _wireSet.HasWire(direction, out color);
         }
 
-        public void ResetPower()
+        [Obsolete]
+        public void AddColor(Direction direction, Color color)
         {
-            if (ElementType.CurrentValue == ElementTypes.BATTERY)
-                return;
-
-            _wire.ResetColors();
-            _powered.Value = false;
+            _wireSet.AddColor(direction, color, ElementType != ElementTypes.NONE);
+            ElementPowered = ElementColor != Color.None && _wireSet.HasColor(ElementColor);
+            OnStateChangedNoUpdate();
         }
 
-        private void OnContentChanged()
+        [Obsolete]
+        public void ResetColors()
         {
-            if (ElementType.CurrentValue == ElementTypes.BATTERY)
+            _wireSet.ResetColors();
+            ElementPowered = false;
+            OnStateChangedNoUpdate();
+        }
+
+        [Obsolete]
+        private void OnStateChanged()
+        {
+            if (ElementType == ElementTypes.BATTERY)
             {
-                _wire.AddColor(ElementColor.CurrentValue);
-                _powered.Value = true;
+                ElementPowered = true;
+                _wireSet.AddColorToAll(ElementColor);
             }
+
+            UpdatedInternal?.Invoke();
+            Updated?.Invoke(Position);
+        }
+
+        [Obsolete]
+        private void OnStateChangedNoUpdate()
+        {
+            if (ElementType == ElementTypes.BATTERY)
+            {
+                ElementPowered = true;
+                _wireSet.AddColorToAll(ElementColor);
+            }
+
+            UpdatedInternal?.Invoke();
         }
     }
 }

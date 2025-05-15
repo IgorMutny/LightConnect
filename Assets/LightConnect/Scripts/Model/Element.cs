@@ -4,27 +4,24 @@ namespace LightConnect.Model
 {
     public class Element
     {
-        private ReactiveProperty<ElementTypes> _type = new();
-        private ReactiveProperty<Colors> _color = new();
-
         public Element()
         {
-            _type.Value = ElementTypes.NONE;
-            _color.Value = Colors.NONE;
+            Type = ElementTypes.NONE;
+            Color = Color.None;
         }
 
-        public ReadOnlyReactiveProperty<ElementTypes> Type => _type;
-        public ReadOnlyReactiveProperty<Colors> Color => _color;
+        public ElementTypes Type { get; private set; }
+        public Color Color { get; private set; }
 
         public void SetType(ElementTypes type)
         {
-            _color.Value = Colors.NONE;
-            _type.Value = type;
+            Type = type;
+            Color = Color.None;
         }
 
-        public void SetColor(Colors color)
+        public void SetColor(Color color)
         {
-            _color.Value = color;
+            Color = color;
         }
     }
 }

@@ -23,12 +23,12 @@ namespace LightConnect.LevelConstruction
 
         private void RotateRight()
         {
-            Constructor.Rotate(Sides.RIGHT);
+            Constructor.Rotate(Direction.Right);
         }
 
         private void RotateLeft()
         {
-            Constructor.Rotate(Sides.LEFT);
+            Constructor.Rotate(Direction.Left);
         }
 
 

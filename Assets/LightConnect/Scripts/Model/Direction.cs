@@ -4,49 +4,75 @@ namespace LightConnect.Model
 {
     public struct Direction : IEquatable<Direction>
     {
-        private const int SIDES_COUNT = 4;
+        public const int DIRECTIONS_COUNT = 4;
 
-        public Direction(Sides initialDirection)
+        private const int UP = 0;
+        private const int RIGHT = 1;
+        private const int DOWN = 2;
+        private const int LEFT = 3;
+
+        private int _value;
+
+        private Direction(int value)
         {
-            Side = initialDirection;
+            _value = value;
         }
 
-        public Sides Side { get; private set; }
+        public static Direction Up => new Direction(UP);
+        public static Direction Down => new Direction(DOWN);
+        public static Direction Left => new Direction(LEFT);
+        public static Direction Right => new Direction(RIGHT);
 
         public static Direction operator +(Direction a, Direction b)
         {
-            return a + b.Side;
+            return new Direction((a._value + b._value) % DIRECTIONS_COUNT);
         }
 
-        public static Direction operator +(Direction a, Sides b)
+        public static Direction operator -(Direction a, Direction b)
         {
-            int newSide = ((int)a.Side + (int)b) % SIDES_COUNT;
-            return new Direction((Sides)newSide);
+            return new Direction((DIRECTIONS_COUNT + a._value - b._value) % DIRECTIONS_COUNT);
         }
 
-        public static bool operator ==(Direction a, Sides b) => a.Side == b;
-        public static bool operator !=(Direction a, Sides b) => a.Side != b;
-        public static bool operator ==(Direction a, Direction b) => a.Side == b.Side;
-        public static bool operator !=(Direction a, Direction b) => a.Side != b.Side;
+        public static Direction operator -(Direction a)
+        {
+            return new Direction((a._value + DIRECTIONS_COUNT / 2) % DIRECTIONS_COUNT);
+        }
+
+        public static bool operator ==(Direction a, Direction b) => a._value == b._value;
+        public static bool operator !=(Direction a, Direction b) => a._value != b._value;
 
         public bool Equals(Direction other)
         {
-            return Side == other.Side;
-        }
-
-        public bool Equals(Sides side)
-        {
-            return Side == side;
+            return _value == other._value;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is Direction dir && Equals(dir);
+            return obj is Direction direction && Equals(direction);
         }
 
         public override int GetHashCode()
         {
-            return Side.GetHashCode();
+            return _value.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            if (this == Up) return nameof(Up);
+            if (this == Down) return nameof(Down);
+            if (this == Left) return nameof(Left);
+            if (this == Right) return nameof(Right);
+            throw new Exception("Unknown direction");
+        }
+
+        public static explicit operator int(Direction direction)
+        {
+            return direction._value;
+        }
+
+        public static explicit operator Direction(int value)
+        {
+            return new Direction(value);
         }
     }
 }

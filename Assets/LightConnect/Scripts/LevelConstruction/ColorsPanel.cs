@@ -1,49 +1,71 @@
-using LightConnect.Core;
-using LightConnect.Model;
-using R3;
 using UnityEngine;
 using UnityEngine.UI;
+using Color = LightConnect.Model.Color;
 
 namespace LightConnect.LevelConstruction
 {
     public class ColorsPanel : Panel
     {
         [SerializeField] private Button _red;
-        [SerializeField] private Button _green;
+        [SerializeField] private Button _yellow;
         [SerializeField] private Button _blue;
+        [SerializeField] private Button _orange;
+        [SerializeField] private Button _green;
+        [SerializeField] private Button _magenta;
 
         protected override void Subscribe()
         {
             _red.onClick.AddListener(SelectRed);
-            _green.onClick.AddListener(SelectGreen);
+            _yellow.onClick.AddListener(SelectYellow);
             _blue.onClick.AddListener(SelectBlue);
+            _orange.onClick.AddListener(SelectOrange);
+            _green.onClick.AddListener(SelectGreen);
+            _magenta.onClick.AddListener(SelectMagenta);
         }
 
         protected override void Unsubscribe()
         {
             _red.onClick.RemoveListener(SelectRed);
-            _green.onClick.RemoveListener(SelectGreen);
+            _yellow.onClick.RemoveListener(SelectYellow);
             _blue.onClick.RemoveListener(SelectBlue);
+            _orange.onClick.RemoveListener(SelectOrange);
+            _green.onClick.RemoveListener(SelectGreen);
+            _magenta.onClick.RemoveListener(SelectMagenta);
         }
 
-        private void SelectColor(Colors color)
+        private void SelectColor(Color color)
         {
             Constructor.SetTileColor(color);
         }
 
-        private void SelectGreen()
+        private void SelectYellow()
         {
-            SelectColor(Colors.GREEN);
+            SelectColor(Color.Yellow);
         }
 
         private void SelectBlue()
         {
-            SelectColor(Colors.BLUE);
+            SelectColor(Color.Blue);
         }
 
         private void SelectRed()
         {
-            SelectColor(Colors.RED);
+            SelectColor(Color.Red);
+        }
+
+        private void SelectOrange()
+        {
+            SelectColor(Color.Orange);
+        }
+
+        private void SelectGreen()
+        {
+            SelectColor(Color.Green);
+        }
+
+        private void SelectMagenta()
+        {
+            SelectColor(Color.Magenta);
         }
     }
 }

@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using R3;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -8,11 +8,10 @@ namespace LightConnect.Model
     {
         public const int MAX_SIZE = 16;
 
-        private CompositeDisposable _disposables = new();
         private Tile[,] _tiles = new Tile[MAX_SIZE, MAX_SIZE];
         private PowerEvaluator _powerEvaluator;
-        private ReactiveProperty<Vector2Int> _currentSize = new();
-        private Subject<Tile> _tileSelected = new();
+
+        public event Action<Tile> TileSelected;
 
         public Level()
         {
@@ -23,12 +22,15 @@ namespace LightConnect.Model
             _powerEvaluator = new PowerEvaluator(this);
         }
 
-        public ReadOnlyReactiveProperty<Vector2Int> CurrentSize => _currentSize;
-        public Observable<Tile> TileSelected => _tileSelected;
+        public Vector2Int CurrentSize { get; private set; }
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            foreach (var tile in _tiles)
+            {
+                tile.Selected -= OnTileSelected;
+                tile.Updated -= OnTileUpdated;
+            }
         }
 
         public IEnumerable<Tile> Tiles()
@@ -44,25 +46,29 @@ namespace LightConnect.Model
                 yield return tile;
         }
 
-        public Tile GetTile(Vector2Int position)
+        public bool TryGetTile(Vector2Int position, out Tile tile)
         {
-            return _tiles[position.x, position.y];
-        }
-
-        public Tile GetTile(int x, int y)
-        {
-            return _tiles[x, y];
+            if (position.x < 0 || position.x >= CurrentSize.x || position.y < 0 || position.y >= CurrentSize.y)
+            {
+                tile = null;
+                return false;
+            }
+            else
+            {
+                tile = _tiles[position.x, position.y];
+                return true;
+            }
         }
 
         public LevelData GetData()
         {
             var data = new LevelData();
-            data.SizeX = _currentSize.Value.x;
-            data.SizeY = _currentSize.Value.y;
+            data.SizeX = CurrentSize.x;
+            data.SizeY = CurrentSize.y;
 
             var filledTiles = new List<TileData>();
             foreach (var tile in _tiles)
-                if (tile.ElementType.CurrentValue != ElementTypes.NONE || tile.WireType.CurrentValue != WireTypes.NONE)
+                if (tile.ElementType != ElementTypes.NONE || tile.WireSetType != WireSetTypes.NONE)
                     filledTiles.Add(tile.GetData());
 
             data.Tiles = filledTiles.ToArray();
@@ -79,9 +85,9 @@ namespace LightConnect.Model
         public void SetSize(Vector2Int size)
         {
             if (size.x > MAX_SIZE || size.y > MAX_SIZE)
-                throw new System.Exception("New size is too big");
+                throw new Exception("New size is too big");
 
-            _currentSize.Value = size;
+            CurrentSize = size;
 
             foreach (var tile in _tiles)
                 CheckTileState(tile);
@@ -91,7 +97,7 @@ namespace LightConnect.Model
 
         public bool ContainsTileInCurrentSize(Tile tile)
         {
-            return tile.Position.x < _currentSize.Value.x && tile.Position.y < _currentSize.Value.y;
+            return tile.Position.x < CurrentSize.x && tile.Position.y < CurrentSize.y;
         }
 
         private void Evaluate()
@@ -107,33 +113,34 @@ namespace LightConnect.Model
         private void CreateTile(int x, int y)
         {
             var tile = new Tile(new Vector2Int(x, y));
-
-            tile.WireType.Subscribe(_ => Evaluate()).AddTo(_disposables);
-            tile.Orientation.Subscribe(_ => Evaluate()).AddTo(_disposables);
-            tile.ElementType.Subscribe(_ => Evaluate()).AddTo(_disposables);
-            tile.ElementColor.Subscribe(_ => Evaluate()).AddTo(_disposables);
-            tile.IsSelected.Subscribe(value => OnTileSelected(tile, value)).AddTo(_disposables);
-
             _tiles[x, y] = tile;
+            tile.Selected += OnTileSelected;
+            tile.Updated += OnTileUpdated;
         }
 
         private void CheckTileState(Tile tile)
         {
-            if (tile.Position.x < _currentSize.Value.x && tile.Position.y < _currentSize.Value.y)
+            if (tile.Position.x < CurrentSize.x && tile.Position.y < CurrentSize.y)
             {
-                tile.IsActive.Value = true;
+                tile.IsActive = true;
             }
             else
             {
-                tile.IsActive.Value = false;
-                tile.IsSelected.Value = false;
+                tile.IsActive = false;
+                tile.IsSelected = false;
             }
         }
 
-        private void OnTileSelected(Tile tile, bool value)
+        [Obsolete]
+        private void OnTileSelected(Tile tile)
         {
-            if (value)
-                _tileSelected.OnNext(tile);
+            if (tile.IsSelected)
+                TileSelected?.Invoke(tile);
+        }
+
+        private void OnTileUpdated(Vector2Int position)
+        {
+            Evaluate();
         }
     }
 }

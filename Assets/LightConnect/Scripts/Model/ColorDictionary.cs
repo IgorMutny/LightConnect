@@ -1,52 +1,40 @@
-using System;
-using UnityEngine;
+using System.Collections.Generic;
+using UnityColor = UnityEngine.Color;
 
 namespace LightConnect.Model
 {
     public static class ColorDictionary
     {
-        public static Color ColorOfWire(Colors color)
+        private static Dictionary<Color, UnityColor> _poweredColors = new()
         {
-            switch (color)
-            {
-                case Colors.NONE: return Color.white;
-                case Colors.RED: return Color.red;
-                case Colors.GREEN: return Color.green;
-                case Colors.BLUE: return Color.blue;
-                default: throw new Exception("Unknown color type");
-            }
-        }
+            {Color.None, UnityColor.gray},
+            {Color.Red, UnityColor.red},
+            {Color.Yellow, UnityColor.yellow},
+            {Color.Orange, new UnityColor(1f, 0.5f, 0f)},
+            {Color.Blue, UnityColor.blue},
+            {Color.Magenta, UnityColor.magenta},
+            {Color.Green, UnityColor.green},
+            {Color.White, UnityColor.white},
+        };
 
-        public static Color ColorOfElement(Colors color, bool powered)
+        private static Dictionary<Color, UnityColor> _notPoweredColors = new()
+        {
+            {Color.None, UnityColor.gray},
+            {Color.Red, new UnityColor(0.5f, 0f, 0f)},
+            {Color.Yellow, new UnityColor(0.5f, 0.5f, 0f)},
+            {Color.Orange, new UnityColor(0.5f, 0.25f, 0f)},
+            {Color.Blue, new UnityColor(0f, 0f, 0.5f)},
+            {Color.Magenta, new UnityColor(0.5f, 0f, 0.5f)},
+            {Color.Green, new UnityColor(0f, 0.5f, 0f)},
+            {Color.White, UnityColor.gray},
+        };
+
+        public static UnityColor GetColor(Color color, bool powered)
         {
             if (powered)
-                return ColorOfPoweredElement(color);
+                return _poweredColors[color];
             else
-                return ColorOfNotPoweredElement(color);
-        }
-
-        private static Color ColorOfPoweredElement(Colors color)
-        {
-            switch (color)
-            {
-                case Colors.NONE: return Color.white;
-                case Colors.RED: return Color.red;
-                case Colors.GREEN: return Color.green;
-                case Colors.BLUE: return Color.blue;
-                default: throw new Exception("Unknown color type");
-            }
-        }
-
-        private static Color ColorOfNotPoweredElement(Colors color)
-        {
-            switch (color)
-            {
-                case Colors.NONE: return Color.grey;
-                case Colors.RED: return new Color(0.5f, 0f, 0f);
-                case Colors.GREEN: return new Color(0f, 0.5f, 0f);
-                case Colors.BLUE: return new Color(0f, 0f, 0.5f);
-                default: throw new Exception("Unknown color type");
-            }
+                return _notPoweredColors[color];
         }
     }
 }
