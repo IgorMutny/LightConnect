@@ -19,7 +19,7 @@ namespace LightConnect.LevelConstruction
 
             _view.Initialize();
             _view.Clicked.Subscribe(_ => _model.IsSelected = true).AddTo(_disposables);
-            _model.UpdatedInternal += Redraw;
+            _model.Updated += Redraw;
             _model.Selected += SetSelection;
 
             Redraw();
@@ -27,7 +27,7 @@ namespace LightConnect.LevelConstruction
 
         public void Dispose()
         {
-            _model.UpdatedInternal -= Redraw;
+            _model.Updated -= Redraw;
             _model.Selected -= SetSelection;
         }
 

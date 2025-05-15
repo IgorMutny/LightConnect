@@ -52,6 +52,19 @@ namespace LightConnect.Model
             return _value.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            if (this == None) return nameof(None);
+            if (this == Red) return nameof(Red);
+            if (this == Yellow) return nameof(Yellow);
+            if (this == Orange) return nameof(Orange);
+            if (this == Blue) return nameof(Blue);
+            if (this == Green) return nameof(Green);
+            if (this == Magenta) return nameof(Magenta);
+            if (this == White) return nameof(White);
+            throw new Exception("Unknown direction");
+        }
+
         public static explicit operator int(Color color)
         {
             return color._value;

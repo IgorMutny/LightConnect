@@ -9,8 +9,6 @@ namespace LightConnect.Model
         private Level _level;
         private List<Tile> _batteryTiles = new();
         private List<Tile> _lampTiles = new();
-        private List<Tile> _handledTiles = new();
-        private List<Tile> _tilesToHandle = new();
 
         public PowerEvaluator(Level level)
         {
@@ -55,31 +53,38 @@ namespace LightConnect.Model
 
         private void HandleBatteryTile(Tile batteryTile)
         {
-            HandleTile(batteryTile, batteryTile.ElementColor);
-
-            _handledTiles.Clear();
-            _tilesToHandle.Clear();
+            batteryTile.ApplyBatteryPower();
+            var path = new List<Tile>() { batteryTile };
+            HandlePath(path);
         }
 
-        private void HandleTile(Tile origin, Color color)
+        private void HandlePath(List<Tile> path)
         {
-            foreach ((var connectedTile, var direction) in GetConnectedTiles(origin))
+            var origin = path.Last();
+            var connectedTiles = GetConnectedTiles(origin);
+
+            foreach ((var connectedTile, var direction) in connectedTiles)
             {
-                if (!_handledTiles.Contains(connectedTile))
+                if (!path.Contains(connectedTile))
                 {
-                    origin.HasWire(direction, out Color addedColor);
-                    connectedTile.AddColor(-direction, addedColor);
-                    _tilesToHandle.Add(connectedTile);
+                    HandleTile(origin, connectedTile, direction, out bool shouldContinue);
+
+                    if (shouldContinue)
+                    {
+                        var newPath = new List<Tile>(path) { connectedTile };
+                        HandlePath(newPath);
+                    }
                 }
             }
+        }
 
-            while (_tilesToHandle.Count > 0)
-            {
-                var tile = _tilesToHandle.Last();
-                _handledTiles.Add(tile);
-                _tilesToHandle.Remove(tile);
-                HandleTile(tile, color);
-            }
+        private void HandleTile(Tile from, Tile to, Direction direction, out bool shouldContinue)
+        {
+            from.HasWire(direction, out Color color);
+            shouldContinue = color != Color.None;
+
+            if (shouldContinue)
+                to.AddColor(-direction, color);
         }
 
         private Dictionary<Tile, Direction> GetConnectedTiles(Tile origin)

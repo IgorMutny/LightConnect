@@ -29,7 +29,7 @@ namespace LightConnect.Model
             foreach (var tile in _tiles)
             {
                 tile.Selected -= OnTileSelected;
-                tile.Updated -= OnTileUpdated;
+                tile.EvaluationRequired -= OnEvaluationRequired;
             }
         }
 
@@ -115,7 +115,7 @@ namespace LightConnect.Model
             var tile = new Tile(new Vector2Int(x, y));
             _tiles[x, y] = tile;
             tile.Selected += OnTileSelected;
-            tile.Updated += OnTileUpdated;
+            tile.EvaluationRequired += OnEvaluationRequired;
         }
 
         private void CheckTileState(Tile tile)
@@ -138,7 +138,7 @@ namespace LightConnect.Model
                 TileSelected?.Invoke(tile);
         }
 
-        private void OnTileUpdated(Vector2Int position)
+        private void OnEvaluationRequired()
         {
             Evaluate();
         }

@@ -10,8 +10,8 @@ namespace LightConnect.Model
         private Element _element = new();
         private WireSet _wireSet = new();
 
-        public event Action<Vector2Int> Updated;
-        public event Action UpdatedInternal;
+        public event Action EvaluationRequired;
+        public event Action Updated;
         public event Action<Tile> Selected;
 
         public Tile(Vector2Int position)
@@ -23,7 +23,7 @@ namespace LightConnect.Model
         public bool IsActive
         {
             get => _isActive;
-            set { _isActive = value; Updated?.Invoke(Position); }
+            set { _isActive = value; EvaluationRequired?.Invoke(); }
         }
 
         public bool IsSelected
@@ -60,37 +60,53 @@ namespace LightConnect.Model
             SetElementType((ElementTypes)data.ElementType);
             SetElementColor((Color)data.Color);
 
-            OnStateChanged();
+            RequireUpdate();
         }
 
         public void SetWireSetType(WireSetTypes type)
         {
             _wireSet.SetType(type);
-            OnStateChanged();
+            RequireUpdate();
+            RequireEvaluation();
         }
 
         public void SetOrientation(Direction orientation)
         {
             _wireSet.SetOrientation(orientation);
-            OnStateChanged();
+            RequireUpdate();
+            RequireEvaluation();
         }
 
         public void SetElementType(ElementTypes type)
         {
             _element.SetType(type);
-            OnStateChanged();
+            RequireUpdate();
+            RequireEvaluation();
         }
 
         public void SetElementColor(Color color)
         {
             _element.SetColor(color);
-            OnStateChanged();
+            RequireUpdate();
+            RequireEvaluation();
         }
 
         public void Rotate(Direction side)
         {
             _wireSet.Rotate(side);
-            OnStateChanged();
+            RequireUpdate();
+            RequireEvaluation();
+        }
+
+        public void ApplyBatteryPower()
+        {
+            if (ElementType != ElementTypes.BATTERY)
+                return;
+
+            ElementPowered = true;
+            _wireSet.AddColorToAllWires(ElementColor);
+
+            RequireUpdate();
         }
 
         public bool HasWire(Direction direction)
@@ -103,45 +119,39 @@ namespace LightConnect.Model
             return _wireSet.HasWire(direction, out color);
         }
 
-        [Obsolete]
         public void AddColor(Direction direction, Color color)
         {
-            _wireSet.AddColor(direction, color, ElementType != ElementTypes.NONE);
-            ElementPowered = ElementColor != Color.None && _wireSet.HasColor(ElementColor);
-            OnStateChangedNoUpdate();
+            if (ElementType == ElementTypes.NONE)
+            {
+                _wireSet.AddColorToAllWires(color);
+            }
+            else
+            {
+                _wireSet.AddColor(direction, color);
+            }
+
+            if (ElementType == ElementTypes.LAMP)
+                ElementPowered = ElementColor != Color.None && _wireSet.BlendedColor == ElementColor;
+
+            RequireUpdate();
         }
 
-        [Obsolete]
         public void ResetColors()
         {
             _wireSet.ResetColors();
             ElementPowered = false;
-            OnStateChangedNoUpdate();
+
+            RequireUpdate();
         }
 
-        [Obsolete]
-        private void OnStateChanged()
+        private void RequireUpdate()
         {
-            if (ElementType == ElementTypes.BATTERY)
-            {
-                ElementPowered = true;
-                _wireSet.AddColorToAll(ElementColor);
-            }
-
-            UpdatedInternal?.Invoke();
-            Updated?.Invoke(Position);
+            Updated?.Invoke();
         }
 
-        [Obsolete]
-        private void OnStateChangedNoUpdate()
+        private void RequireEvaluation()
         {
-            if (ElementType == ElementTypes.BATTERY)
-            {
-                ElementPowered = true;
-                _wireSet.AddColorToAll(ElementColor);
-            }
-
-            UpdatedInternal?.Invoke();
+            EvaluationRequired?.Invoke();
         }
     }
 }

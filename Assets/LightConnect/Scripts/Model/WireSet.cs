@@ -16,6 +16,7 @@ namespace LightConnect.Model
 
         public WireSetTypes Type { get; private set; }
         public Direction Orientation { get; private set; }
+        public Color BlendedColor => GetBlendedColor();
 
         public void SetType(WireSetTypes type)
         {
@@ -59,28 +60,14 @@ namespace LightConnect.Model
             return wire != null;
         }
 
-        public bool HasColor(Color color)
+        public void AddColor(Direction direction, Color color)
         {
-            return _wires.Any(wire => wire.Color == color);
+            var wire = _wires.FirstOrDefault(wire => wire.Orientation == direction);
+            if (wire != null)
+                wire.AddColor(color);
         }
 
-        [Obsolete]
-        public void AddColor(Direction direction, Color color, bool hasElement)
-        {
-            if (hasElement)
-            {
-                var wire = _wires.FirstOrDefault(wire => wire.Orientation == direction);
-                if (wire != null)
-                    wire.AddColor(color);
-            }
-            else
-            {
-                AddColorToAll(color);
-            }
-        }
-
-        [Obsolete]
-        public void AddColorToAll(Color color)
+        public void AddColorToAllWires(Color color)
         {
             foreach (var wire in _wires)
                 wire.AddColor(color);
@@ -90,6 +77,11 @@ namespace LightConnect.Model
         {
             foreach (var wire in _wires)
                 wire.ResetColor();
+        }
+
+        private Color GetBlendedColor()
+        {
+            return _wires.Aggregate(Color.None, (color, wire) => color + wire.Color);
         }
     }
 }
