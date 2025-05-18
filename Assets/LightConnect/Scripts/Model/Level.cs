@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using R3;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -8,10 +9,9 @@ namespace LightConnect.Model
     {
         public const int MAX_SIZE = 16;
 
+        private CompositeDisposable _disposables = new();
         private Tile[,] _tiles = new Tile[MAX_SIZE, MAX_SIZE];
         private PowerEvaluator _powerEvaluator;
-
-        public event Action<Tile> TileSelected;
 
         public Level()
         {
@@ -26,11 +26,7 @@ namespace LightConnect.Model
 
         public void Dispose()
         {
-            foreach (var tile in _tiles)
-            {
-                tile.Selected -= OnTileSelected;
-                tile.EvaluationRequired -= OnEvaluationRequired;
-            }
+            _disposables.Dispose();
         }
 
         public IEnumerable<Tile> Tiles()
@@ -80,6 +76,9 @@ namespace LightConnect.Model
         {
             foreach (var tileData in data.Tiles)
                 _tiles[tileData.PositionX, tileData.PositionY].SetData(tileData);
+
+            var size = new Vector2Int(data.SizeX, data.SizeY);
+            SetSize(size);
         }
 
         public void SetSize(Vector2Int size)
@@ -90,7 +89,7 @@ namespace LightConnect.Model
             CurrentSize = size;
 
             foreach (var tile in _tiles)
-                CheckTileState(tile);
+                DefineTileActivity(tile);
 
             Evaluate();
         }
@@ -114,33 +113,12 @@ namespace LightConnect.Model
         {
             var tile = new Tile(new Vector2Int(x, y));
             _tiles[x, y] = tile;
-            tile.Selected += OnTileSelected;
-            tile.EvaluationRequired += OnEvaluationRequired;
+            tile.EvaluationRequired.Subscribe(_ => Evaluate()).AddTo(_disposables);
         }
 
-        private void CheckTileState(Tile tile)
+        private void DefineTileActivity(Tile tile)
         {
-            if (tile.Position.x < CurrentSize.x && tile.Position.y < CurrentSize.y)
-            {
-                tile.IsActive = true;
-            }
-            else
-            {
-                tile.IsActive = false;
-                tile.IsSelected = false;
-            }
-        }
-
-        [Obsolete]
-        private void OnTileSelected(Tile tile)
-        {
-            if (tile.IsSelected)
-                TileSelected?.Invoke(tile);
-        }
-
-        private void OnEvaluationRequired()
-        {
-            Evaluate();
+            tile.IsActive = tile.Position.x < CurrentSize.x && tile.Position.y < CurrentSize.y;
         }
     }
 }

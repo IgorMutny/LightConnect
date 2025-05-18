@@ -1,4 +1,5 @@
 using System;
+using R3;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -6,13 +7,13 @@ namespace LightConnect.Model
     public class Tile
     {
         private bool _isActive;
-        private bool _isSelected;
         private Element _element = new();
         private WireSet _wireSet = new();
+        private Subject<Unit> _updated = new();
+        private Subject<Unit> _evaluationRequired = new();
 
-        public event Action EvaluationRequired;
-        public event Action Updated;
-        public event Action<Tile> Selected;
+        public Observable<Unit> Updated => _updated;
+        public Observable<Unit> EvaluationRequired => _evaluationRequired;
 
         public Tile(Vector2Int position)
         {
@@ -20,18 +21,7 @@ namespace LightConnect.Model
             ElementPowered = false;
         }
 
-        public bool IsActive
-        {
-            get => _isActive;
-            set { _isActive = value; EvaluationRequired?.Invoke(); }
-        }
-
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set { _isSelected = value; Selected?.Invoke(this); }
-        }
-
+        public bool IsActive { get => _isActive; set => SetActive(value); }
         public Vector2Int Position { get; private set; }
         public bool ElementPowered { get; private set; }
         public WireSetTypes WireSetType => _wireSet.Type;
@@ -60,42 +50,42 @@ namespace LightConnect.Model
             SetElementType((ElementTypes)data.ElementType);
             SetElementColor((Color)data.Color);
 
-            RequireUpdate();
+            _updated.OnNext(Unit.Default);
         }
 
         public void SetWireSetType(WireSetTypes type)
         {
             _wireSet.SetType(type);
-            RequireUpdate();
-            RequireEvaluation();
+            _updated.OnNext(Unit.Default);
+            _evaluationRequired.OnNext(Unit.Default);
         }
 
         public void SetOrientation(Direction orientation)
         {
             _wireSet.SetOrientation(orientation);
-            RequireUpdate();
-            RequireEvaluation();
+            _updated.OnNext(Unit.Default);
+            _evaluationRequired.OnNext(Unit.Default);
         }
 
         public void SetElementType(ElementTypes type)
         {
             _element.SetType(type);
-            RequireUpdate();
-            RequireEvaluation();
+            _updated.OnNext(Unit.Default);
+            _evaluationRequired.OnNext(Unit.Default);
         }
 
         public void SetElementColor(Color color)
         {
             _element.SetColor(color);
-            RequireUpdate();
-            RequireEvaluation();
+            _updated.OnNext(Unit.Default);
+            _evaluationRequired.OnNext(Unit.Default);
         }
 
         public void Rotate(Direction side)
         {
             _wireSet.Rotate(side);
-            RequireUpdate();
-            RequireEvaluation();
+            _updated.OnNext(Unit.Default);
+            _evaluationRequired.OnNext(Unit.Default);
         }
 
         public void ApplyBatteryPower()
@@ -106,7 +96,7 @@ namespace LightConnect.Model
             ElementPowered = true;
             _wireSet.AddColorToAllWires(ElementColor);
 
-            RequireUpdate();
+            _updated.OnNext(Unit.Default);
         }
 
         public bool HasWire(Direction direction)
@@ -133,25 +123,21 @@ namespace LightConnect.Model
             if (ElementType == ElementTypes.LAMP)
                 ElementPowered = ElementColor != Color.None && _wireSet.BlendedColor == ElementColor;
 
-            RequireUpdate();
+            _updated.OnNext(Unit.Default);
         }
 
         public void ResetColors()
         {
             _wireSet.ResetColors();
             ElementPowered = false;
-
-            RequireUpdate();
+            _updated.OnNext(Unit.Default);
         }
 
-        private void RequireUpdate()
+        private void SetActive(bool isActive)
         {
-            Updated?.Invoke();
-        }
-
-        private void RequireEvaluation()
-        {
-            EvaluationRequired?.Invoke();
+            _isActive = isActive;
+            _updated.OnNext(Unit.Default);
+            _evaluationRequired.OnNext(Unit.Default);
         }
     }
 }

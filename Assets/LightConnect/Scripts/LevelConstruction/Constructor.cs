@@ -1,5 +1,5 @@
-using System;
 using LightConnect.Model;
+using R3;
 using UnityEngine;
 using Color = LightConnect.Model.Color;
 
@@ -7,14 +7,13 @@ namespace LightConnect.LevelConstruction
 {
     public class Constructor
     {
-        private IDisposable _disposable;
+        private CompositeDisposable _disposables;
         private Tile _selectedTile;
         private Level _level;
         private LevelPresenter _levelPresenter;
         private LevelView _levelView;
         private LevelSaveLoader _levelSaveLoader;
-
-        public Vector2Int CurrentSize => _level.CurrentSize;
+        private Subject<Vector2Int> _newLevelSizeLoaded = new();
 
         public Constructor(LevelView levelView)
         {
@@ -24,15 +23,25 @@ namespace LightConnect.LevelConstruction
             CreateNewLevel();
         }
 
+        public Observable<Vector2Int> NewLevelSizeLoaded => _newLevelSizeLoaded;
+        public Vector2Int CurrentSize => _level.CurrentSize;
+
+        public void Dispose()
+        {
+            _disposables.Dispose();
+        }
+
         public void CreateNewLevel()
         {
             Clear();
 
+            _disposables = new();
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
             _level = new Level();
-            _level.TileSelected += OnTileSelected;
             _level.SetSize(size);
+            _newLevelSizeLoaded.OnNext(_level.CurrentSize);
             _levelPresenter = new LevelPresenter(_level, _levelView);
+            _levelPresenter.TileSelected.Subscribe(OnTileSelected).AddTo(_disposables);
         }
 
         public void Save(int levelNumber)
@@ -44,24 +53,22 @@ namespace LightConnect.LevelConstruction
         {
             Clear();
 
+            _disposables = new();
             var levelData = _levelSaveLoader.Load(levelNumber);
             _level = new Level();
-            _level.TileSelected += OnTileSelected;
             _level.SetData(levelData);
+            _newLevelSizeLoaded.OnNext(_level.CurrentSize);
             _levelPresenter = new LevelPresenter(_level, _levelView);
+            _levelPresenter.TileSelected.Subscribe(OnTileSelected).AddTo(_disposables);
         }
 
         public void Clear()
         {
             _selectedTile = null;
-            _disposable?.Dispose();
+            _disposables?.Dispose();
             _levelView?.Clear();
             _levelPresenter?.Dispose();
             _levelPresenter = null;
-
-            if (_level != null)
-                _level.TileSelected -= OnTileSelected;
-
             _level?.Dispose();
             _level = null;
         }
@@ -69,6 +76,7 @@ namespace LightConnect.LevelConstruction
         public void ResizeLevel(Vector2Int size)
         {
             _level.SetSize(size);
+            OnLevelResized();
         }
 
         public void SetElement(ElementTypes type)
@@ -103,14 +111,30 @@ namespace LightConnect.LevelConstruction
             _selectedTile.Rotate(side);
         }
 
-        [Obsolete]
         private void OnTileSelected(Tile tile)
         {
-            if (_selectedTile != null)
-                _selectedTile.IsSelected = false;
+            Deselect();
+            _selectedTile = tile;
+            _levelPresenter.SetSelected(_selectedTile, true);
+        }
 
-            if (tile.IsSelected)
-                _selectedTile = tile;
+        private void OnLevelResized()
+        {
+            if (_selectedTile == null)
+                return;
+
+            if (_selectedTile.Position.x > _level.CurrentSize.x ||
+                    _selectedTile.Position.y > _level.CurrentSize.y)
+                Deselect();
+        }
+
+        private void Deselect()
+        {
+            if (_selectedTile == null)
+                return;
+
+            _levelPresenter.SetSelected(_selectedTile, false);
+            _selectedTile = null;
         }
     }
 }

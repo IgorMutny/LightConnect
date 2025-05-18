@@ -4,7 +4,7 @@ namespace LightConnect.Core
 {
     public class LevelView : MonoBehaviour
     {
-        [SerializeField] private AllTilesSettings _allTilesSettings;
+        [SerializeField] private TileViewSettings _allTilesSettings;
         [SerializeField] private GameObject _tilePrefab;
 
         public TileView CreateTile(string typeId, Vector2Int position)

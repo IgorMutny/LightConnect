@@ -1,8 +1,6 @@
 using R3;
 using LightConnect.Model;
-using UnityEngine;
 using Color = LightConnect.Model.Color;
-using System;
 
 namespace LightConnect.LevelConstruction
 {
@@ -11,6 +9,7 @@ namespace LightConnect.LevelConstruction
         private CompositeDisposable _disposables = new();
         private Tile _model;
         private TileView _view;
+        private Subject<Tile> _selected = new();
 
         public TilePresenter(Tile model, TileView view)
         {
@@ -18,23 +17,27 @@ namespace LightConnect.LevelConstruction
             _view = view;
 
             _view.Initialize();
-            _view.Clicked.Subscribe(_ => _model.IsSelected = true).AddTo(_disposables);
-            _model.Updated += Redraw;
-            _model.Selected += SetSelection;
+            _view.Clicked.Subscribe(_ => _selected.OnNext(_model)).AddTo(_disposables);
+            _model.Updated.Subscribe(_ => Redraw()).AddTo(_disposables);
 
             Redraw();
         }
 
+        public Observable<Tile> Selected => _selected;
+
         public void Dispose()
         {
-            _model.Updated -= Redraw;
-            _model.Selected -= SetSelection;
+            _disposables.Dispose();
+        }
+
+        public void SetSelected(bool isSelected)
+        {
+            _view.SetSelected(isSelected);
         }
 
         private void Redraw()
         {
             _view.SetActive(_model.IsActive);
-            _view.SetSelected(_model.IsSelected);
             _view.SetElement(_model.ElementType);
             _view.SetElementColor(_model.ElementColor, _model.ElementPowered);
 
@@ -45,9 +48,5 @@ namespace LightConnect.LevelConstruction
             }
         }
 
-        private void SetSelection(Tile tile)
-        {
-            _view.SetSelected(_model.IsSelected);
-        }
     }
 }

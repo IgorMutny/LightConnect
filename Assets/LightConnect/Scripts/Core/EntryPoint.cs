@@ -4,7 +4,7 @@ namespace LightConnect.Core
 {
     public class EntryPoint : MonoBehaviour
     {
-        [SerializeField] private LevelSettings _mapSettings;
+        //[SerializeField] private LevelSettings _mapSettings;
         [SerializeField] private LevelView _mapView;
 
         private LevelPresenter _presenter;

@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cf63a764c3eda944859e8226f1f4f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _allTilesSettings: {fileID: 11400000, guid: b42741ec1da33d84d9ee85b5e47070dd, type: 2}
+  _tileViewSettings: {fileID: 11400000, guid: b42741ec1da33d84d9ee85b5e47070dd, type: 2}
   _selection: {fileID: 2368821660394297642}
   _wires:
   - {fileID: 217804591496638784}

@@ -9,7 +9,7 @@ namespace LightConnect.LevelConstruction
 {
     public class TileView : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private AllTilesSettings _allTilesSettings;
+        [SerializeField] private TileViewSettings _tileViewSettings;
         [SerializeField] private GameObject _selection;
         [SerializeField] private GameObject[] _wires;
         [SerializeField] private GameObject _element;
@@ -19,7 +19,6 @@ namespace LightConnect.LevelConstruction
         private Image[] _wireImages;
 
         public Observable<Unit> Clicked => _clicked;
-        public bool IsActive { get; private set; }
 
         public void Initialize()
         {
@@ -27,6 +26,8 @@ namespace LightConnect.LevelConstruction
             _wireImages = new Image[_wires.Length];
             for (int i = 0; i < _wires.Length; i++)
                 _wireImages[i] = _wires[i].GetComponent<Image>();
+
+            SetSelected(false);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -37,7 +38,6 @@ namespace LightConnect.LevelConstruction
         public void SetActive(bool value)
         {
             gameObject.SetActive(value);
-            IsActive = value;
         }
 
         public void SetSelected(bool value)
@@ -54,7 +54,7 @@ namespace LightConnect.LevelConstruction
             else
             {
                 _element.SetActive(true);
-                var sprite = _allTilesSettings.ElementSettings(type).Sprite;
+                var sprite = _tileViewSettings.ElementSprite(type);
                 _elementImage.sprite = sprite;
             }
         }
@@ -64,7 +64,7 @@ namespace LightConnect.LevelConstruction
             if (hasWire)
             {
                 _wires[direction].SetActive(true);
-                _wireImages[direction].color = ColorDictionary.GetColor(color, true);
+                _wireImages[direction].color = _tileViewSettings.Color(color, true);
             }
             else
             {
@@ -72,9 +72,9 @@ namespace LightConnect.LevelConstruction
             }
         }
 
-        public void SetElementColor(Model.Color elementColor, bool powered)
+        public void SetElementColor(Model.Color color, bool powered)
         {
-            _elementImage.color = ColorDictionary.GetColor(elementColor, powered);
+            _elementImage.color = _tileViewSettings.Color(color, powered);
         }
     }
 }
