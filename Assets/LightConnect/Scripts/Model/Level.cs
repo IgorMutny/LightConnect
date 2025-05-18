@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using R3;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace LightConnect.Model
 {
@@ -92,6 +93,34 @@ namespace LightConnect.Model
                 DefineTileActivity(tile);
 
             Evaluate();
+        }
+
+        public void Randomize()
+        {
+            int tilesAmount = 0;
+            int notRotatedTilesAmount = 0;
+
+            foreach (var tile in _tiles)
+            {
+                if (ContainsTileInCurrentSize(tile) && tile.WireSetType != WireSetTypes.NONE)
+                {
+                    tilesAmount += 1;
+
+                    int rotationsAmount = Random.Range(0, Direction.DIRECTIONS_COUNT);
+                    if (rotationsAmount == 0)
+                    {
+                        notRotatedTilesAmount += 1;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < rotationsAmount; i++)
+                            tile.Rotate(Direction.Right);
+                    }
+                }
+            }
+
+            if (tilesAmount > 2 && tilesAmount / notRotatedTilesAmount < 2)
+                Randomize();
         }
 
         public bool ContainsTileInCurrentSize(Tile tile)

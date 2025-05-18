@@ -12,18 +12,26 @@ namespace LightConnect.Core
 
         public LevelPresenter(Level model, LevelView view)
         {
-            /* _model = model;
+            _model = model;
             _view = view;
+
+            _view.Initialize(_model.CurrentSize);
 
             foreach (var tile in _model.Tiles())
             {
                 if (tile == null)
                     continue;
 
-                var tileView = _view.CreateTile(tile.TypeId, new Vector2Int(tile.Position.x, tile.Position.y));
+                var tileView = _view.AddTile(new Vector2Int(tile.Position.x, tile.Position.y));
                 var tilePresenter = new TilePresenter(tile, tileView);
                 _presenters.Add(tilePresenter);
-            } */
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var presenter in _presenters)
+                presenter.Dispose();
         }
     }
 }

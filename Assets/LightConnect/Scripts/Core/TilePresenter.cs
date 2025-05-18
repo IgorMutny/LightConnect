@@ -1,11 +1,10 @@
-using System;
-using UnityEngine;
 using R3;
 using LightConnect.Model;
+using Color = LightConnect.Model.Color;
 
 namespace LightConnect.Core
 {
-    public class TilePresenter : IDisposable
+    public class TilePresenter
     {
         private CompositeDisposable _disposables = new();
         private Tile _model;
@@ -16,9 +15,11 @@ namespace LightConnect.Core
             _model = model;
             _view = view;
 
-            /* _view.Clicked.Subscribe(_ => _model.RotateRight());
-            _model.Orientation.Subscribe(value => _view.RotateTo(CalculateRotation(value))).AddTo(_disposables);
-            _model.Powered.Subscribe(SetColors).AddTo(_disposables); */
+            _view.Initialize();
+            _view.Clicked.Subscribe(_ => _model.Rotate(Direction.Right)).AddTo(_disposables);
+            _model.Updated.Subscribe(_ => Redraw()).AddTo(_disposables);
+
+            Redraw();
         }
 
         public void Dispose()
@@ -26,36 +27,17 @@ namespace LightConnect.Core
             _disposables.Dispose();
         }
 
-        /* private float CalculateRotation(Directions direction)
+        private void Redraw()
         {
-            return -(int)direction * 90f;
-        } */
+            _view.SetElement(_model.ElementType);
+            _view.SetElementColor(_model.ElementColor, _model.ElementPowered);
 
-        private void SetColors(bool powered)
-        {
-            /* Color wireColor;
-            Color elementColor; */
-
-            /* switch (_model.WireColor)
+            for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
             {
-                case Colors.RED: wireColor = Color.red; break;
-                case Colors.GREEN: wireColor = Color.green; break;
-                case Colors.BLUE: wireColor = Color.blue; break;
-                default: wireColor = Color.white; break;
+                bool hasWire = _model.HasWire((Direction)i, out Color color);
+                _view.SetWire(hasWire, i, color);
             }
-
-            switch (_model.ElementColor, powered)
-            {
-                case (Colors.RED, true): elementColor = Color.red; break;
-                case (Colors.RED, false): elementColor = new Color(0.5f, 0f, 0f); break;
-                case (Colors.GREEN, true): elementColor = Color.green; break;
-                case (Colors.GREEN, false): elementColor = new Color(0f, 0.5f, 0f); break;
-                case (Colors.BLUE, true): elementColor = Color.blue; break;
-                case (Colors.BLUE, false): elementColor = new Color(0f, 0f, 0.5f); break;
-                default: elementColor = Color.white; break;
-            }
-
-            _view.SetColors(wireColor, elementColor); */
         }
+
     }
 }
