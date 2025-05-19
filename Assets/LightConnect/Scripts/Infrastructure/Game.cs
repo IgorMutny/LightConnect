@@ -10,6 +10,7 @@ namespace LightConnect.Infrastructure
         public Game(LevelView levelView)
         {
             _gameData = new GameData();
+            _gameData.CurrentLevelId = 1;
             _levelFlow = new LevelFlow(levelView);
         }
 

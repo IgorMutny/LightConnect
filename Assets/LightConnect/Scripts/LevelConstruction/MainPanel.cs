@@ -6,7 +6,9 @@ namespace LightConnect.LevelConstruction
 {
     public class MainPanel : Panel
     {
-        private const string NOT_NUMBER_MESSAGE = "Not number!";
+        private const string ALREADY_EXISTS_MESSAGE = "Level with this id already exists!";
+        private const string INVALID_ID_MESSAGE = "Invalid id!";
+        private const int INVALID_ID = -1;
 
         [SerializeField] private Button _new;
         [SerializeField] private Button _load;
@@ -14,7 +16,7 @@ namespace LightConnect.LevelConstruction
         [SerializeField] private TMP_InputField _levelNumberInputField;
         [SerializeField] private TextMeshProUGUI _warning;
 
-        private int _levelNumber;
+        private int _levelId = INVALID_ID;
 
         protected override void Subscribe()
         {
@@ -32,34 +34,45 @@ namespace LightConnect.LevelConstruction
             _load.onClick.RemoveListener(Load);
         }
 
-        private void SetLevelName(string number)
+        private void SetLevelName(string stringId)
         {
-            bool result = int.TryParse(number, out int levelNumber);
+            bool result = int.TryParse(stringId, out int levelId);
 
             if (result)
             {
-                _levelNumber = levelNumber;
-                _warning.text = string.Empty;
+                _levelId = levelId;
+
+                if (Constructor.LevelExists(_levelId))
+                    _warning.text = ALREADY_EXISTS_MESSAGE;
+                else
+                    _warning.text = string.Empty;
             }
             else
             {
-                _warning.text = NOT_NUMBER_MESSAGE;
+                _levelId = INVALID_ID;
+                _warning.text = INVALID_ID_MESSAGE;
             }
         }
 
         private void Save()
         {
-            Constructor.Save(_levelNumber);
+            if (_levelId != INVALID_ID)
+                Constructor.Save(_levelId);
+            else
+                _warning.text = INVALID_ID_MESSAGE;
         }
 
         private void Load()
         {
-            Constructor.Load(_levelNumber);
+            if (_levelId != INVALID_ID)
+                Constructor.Load(_levelId);
+            else
+                _warning.text = INVALID_ID_MESSAGE;
         }
 
         private void New()
         {
-            Constructor.CreateNewLevel();
+            Constructor.ClearAndCreateNewLevel();
         }
     }
 }

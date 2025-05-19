@@ -30,10 +30,14 @@ namespace LightConnect.LevelConstruction
             _levelPresenter.TileSelected -= OnTileSelected;
         }
 
-        public void CreateNewLevel()
+        public void ClearAndCreateNewLevel()
         {
             Clear();
+            CreateNewLevel();
+        }
 
+        private void CreateNewLevel()
+        {
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
             _level = new Level();
             _level.SetSize(size);
@@ -42,16 +46,16 @@ namespace LightConnect.LevelConstruction
             _levelPresenter.TileSelected += OnTileSelected;
         }
 
-        public void Save(int levelNumber)
+        public void Save(int levelId)
         {
-            _levelSaveLoader.Save(_level, levelNumber);
+            _levelSaveLoader.Save(_level, levelId);
         }
 
-        public void Load(int levelNumber)
+        public void Load(int levelId)
         {
             Clear();
 
-            var levelData = _levelSaveLoader.Load(levelNumber);
+            var levelData = _levelSaveLoader.Load(levelId);
             _level = new Level();
             _level.SetData(levelData);
             LevelLoaded?.Invoke(_level.CurrentSize);
@@ -62,15 +66,17 @@ namespace LightConnect.LevelConstruction
         public void Clear()
         {
             _selectedTile = null;
-            _levelView?.Clear();
-
-            if (_levelPresenter != null)
-                _levelPresenter.TileSelected -= OnTileSelected;
-                
-            _levelPresenter?.Dispose();
+            _levelView.Clear();
+            _levelPresenter.TileSelected -= OnTileSelected;
+            _levelPresenter.Dispose();
             _levelPresenter = null;
-            _level?.Dispose();
+            _level.Dispose();
             _level = null;
+        }
+
+        public bool LevelExists(int id)
+        {
+            return _levelSaveLoader.LevelExists(id);
         }
 
         public void ResizeLevel(Vector2Int size)
