@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using R3;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,9 +9,10 @@ namespace LightConnect.Model
     {
         public const int MAX_SIZE = 16;
 
-        private CompositeDisposable _disposables = new();
         private Tile[,] _tiles = new Tile[MAX_SIZE, MAX_SIZE];
         private PowerEvaluator _powerEvaluator;
+
+        public event Action IsWon;
 
         public Level()
         {
@@ -27,7 +27,8 @@ namespace LightConnect.Model
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            foreach (var tile in _tiles)
+                tile.EvaluationRequired -= Evaluate;
         }
 
         public IEnumerable<Tile> Tiles()
@@ -119,7 +120,7 @@ namespace LightConnect.Model
                 }
             }
 
-            if (tilesAmount > 2 && tilesAmount / notRotatedTilesAmount < 2)
+            if (tilesAmount > 2 && notRotatedTilesAmount > 0 && tilesAmount / notRotatedTilesAmount < 2)
                 Randomize();
         }
 
@@ -135,14 +136,16 @@ namespace LightConnect.Model
 
             _powerEvaluator.UpdateElements();
             _powerEvaluator.Execute();
-            //_powerEvaluator.AllLampsArePowered();
+
+            if (_powerEvaluator.AllLampsArePowered())
+                IsWon?.Invoke();
         }
 
         private void CreateTile(int x, int y)
         {
             var tile = new Tile(new Vector2Int(x, y));
             _tiles[x, y] = tile;
-            tile.EvaluationRequired.Subscribe(_ => Evaluate()).AddTo(_disposables);
+            tile.EvaluationRequired += Evaluate;
         }
 
         private void DefineTileActivity(Tile tile)

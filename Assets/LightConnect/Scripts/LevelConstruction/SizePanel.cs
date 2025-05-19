@@ -1,5 +1,3 @@
-using System;
-using R3;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,19 +8,17 @@ namespace LightConnect.LevelConstruction
         [SerializeField] private Slider _width;
         [SerializeField] private Slider _height;
 
-        private IDisposable _subscription;
-
         protected override void Subscribe()
         {
             UpdateSliders(Constructor.CurrentSize);
-            _subscription = Constructor.NewLevelSizeLoaded.Subscribe(UpdateSliders);
+            Constructor.LevelLoaded += UpdateSliders;
             _width.onValueChanged.AddListener(OnWidthChanged);
             _height.onValueChanged.AddListener(OnHeightChanged);
         }
 
         protected override void Unsubscribe()
         {
-            _subscription.Dispose();
+            Constructor.LevelLoaded -= UpdateSliders;
             _width.onValueChanged.RemoveListener(OnWidthChanged);
             _height.onValueChanged.RemoveListener(OnHeightChanged);
         }

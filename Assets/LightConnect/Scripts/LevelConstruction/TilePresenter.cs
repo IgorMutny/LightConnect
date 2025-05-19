@@ -1,4 +1,4 @@
-using R3;
+using System;
 using LightConnect.Model;
 using Color = LightConnect.Model.Color;
 
@@ -6,28 +6,26 @@ namespace LightConnect.LevelConstruction
 {
     public class TilePresenter
     {
-        private CompositeDisposable _disposables = new();
         private Tile _model;
         private TileView _view;
-        private Subject<Tile> _selected = new();
+
+        public event Action<Tile> Selected;
 
         public TilePresenter(Tile model, TileView view)
         {
             _model = model;
             _view = view;
-
             _view.Initialize();
-            _view.Clicked.Subscribe(_ => _selected.OnNext(_model)).AddTo(_disposables);
-            _model.Updated.Subscribe(_ => Redraw()).AddTo(_disposables);
-
-            Redraw();
+            _view.Clicked += OnTileSelected;
+            _model.Updated += RedrawView;
+            RedrawView();
         }
 
-        public Observable<Tile> Selected => _selected;
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            _view.Clicked -= OnTileSelected;
+            _model.Updated -= RedrawView;
         }
 
         public void SetSelected(bool isSelected)
@@ -35,7 +33,7 @@ namespace LightConnect.LevelConstruction
             _view.SetSelected(isSelected);
         }
 
-        private void Redraw()
+        private void RedrawView()
         {
             _view.SetActive(_model.IsActive);
             _view.SetElement(_model.ElementType);
@@ -48,5 +46,9 @@ namespace LightConnect.LevelConstruction
             }
         }
 
+        private void OnTileSelected()
+        {
+            Selected?.Invoke(_model);
+        }
     }
 }

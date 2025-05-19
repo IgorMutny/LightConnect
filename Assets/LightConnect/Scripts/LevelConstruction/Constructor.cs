@@ -1,5 +1,5 @@
+using System;
 using LightConnect.Model;
-using R3;
 using UnityEngine;
 using Color = LightConnect.Model.Color;
 
@@ -7,13 +7,13 @@ namespace LightConnect.LevelConstruction
 {
     public class Constructor
     {
-        private CompositeDisposable _disposables;
         private Tile _selectedTile;
         private Level _level;
         private LevelPresenter _levelPresenter;
         private LevelView _levelView;
         private LevelSaveLoader _levelSaveLoader;
-        private Subject<Vector2Int> _newLevelSizeLoaded = new();
+
+        public event Action<Vector2Int> LevelLoaded;
 
         public Constructor(LevelView levelView)
         {
@@ -23,25 +23,23 @@ namespace LightConnect.LevelConstruction
             CreateNewLevel();
         }
 
-        public Observable<Vector2Int> NewLevelSizeLoaded => _newLevelSizeLoaded;
         public Vector2Int CurrentSize => _level.CurrentSize;
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            _levelPresenter.TileSelected -= OnTileSelected;
         }
 
         public void CreateNewLevel()
         {
             Clear();
 
-            _disposables = new();
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
             _level = new Level();
             _level.SetSize(size);
-            _newLevelSizeLoaded.OnNext(_level.CurrentSize);
+            LevelLoaded?.Invoke(_level.CurrentSize);
             _levelPresenter = new LevelPresenter(_level, _levelView);
-            _levelPresenter.TileSelected.Subscribe(OnTileSelected).AddTo(_disposables);
+            _levelPresenter.TileSelected += OnTileSelected;
         }
 
         public void Save(int levelNumber)
@@ -53,20 +51,22 @@ namespace LightConnect.LevelConstruction
         {
             Clear();
 
-            _disposables = new();
             var levelData = _levelSaveLoader.Load(levelNumber);
             _level = new Level();
             _level.SetData(levelData);
-            _newLevelSizeLoaded.OnNext(_level.CurrentSize);
+            LevelLoaded?.Invoke(_level.CurrentSize);
             _levelPresenter = new LevelPresenter(_level, _levelView);
-            _levelPresenter.TileSelected.Subscribe(OnTileSelected).AddTo(_disposables);
+            _levelPresenter.TileSelected += OnTileSelected;
         }
 
         public void Clear()
         {
             _selectedTile = null;
-            _disposables?.Dispose();
             _levelView?.Clear();
+
+            if (_levelPresenter != null)
+                _levelPresenter.TileSelected -= OnTileSelected;
+                
             _levelPresenter?.Dispose();
             _levelPresenter = null;
             _level?.Dispose();

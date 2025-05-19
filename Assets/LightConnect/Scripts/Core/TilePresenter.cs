@@ -1,4 +1,3 @@
-using R3;
 using LightConnect.Model;
 using Color = LightConnect.Model.Color;
 
@@ -6,7 +5,6 @@ namespace LightConnect.Core
 {
     public class TilePresenter
     {
-        private CompositeDisposable _disposables = new();
         private Tile _model;
         private TileView _view;
 
@@ -14,20 +12,19 @@ namespace LightConnect.Core
         {
             _model = model;
             _view = view;
-
             _view.Initialize();
-            _view.Clicked.Subscribe(_ => _model.Rotate(Direction.Right)).AddTo(_disposables);
-            _model.Updated.Subscribe(_ => Redraw()).AddTo(_disposables);
-
-            Redraw();
+            _view.Clicked += RotateModel;
+            _model.Updated += RedrawView;
+            RedrawView();
         }
 
         public void Dispose()
         {
-            _disposables.Dispose();
+            _view.Clicked -= RotateModel;
+            _model.Updated -= RedrawView;
         }
 
-        private void Redraw()
+        private void RedrawView()
         {
             _view.SetElement(_model.ElementType);
             _view.SetElementColor(_model.ElementColor, _model.ElementPowered);
@@ -37,6 +34,11 @@ namespace LightConnect.Core
                 bool hasWire = _model.HasWire((Direction)i, out Color color);
                 _view.SetWire(hasWire, i, color);
             }
+        }
+
+        private void RotateModel()
+        {
+            _model.Rotate(Direction.Right);
         }
 
     }

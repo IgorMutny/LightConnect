@@ -1,5 +1,5 @@
+using System;
 using LightConnect.Model;
-using R3;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,23 +12,23 @@ namespace LightConnect.Core
         [SerializeField] private GameObject[] _wires;
         [SerializeField] private GameObject _element;
 
-        private Subject<Unit> _clicked = new();
         private Image _elementImage;
         private Image[] _wireImages;
 
-        public Observable<Unit> Clicked => _clicked;
+        public event Action Clicked;
 
         public void Initialize()
         {
             _elementImage = _element.GetComponent<Image>();
             _wireImages = new Image[_wires.Length];
+            
             for (int i = 0; i < _wires.Length; i++)
                 _wireImages[i] = _wires[i].GetComponent<Image>();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            _clicked.OnNext(Unit.Default);
+            Clicked?.Invoke();
         }
 
         public void SetElement(ElementTypes type)

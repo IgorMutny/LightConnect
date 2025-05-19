@@ -1,5 +1,4 @@
 using System;
-using R3;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -9,11 +8,9 @@ namespace LightConnect.Model
         private bool _isActive;
         private Element _element = new();
         private WireSet _wireSet = new();
-        private Subject<Unit> _updated = new();
-        private Subject<Unit> _evaluationRequired = new();
 
-        public Observable<Unit> Updated => _updated;
-        public Observable<Unit> EvaluationRequired => _evaluationRequired;
+        public event Action Updated;
+        public event Action EvaluationRequired;
 
         public Tile(Vector2Int position)
         {
@@ -50,42 +47,42 @@ namespace LightConnect.Model
             SetElementType((ElementTypes)data.ElementType);
             SetElementColor((Color)data.Color);
 
-            _updated.OnNext(Unit.Default);
+            Updated?.Invoke();
         }
 
         public void SetWireSetType(WireSetTypes type)
         {
             _wireSet.SetType(type);
-            _updated.OnNext(Unit.Default);
-            _evaluationRequired.OnNext(Unit.Default);
+            Updated?.Invoke();
+            EvaluationRequired?.Invoke();
         }
 
         public void SetOrientation(Direction orientation)
         {
             _wireSet.SetOrientation(orientation);
-            _updated.OnNext(Unit.Default);
-            _evaluationRequired.OnNext(Unit.Default);
+            Updated?.Invoke();
+            EvaluationRequired?.Invoke();
         }
 
         public void SetElementType(ElementTypes type)
         {
             _element.SetType(type);
-            _updated.OnNext(Unit.Default);
-            _evaluationRequired.OnNext(Unit.Default);
+            Updated?.Invoke();
+            EvaluationRequired?.Invoke();
         }
 
         public void SetElementColor(Color color)
         {
             _element.SetColor(color);
-            _updated.OnNext(Unit.Default);
-            _evaluationRequired.OnNext(Unit.Default);
+            Updated?.Invoke();
+            EvaluationRequired?.Invoke();
         }
 
         public void Rotate(Direction side)
         {
             _wireSet.Rotate(side);
-            _updated.OnNext(Unit.Default);
-            _evaluationRequired.OnNext(Unit.Default);
+            Updated?.Invoke();
+            EvaluationRequired?.Invoke();
         }
 
         public void ApplyBatteryPower()
@@ -96,7 +93,7 @@ namespace LightConnect.Model
             ElementPowered = true;
             _wireSet.AddColorToAllWires(ElementColor);
 
-            _updated.OnNext(Unit.Default);
+            Updated?.Invoke();
         }
 
         public bool HasWire(Direction direction)
@@ -123,21 +120,21 @@ namespace LightConnect.Model
             if (ElementType == ElementTypes.LAMP)
                 ElementPowered = ElementColor != Color.None && _wireSet.BlendedColor == ElementColor;
 
-            _updated.OnNext(Unit.Default);
+            Updated?.Invoke();
         }
 
         public void ResetColors()
         {
             _wireSet.ResetColors();
             ElementPowered = false;
-            _updated.OnNext(Unit.Default);
+            Updated?.Invoke();
         }
 
         private void SetActive(bool isActive)
         {
             _isActive = isActive;
-            _updated.OnNext(Unit.Default);
-            _evaluationRequired.OnNext(Unit.Default);
+            Updated?.Invoke();
+            EvaluationRequired?.Invoke();
         }
     }
 }

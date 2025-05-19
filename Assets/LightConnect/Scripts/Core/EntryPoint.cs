@@ -7,13 +7,11 @@ namespace LightConnect.Core
     {
         [SerializeField] private LevelView _levelView;
 
-        private Gameplay _gameplay;
-
         private void Start()
         {
-            var LevelSaveLoader = new LevelSaveLoader();
-            var levelData = LevelSaveLoader.Load(0);
-            _gameplay = new Gameplay(levelData, _levelView);
+            var game = new Game();
+            game.LevelView = _levelView;
+            game.CreateGameplay();
         }
     }
 }

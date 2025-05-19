@@ -1,5 +1,3 @@
-using R3;
-
 namespace LightConnect.Model
 {
     public class Element
