@@ -3,9 +3,9 @@ using System.IO;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect
+namespace LightConnect.LevelConstruction
 {
-    public class LevelSaveLoader : ILevelLoader
+    public class LevelSaveLoader
     {
         public void Save(Level level, int number)
         {

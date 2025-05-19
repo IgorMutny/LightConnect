@@ -12,8 +12,6 @@ namespace LightConnect.Model
         private Tile[,] _tiles = new Tile[MAX_SIZE, MAX_SIZE];
         private PowerEvaluator _powerEvaluator;
 
-        public event Action IsWon;
-
         public Level()
         {
             for (int x = 0; x < MAX_SIZE; x++)
@@ -24,6 +22,7 @@ namespace LightConnect.Model
         }
 
         public Vector2Int CurrentSize { get; private set; }
+        public bool IsWon { get; private set; }
 
         public void Dispose()
         {
@@ -122,6 +121,8 @@ namespace LightConnect.Model
 
             if (tilesAmount > 2 && notRotatedTilesAmount > 0 && tilesAmount / notRotatedTilesAmount < 2)
                 Randomize();
+
+            IsWon = false;
         }
 
         public bool ContainsTileInCurrentSize(Tile tile)
@@ -138,7 +139,7 @@ namespace LightConnect.Model
             _powerEvaluator.Execute();
 
             if (_powerEvaluator.AllLampsArePowered())
-                IsWon?.Invoke();
+                IsWon = true;
         }
 
         private void CreateTile(int x, int y)

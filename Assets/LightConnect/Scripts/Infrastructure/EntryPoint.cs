@@ -1,7 +1,7 @@
-using LightConnect.LevelConstruction;
+using LightConnect.Core;
 using UnityEngine;
 
-namespace LightConnect.Core
+namespace LightConnect.Infrastructure
 {
     public class EntryPoint : MonoBehaviour
     {
@@ -9,9 +9,8 @@ namespace LightConnect.Core
 
         private void Start()
         {
-            var game = new Game();
-            game.LevelView = _levelView;
-            game.CreateGameplay();
+            var game = new Game(_levelView);
+            game.Run();
         }
     }
 }

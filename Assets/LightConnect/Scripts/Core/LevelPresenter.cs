@@ -14,7 +14,10 @@ namespace LightConnect.Core
         {
             _model = model;
             _view = view;
+        }
 
+        public void Initialize()
+        {
             _view.Initialize(_model.CurrentSize);
 
             foreach (var tile in _model.Tiles())
