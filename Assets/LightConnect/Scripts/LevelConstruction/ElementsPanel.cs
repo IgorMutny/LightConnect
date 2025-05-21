@@ -24,24 +24,24 @@ namespace LightConnect.LevelConstruction
             _lamp.onClick.RemoveListener(SelectLamp);
         }
 
-        private void SelectElement(ElementTypes type)
+        private void SelectElement(TileTypes type)
         {
-            Constructor.SetElement(type);
+            Constructor.SetTileType(type);
         }
 
         private void SelectBattery()
         {
-            SelectElement(ElementTypes.BATTERY);
+            SelectElement(TileTypes.BATTERY);
         }
 
         private void SelectLamp()
         {
-            SelectElement(ElementTypes.LAMP);
+            SelectElement(TileTypes.LAMP);
         }
 
         private void SelectNone()
         {
-            SelectElement(ElementTypes.NONE);
+            SelectElement(TileTypes.WIRE);
         }
     }
 }

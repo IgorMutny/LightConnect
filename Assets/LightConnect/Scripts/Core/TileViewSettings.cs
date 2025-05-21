@@ -14,7 +14,7 @@ namespace LightConnect.Core
         [SerializeField] private List<ColorSettings> _poweredColors;
         [SerializeField] private List<ColorSettings> _notPoweredColors;
 
-        public Sprite ElementSprite(ElementTypes type)
+        public Sprite ElementSprite(TileTypes type)
         {
             return _elements.First(element => element.Type == type).Sprite;
         }
@@ -31,7 +31,7 @@ namespace LightConnect.Core
     [Serializable]
     public class ElementSettings
     {
-        [field: SerializeField] public ElementTypes Type { get; private set; }
+        [field: SerializeField] public TileTypes Type { get; private set; }
         [field: SerializeField] public Sprite Sprite { get; private set; }
     }
 

@@ -40,8 +40,6 @@ namespace LightConnect.LevelConstruction
         {
             var size = new Vector2Int(Level.MAX_SIZE / 2, Level.MAX_SIZE / 2);
             _level = new Level();
-            _level.SetSize(size);
-            LevelLoaded?.Invoke(_level.CurrentSize);
             _levelPresenter = new LevelPresenter(_level, _levelView);
             _levelPresenter.TileSelected += OnTileSelected;
         }
@@ -79,18 +77,12 @@ namespace LightConnect.LevelConstruction
             return _levelSaveLoader.LevelExists(id);
         }
 
-        public void ResizeLevel(Vector2Int size)
-        {
-            _level.SetSize(size);
-            OnLevelResized();
-        }
-
-        public void SetElement(ElementTypes type)
+        public void SetTileType(TileTypes type)
         {
             if (_selectedTile == null)
                 return;
 
-            _selectedTile.SetElementType(type);
+            /* _selectedTile.SetElementType(type); */
         }
 
         public void SetWire(WireSetTypes type)
@@ -106,7 +98,7 @@ namespace LightConnect.LevelConstruction
             if (_selectedTile == null)
                 return;
 
-            _selectedTile.SetElementColor(color);
+            /* _selectedTile.SetElementColor(color); */
         }
 
         public void Rotate(Direction side)

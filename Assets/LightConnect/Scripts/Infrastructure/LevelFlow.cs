@@ -21,7 +21,7 @@ namespace LightConnect.Infrastructure
             var levelData = await _levelLoader.Load(levelNumber);
             var level = new Level();
             level.SetData(levelData);
-            level.Randomize();
+            LevelRandomizer.Randomize(level.Tiles());
 
             var levelPresenter = new LevelPresenter(level, _levelView);
             levelPresenter.Initialize();

@@ -7,8 +7,8 @@ namespace LightConnect.Model
     public class PowerEvaluator
     {
         private Level _level;
-        private List<Tile> _batteryTiles = new();
-        private List<Tile> _lampTiles = new();
+        private List<BatteryTile> _batteryTiles = new();
+        private List<LampTile> _lampTiles = new();
 
         public PowerEvaluator(Level level)
         {
@@ -22,11 +22,11 @@ namespace LightConnect.Model
 
             foreach (var tile in _level.Tiles())
             {
-                if (tile.ElementType == ElementTypes.BATTERY)
-                    _batteryTiles.Add(tile);
+                if (tile is BatteryTile batteryTile)
+                    _batteryTiles.Add(batteryTile);
 
-                if (tile.ElementType == ElementTypes.LAMP)
-                    _lampTiles.Add(tile);
+                if (tile is LampTile lampTile)
+                    _lampTiles.Add(lampTile);
             }
         }
 
@@ -36,7 +36,7 @@ namespace LightConnect.Model
                 return false;
 
             foreach (var lampTile in _lampTiles)
-                if (!lampTile.ElementPowered)
+                if (!lampTile.Powered)
                     return false;
 
             return true;
@@ -48,14 +48,10 @@ namespace LightConnect.Model
                 tile.ResetColors();
 
             foreach (var batteryTile in _batteryTiles)
-                HandleBatteryTile(batteryTile);
-        }
-
-        private void HandleBatteryTile(Tile batteryTile)
-        {
-            batteryTile.ApplyBatteryPower();
-            var path = new List<Tile>() { batteryTile };
-            HandlePath(path);
+            {
+                var path = new List<Tile>() { batteryTile };
+                HandlePath(path);
+            }
         }
 
         private void HandlePath(List<Tile> path)

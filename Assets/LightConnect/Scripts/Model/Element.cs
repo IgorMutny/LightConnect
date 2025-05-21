@@ -4,14 +4,14 @@ namespace LightConnect.Model
     {
         public Element()
         {
-            Type = ElementTypes.NONE;
+            Type = TileTypes.WIRE;
             Color = Color.None;
         }
 
-        public ElementTypes Type { get; private set; }
+        public TileTypes Type { get; private set; }
         public Color Color { get; private set; }
 
-        public void SetType(ElementTypes type)
+        public void SetType(TileTypes type)
         {
             Type = type;
             Color = Color.None;

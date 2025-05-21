@@ -19,7 +19,7 @@ namespace LightConnect.LevelConstruction
 
             _view.Initialize();
 
-            foreach (var tile in _model.AllExistingTiles())
+            foreach (var tile in _model.Tiles())
             {
                 var tileView = _view.AddTile(tile.Position);
                 var tilePresenter = new TilePresenter(tile, tileView);

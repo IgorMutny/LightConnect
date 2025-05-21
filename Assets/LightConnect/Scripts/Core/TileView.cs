@@ -31,9 +31,9 @@ namespace LightConnect.Core
             Clicked?.Invoke();
         }
 
-        public void SetElement(ElementTypes type)
+        public void SetElement(TileTypes type)
         {
-            if (type == ElementTypes.NONE)
+            if (type == TileTypes.WIRE)
             {
                 _element.SetActive(false);
             }

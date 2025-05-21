@@ -9,15 +9,11 @@ namespace LightConnect.Model
     {
         public const int MAX_SIZE = 16;
 
-        private Tile[,] _tiles = new Tile[MAX_SIZE, MAX_SIZE];
+        private Dictionary<Vector2Int, Tile> _tiles = new();
         private PowerEvaluator _powerEvaluator;
 
         public Level()
         {
-            for (int x = 0; x < MAX_SIZE; x++)
-                for (int y = 0; y < MAX_SIZE; y++)
-                    CreateTile(x, y);
-
             _powerEvaluator = new PowerEvaluator(this);
         }
 
@@ -26,34 +22,27 @@ namespace LightConnect.Model
 
         public void Dispose()
         {
-            foreach (var tile in _tiles)
+            foreach (var tile in _tiles.Values)
                 tile.EvaluationRequired -= Evaluate;
         }
 
         public IEnumerable<Tile> Tiles()
         {
-            foreach (var tile in _tiles)
-                if (ContainsTileInCurrentSize(tile))
-                    yield return tile;
-        }
-
-        public IEnumerable<Tile> AllExistingTiles()
-        {
-            foreach (var tile in _tiles)
+            foreach (var tile in _tiles.Values)
                 yield return tile;
         }
 
         public bool TryGetTile(Vector2Int position, out Tile tile)
         {
-            if (position.x < 0 || position.x >= CurrentSize.x || position.y < 0 || position.y >= CurrentSize.y)
+            if (_tiles.ContainsKey(position))
             {
-                tile = null;
-                return false;
+                tile = _tiles[position];
+                return true;
             }
             else
             {
-                tile = _tiles[position.x, position.y];
-                return true;
+                tile = null;
+                return false;
             }
         }
 
@@ -63,71 +52,22 @@ namespace LightConnect.Model
             data.SizeX = CurrentSize.x;
             data.SizeY = CurrentSize.y;
 
-            var filledTiles = new List<TileData>();
-            foreach (var tile in _tiles)
-                if (tile.ElementType != ElementTypes.NONE || tile.WireSetType != WireSetTypes.NONE)
-                    filledTiles.Add(tile.GetData());
+            var tiles = new List<TileData>();
+            /* foreach (var tile in _tiles)
+                tiles.Add(tile.GetData()); */
 
-            data.Tiles = filledTiles.ToArray();
+            data.Tiles = tiles.ToArray();
 
             return data;
         }
 
         public void SetData(LevelData data)
         {
-            foreach (var tileData in data.Tiles)
+            /* foreach (var tileData in data.Tiles)
                 _tiles[tileData.PositionX, tileData.PositionY].SetData(tileData);
-
+ */
             var size = new Vector2Int(data.SizeX, data.SizeY);
-            SetSize(size);
-        }
-
-        public void SetSize(Vector2Int size)
-        {
-            if (size.x > MAX_SIZE || size.y > MAX_SIZE)
-                throw new Exception("New size is too big");
-
-            CurrentSize = size;
-
-            foreach (var tile in _tiles)
-                DefineTileActivity(tile);
-
-            Evaluate();
-        }
-
-        public void Randomize()
-        {
-            int tilesAmount = 0;
-            int notRotatedTilesAmount = 0;
-
-            foreach (var tile in _tiles)
-            {
-                if (ContainsTileInCurrentSize(tile) && tile.WireSetType != WireSetTypes.NONE)
-                {
-                    tilesAmount += 1;
-
-                    int rotationsAmount = Random.Range(0, Direction.DIRECTIONS_COUNT);
-                    if (rotationsAmount == 0)
-                    {
-                        notRotatedTilesAmount += 1;
-                    }
-                    else
-                    {
-                        for (int i = 0; i < rotationsAmount; i++)
-                            tile.Rotate(Direction.Right);
-                    }
-                }
-            }
-
-            if (tilesAmount > 2 && notRotatedTilesAmount > 0 && tilesAmount / notRotatedTilesAmount < 2)
-                Randomize();
-
-            IsWon = false;
-        }
-
-        public bool ContainsTileInCurrentSize(Tile tile)
-        {
-            return tile.Position.x < CurrentSize.x && tile.Position.y < CurrentSize.y;
+            /* SetSize(size); */
         }
 
         private void Evaluate()
@@ -135,23 +75,42 @@ namespace LightConnect.Model
             if (_powerEvaluator == null)
                 return;
 
-            _powerEvaluator.UpdateElements();
             _powerEvaluator.Execute();
 
             if (_powerEvaluator.AllLampsArePowered())
                 IsWon = true;
         }
 
-        private void CreateTile(int x, int y)
+        private void AddTile(Vector2Int position, TileTypes type)
         {
-            var tile = new Tile(new Vector2Int(x, y));
-            _tiles[x, y] = tile;
+            if (_tiles.ContainsKey(position))
+                return;
+
+            Tile tile;
+
+            switch (type)
+            {
+                case TileTypes.WIRE: tile = new WireTile(position); break;
+                case TileTypes.BATTERY: tile = new BatteryTile(position); break;
+                case TileTypes.LAMP: tile = new LampTile(position); break;
+                //case TileTypes.WARP: tile = new WarpTile(position); break;
+                default: throw new Exception("Unknown tile type");
+            }
+
+            _tiles.Add(position, tile);
             tile.EvaluationRequired += Evaluate;
+            _powerEvaluator.UpdateElements();
         }
 
-        private void DefineTileActivity(Tile tile)
+        private void RemoveTile(Vector2Int position)
         {
-            tile.IsActive = tile.Position.x < CurrentSize.x && tile.Position.y < CurrentSize.y;
+            if (!_tiles.ContainsKey(position))
+                return;
+
+            Tile tile = _tiles[position];
+            tile.EvaluationRequired -= Evaluate;
+            _tiles.Remove(position);
+            _powerEvaluator.UpdateElements();
         }
     }
 }

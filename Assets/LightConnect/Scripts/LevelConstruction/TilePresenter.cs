@@ -35,9 +35,12 @@ namespace LightConnect.LevelConstruction
 
         private void RedrawView()
         {
-            _view.SetActive(_model.IsActive);
-            _view.SetElement(_model.ElementType);
-            _view.SetElementColor(_model.ElementColor, _model.ElementPowered);
+            _view.SetElement(_model.Type);
+
+            if (_model is BatteryTile batteryTile)
+                _view.SetElementColor(batteryTile.Color, true);
+            else if (_model is LampTile lampTile)
+                _view.SetElementColor(lampTile.Color, lampTile.Powered);
 
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
             {
