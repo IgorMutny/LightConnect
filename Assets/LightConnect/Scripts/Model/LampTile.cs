@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LightConnect.Model
 {
-    public class LampTile : Tile
+    public class LampTile : Tile, IColoredTile
     {
         public LampTile(Vector2Int position) : base(position) { }
 
@@ -13,6 +13,7 @@ namespace LightConnect.Model
         public void SetColor(Color color)
         {
             Color = color;
+            InvokeUpdated();
         }
 
         public override void AddColor(Direction direction, Color color)

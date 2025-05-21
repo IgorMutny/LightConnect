@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace LightConnect.Model
 {
@@ -12,12 +11,14 @@ namespace LightConnect.Model
         private Dictionary<Vector2Int, Tile> _tiles = new();
         private PowerEvaluator _powerEvaluator;
 
+        public event Action<Tile> TileCreated;
+        public event Action<Tile> TileRemoved;
+
         public Level()
         {
             _powerEvaluator = new PowerEvaluator(this);
         }
 
-        public Vector2Int CurrentSize { get; private set; }
         public bool IsWon { get; private set; }
 
         public void Dispose()
@@ -49,8 +50,8 @@ namespace LightConnect.Model
         public LevelData GetData()
         {
             var data = new LevelData();
-            data.SizeX = CurrentSize.x;
-            data.SizeY = CurrentSize.y;
+            /* data.SizeX = CurrentSize.x;
+            data.SizeY = CurrentSize.y; */
 
             var tiles = new List<TileData>();
             /* foreach (var tile in _tiles)
@@ -81,7 +82,7 @@ namespace LightConnect.Model
                 IsWon = true;
         }
 
-        private void AddTile(Vector2Int position, TileTypes type)
+        public void CreateTile(Vector2Int position, TileTypes type)
         {
             if (_tiles.ContainsKey(position))
                 return;
@@ -100,17 +101,21 @@ namespace LightConnect.Model
             _tiles.Add(position, tile);
             tile.EvaluationRequired += Evaluate;
             _powerEvaluator.UpdateElements();
+            TileCreated?.Invoke(tile);
+
+            return;
         }
 
-        private void RemoveTile(Vector2Int position)
+        public void RemoveTile(Vector2Int position)
         {
             if (!_tiles.ContainsKey(position))
                 return;
 
-            Tile tile = _tiles[position];
+            var tile = _tiles[position];
             tile.EvaluationRequired -= Evaluate;
             _tiles.Remove(position);
             _powerEvaluator.UpdateElements();
+            TileRemoved?.Invoke(tile);
         }
     }
 }

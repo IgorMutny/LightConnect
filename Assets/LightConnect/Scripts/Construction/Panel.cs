@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LightConnect.LevelConstruction
+namespace LightConnect.Construction
 {
     public abstract class Panel : MonoBehaviour
     {

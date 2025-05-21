@@ -3,7 +3,7 @@ using System.IO;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect.LevelConstruction
+namespace LightConnect.Construction
 {
     public class LevelSaveLoader
     {

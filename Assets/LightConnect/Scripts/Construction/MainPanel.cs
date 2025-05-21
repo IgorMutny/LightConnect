@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.LevelConstruction
+namespace LightConnect.Construction
 {
     public class MainPanel : Panel
     {

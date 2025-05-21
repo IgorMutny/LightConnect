@@ -24,7 +24,6 @@ namespace LightConnect.Infrastructure
             LevelRandomizer.Randomize(level.Tiles());
 
             var levelPresenter = new LevelPresenter(level, _levelView);
-            levelPresenter.Initialize();
 
             await UniTask.WaitUntil(() => level.IsWon);
 

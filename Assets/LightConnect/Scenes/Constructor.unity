@@ -122,17 +122,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &12224618 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5175739288986288072, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
-  m_PrefabInstance: {fileID: 1157895427397324843}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9a15f31e2b45a74f9cb5bb2c4033b88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &330045541 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 534144232492109144, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
@@ -174,12 +163,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mainPanel: {fileID: 1358872846}
-  _elementsPanel: {fileID: 2130216684}
+  _tilesPanel: {fileID: 2130216684}
   _wiresPanel: {fileID: 1412308237}
-  _sizePanel: {fileID: 2003980868}
   _colorsPanel: {fileID: 330045541}
   _rotationsPanel: {fileID: 817707194}
-  _levelView: {fileID: 12224618}
+  _levelView: {fileID: 1923711175}
+  _constructorView: {fileID: 1157895427397324844}
 --- !u!4 &785683345
 Transform:
   m_ObjectHideFlags: 0
@@ -388,15 +377,15 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2003980868 stripped
+--- !u!114 &1923711175 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6095772006488449250, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
+  m_CorrespondingSourceObject: {fileID: 971093279762473208, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
   m_PrefabInstance: {fileID: 1157895427397324843}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca13b79b99a68844f9ab87168c7cf29e, type: 3}
+  m_Script: {fileID: 11500000, guid: 35d4411c323b7ff4d8d160a915783c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &2130216684 stripped
@@ -418,10 +407,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 264389017805306530, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 471649369024002600, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -506,23 +491,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
-    - target: {fileID: 5207194206371163982, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
-      propertyPath: m_AnchorMax.y
+    - target: {fileID: 4010658679301342426, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7256787221100444923, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7984319681911655645, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
+    - target: {fileID: 8602062184972111878, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
+--- !u!114 &1157895427397324844 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8070266702154694646, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
+  m_PrefabInstance: {fileID: 1157895427397324843}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a51ccc22715fdc4448bf43baaf053991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

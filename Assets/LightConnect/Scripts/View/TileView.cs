@@ -17,11 +17,21 @@ namespace LightConnect.Core
 
         public event Action Clicked;
 
+        public bool RaycastTarget
+        {
+            set
+            {
+                var images = GetComponentsInChildren<Image>();
+                foreach (var image in images)
+                    image.raycastTarget = value;
+            }
+        }
+
         public void Initialize()
         {
             _elementImage = _element.GetComponent<Image>();
             _wireImages = new Image[_wires.Length];
-            
+
             for (int i = 0; i < _wires.Length; i++)
                 _wireImages[i] = _wires[i].GetComponent<Image>();
         }

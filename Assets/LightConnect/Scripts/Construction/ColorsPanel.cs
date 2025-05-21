@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Color = LightConnect.Model.Color;
 
-namespace LightConnect.LevelConstruction
+namespace LightConnect.Construction
 {
     public class ColorsPanel : Panel
     {

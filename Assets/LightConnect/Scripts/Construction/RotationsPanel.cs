@@ -2,7 +2,7 @@ using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.LevelConstruction
+namespace LightConnect.Construction
 {
     public class RotationsPanel : Panel
     {
