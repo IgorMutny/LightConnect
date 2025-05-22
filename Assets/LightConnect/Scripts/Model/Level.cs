@@ -74,9 +74,7 @@ namespace LightConnect.Model
 
         private void Evaluate()
         {
-            if (_powerEvaluator == null)
-                return;
-
+            IsWon = false;
             _powerEvaluator.Execute();
 
             if (_powerEvaluator.AllLampsArePowered())

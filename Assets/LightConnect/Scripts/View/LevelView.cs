@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LightConnect.Core
@@ -6,13 +7,15 @@ namespace LightConnect.Core
     public class LevelView : MonoBehaviour
     {
         [SerializeField] private GameObject _tilePrefab;
-        [SerializeField] private Vector2Int _size;
         [SerializeField] private bool _raycastTarget;
 
         private float _scale;
         private float _tileRequiredSize;
-        private Vector3 _initialPosition;
+        private Vector3 _initialWorldPosition;
         private Dictionary<Vector2Int, TileView> _tiles = new();
+
+        public Vector2Int Size { private get; set; }
+        public Vector2Int InitialPosition { private get; set; }
 
         public void Initialize()
         {
@@ -21,8 +24,8 @@ namespace LightConnect.Core
 
         public TileView AddTile(Vector2Int position)
         {
-            float x = _initialPosition.x + position.x * _tileRequiredSize;
-            float y = _initialPosition.y + position.y * _tileRequiredSize;
+            float x = _initialWorldPosition.x + (position.x - InitialPosition.x) * _tileRequiredSize;
+            float y = _initialWorldPosition.y + (position.y - InitialPosition.y) * _tileRequiredSize;
             var worldPosition = new Vector3(x, y, 0);
 
             var go = Instantiate(_tilePrefab, worldPosition, Quaternion.identity, transform);
@@ -44,7 +47,7 @@ namespace LightConnect.Core
 
         public void Clear()
         {
-            foreach (var position in _tiles.Keys)
+            foreach (var position in _tiles.Keys.ToList())
                 RemoveTile(position);
         }
 
@@ -54,15 +57,15 @@ namespace LightConnect.Core
             float width = rect.rect.size.x;
             float height = rect.rect.size.y;
 
-            _tileRequiredSize = Mathf.Min(width / _size.x, height / _size.y);
+            _tileRequiredSize = Mathf.Min(width / Size.x, height / Size.y);
 
             var tileRect = _tilePrefab.GetComponent<RectTransform>();
-            float tileDefaultSize = tileRect.sizeDelta.x;
+            float tileDefaultSize = tileRect.rect.size.x;
             _scale = _tileRequiredSize / tileDefaultSize;
 
             float initialX = transform.position.x - width / 2 + _tileRequiredSize / 2;
             float initialY = transform.position.y - height / 2 + _tileRequiredSize / 2;
-            _initialPosition = new Vector3(initialX, initialY, 0);
+            _initialWorldPosition = new Vector3(initialX, initialY, 0);
         }
     }
 }

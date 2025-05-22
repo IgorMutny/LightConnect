@@ -16,8 +16,9 @@ namespace LightConnect.Construction
             _model = model;
             _view = view;
             _levelView = levelView;
-
             _view.Initialize();
+            _levelView.InitialPosition = Vector2Int.zero;
+            _levelView.Size = _view.Size;
 
             _view.TilePlaceholderClicked += OnTilePlaceholderClicked;
             _model.TileSelected += OnTileSelected;
@@ -45,15 +46,13 @@ namespace LightConnect.Construction
 
         private void OnLevelCreated(Level level)
         {
-            _levelPresenter = new LevelPresenter(level, _levelView);
-            _levelView.Initialize();
+            _levelPresenter = new LevelPresenter(level, _levelView, shouldCalculateLevelSize: false);
         }
 
         private void OnLevelCleared()
         {
             _levelPresenter.Dispose();
             _levelPresenter = null;
-            _levelView.Clear();
         }
     }
 }

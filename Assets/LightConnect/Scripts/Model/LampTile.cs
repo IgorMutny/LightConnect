@@ -14,6 +14,7 @@ namespace LightConnect.Model
         {
             Color = color;
             InvokeUpdated();
+            InvokeEvaluationRequired();
         }
 
         public override void AddColor(Direction direction, Color color)

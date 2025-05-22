@@ -151,3 +151,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilePrefab: {fileID: 1439450302151463159, guid: 1aa66439b8684b949bb66b1a63e5386b, type: 3}
+  _raycastTarget: 1

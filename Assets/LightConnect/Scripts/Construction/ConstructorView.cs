@@ -13,7 +13,7 @@ namespace LightConnect.Construction
 
         private float _scale;
         private float _placeholderRequiredSize;
-        private Vector3 _initialPosition;
+        private Vector3 _initialWorldPosition;
         private List<TilePlaceholder> _placeholders = new();
 
         public event Action<Vector2Int> TilePlaceholderClicked;
@@ -55,13 +55,13 @@ namespace LightConnect.Construction
 
             float initialX = transform.position.x - width / 2 + _placeholderRequiredSize / 2;
             float initialY = transform.position.y - height / 2 + _placeholderRequiredSize / 2;
-            _initialPosition = new Vector3(initialX, initialY, 0);
+            _initialWorldPosition = new Vector3(initialX, initialY, 0);
         }
 
         private void CreatePlaceholder(Vector2Int position)
         {
-            float x = _initialPosition.x + position.x * _placeholderRequiredSize;
-            float y = _initialPosition.y + position.y * _placeholderRequiredSize;
+            float x = _initialWorldPosition.x + position.x * _placeholderRequiredSize;
+            float y = _initialWorldPosition.y + position.y * _placeholderRequiredSize;
             var worldPosition = new Vector3(x, y, 0);
 
             var go = Instantiate(_tilePlaceholderPrefab, worldPosition, Quaternion.identity, _placeholdersParent);

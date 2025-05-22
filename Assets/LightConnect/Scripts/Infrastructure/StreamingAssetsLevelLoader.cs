@@ -8,24 +8,20 @@ namespace LightConnect.Infrastructure
 {
     public class StreamingAssetsLevelLoader : ILevelLoader
     {
-        public async UniTask<int[]> Load(int levelId)
+        public async UniTask<int[]> Load(int id)
         {
-            string path = Application.streamingAssetsPath + "\\" + levelId;
+            string path = Application.streamingAssetsPath + "\\" + id;
 
             if (!File.Exists(path))
-                throw new Exception($"Level {levelId} does not exist");
+                throw new Exception($"Level {id} does not exist");
 
-            string json = await UniTask.Create(() => UniTask.FromResult(File.ReadAllText(path)));
+            var byteArray = await UniTask.FromResult(File.ReadAllBytes(path));
+            int[] intArray = new int[byteArray.Length / 4];
 
-            try
-            {
-                var data = JsonUtility.FromJson<int[]>(json);
-                return data;
-            }
-            catch
-            {
-                throw new Exception($"Level {levelId} can not be read");
-            }
+            for (int i = 0; i < intArray.Length; i++)
+                intArray[i] = BitConverter.ToInt32(byteArray, i * 4);
+
+            return intArray;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using LightConnect.Model;
 using UnityEngine;
 
@@ -10,10 +11,14 @@ namespace LightConnect.Core
         private LevelView _view;
         private Dictionary<Tile, TilePresenter> _presenters = new();
 
-        public LevelPresenter(Level model, LevelView view)
+        public LevelPresenter(Level model, LevelView view, bool shouldCalculateLevelSize)
         {
             _model = model;
             _view = view;
+
+            if (shouldCalculateLevelSize)
+                CalculateLevelSize();
+
             _view.Initialize();
 
             foreach (var tile in _model.Tiles())
@@ -30,6 +35,20 @@ namespace LightConnect.Core
 
             foreach (var presenter in _presenters.Values)
                 presenter.Dispose();
+
+            _view.Clear();
+        }
+
+        private void CalculateLevelSize()
+        {
+            int minX = _model.Tiles().Min(tile => tile.Position.x);
+            int minY = _model.Tiles().Min(tile => tile.Position.y);
+            int maxX = _model.Tiles().Max(tile => tile.Position.x);
+            int maxY = _model.Tiles().Max(tile => tile.Position.y);
+            var size = new Vector2Int(maxX - minX + 1, maxY - minY + 1);
+            var initialPosition = new Vector2Int(minX, minY);
+            _view.InitialPosition = initialPosition;
+            _view.Size = size;
         }
 
         private void OnTileCreated(Tile tile)

@@ -15,6 +15,7 @@ namespace LightConnect.Model
         {
             Color = color;
             InvokeUpdated();
+            InvokeEvaluationRequired();
         }
 
         public override void ResetColors()
@@ -31,7 +32,7 @@ namespace LightConnect.Model
 
         protected override void ApplyAdditionalData(TileData data)
         {
-            Color = data.Color; 
+            Color = data.Color;
         }
     }
 }

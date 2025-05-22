@@ -9,7 +9,7 @@ namespace LightConnect.Infrastructure
 
         private void Start()
         {
-            var game = new Game(_levelView);
+            var game = new Gameplay(_levelView);
             game.Run();
         }
     }

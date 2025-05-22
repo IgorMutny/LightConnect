@@ -13,14 +13,14 @@ namespace LightConnect.Construction
         [SerializeField] private Button _new;
         [SerializeField] private Button _load;
         [SerializeField] private Button _save;
-        [SerializeField] private TMP_InputField _levelNumberInputField;
+        [SerializeField] private TMP_InputField _levelIdInputField;
         [SerializeField] private TextMeshProUGUI _warning;
 
         private int _levelId = INVALID_ID;
 
         protected override void Subscribe()
         {
-            _levelNumberInputField.onValueChanged.AddListener(SetLevelName);
+            _levelIdInputField.onValueChanged.AddListener(SetLevelName);
             _new.onClick.AddListener(New);
             _save.onClick.AddListener(Save);
             _load.onClick.AddListener(Load);
@@ -28,7 +28,7 @@ namespace LightConnect.Construction
 
         protected override void Unsubscribe()
         {
-            _levelNumberInputField.onValueChanged.RemoveListener(SetLevelName);
+            _levelIdInputField.onValueChanged.RemoveListener(SetLevelName);
             _new.onClick.RemoveListener(New);
             _save.onClick.RemoveListener(Save);
             _load.onClick.RemoveListener(Load);
