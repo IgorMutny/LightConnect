@@ -9,32 +9,33 @@ namespace LightConnect.Construction
     {
         public void Save(Level level, int id)
         {
-            var data = level.GetData();
-            var json = JsonUtility.ToJson(data);
             string path = Application.streamingAssetsPath + "\\" + id;
-            File.WriteAllText(path, json);
+            int[] intArray = level.GetData();
+            byte[] byteArray = new byte[intArray.Length * 4];
+
+            for (int i = 0; i < intArray.Length; i++)
+            {
+                byte[] intBytes = BitConverter.GetBytes(intArray[i]);
+                Buffer.BlockCopy(intBytes, 0, byteArray, i * 4, 4);
+            }
+
+            File.WriteAllBytes(path, byteArray);
         }
 
-        public LevelData Load(int id)
+        public int[] Load(int id)
         {
             string path = Application.streamingAssetsPath + "\\" + id;
 
             if (!File.Exists(path))
                 throw new Exception($"Level {id} does not exist");
 
-            string json = File.ReadAllText(path);
-            LevelData data;
+            var byteArray = File.ReadAllBytes(path);
+            int[] intArray = new int[byteArray.Length / 4];
 
-            try
-            {
-                data = JsonUtility.FromJson<LevelData>(json);
-            }
-            catch
-            {
-                throw new Exception($"Level {id} can not be read");
-            }
+            for (int i = 0; i < intArray.Length; i++)
+                intArray[i] = BitConverter.ToInt32(byteArray, i * 4);
 
-            return data;
+            return intArray;
         }
 
         public bool LevelExists(int id)

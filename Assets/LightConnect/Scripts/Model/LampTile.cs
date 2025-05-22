@@ -29,5 +29,15 @@ namespace LightConnect.Model
             Powered = false;
             InvokeUpdated();
         }
+
+        protected override void WriteAdditionalData(TileData data)
+        {
+            data.Color = Color; 
+        }
+
+        protected override void ApplyAdditionalData(TileData data)
+        {
+            Color = data.Color;
+        }
     }
 }

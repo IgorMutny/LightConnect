@@ -47,28 +47,29 @@ namespace LightConnect.Model
             }
         }
 
-        public LevelData GetData()
+        public int[] GetData()
         {
-            var data = new LevelData();
-            /* data.SizeX = CurrentSize.x;
-            data.SizeY = CurrentSize.y; */
+            var tiles = new List<int>();
 
-            var tiles = new List<TileData>();
-            /* foreach (var tile in _tiles)
-                tiles.Add(tile.GetData()); */
+            foreach (var tile in _tiles.Values)
+            {
+                var data = (int)tile.GetData();
+                tiles.Add(data);
+            }
 
-            data.Tiles = tiles.ToArray();
-
-            return data;
+            return tiles.ToArray();
         }
 
-        public void SetData(LevelData data)
+        public void SetData(int[] tiles)
         {
-            /* foreach (var tileData in data.Tiles)
-                _tiles[tileData.PositionX, tileData.PositionY].SetData(tileData);
- */
-            var size = new Vector2Int(data.SizeX, data.SizeY);
-            /* SetSize(size); */
+            foreach (var data in tiles)
+            {
+                var convertedData = (TileData)data;
+                var type = convertedData.Type;
+                var position = convertedData.Position;
+                var tile = CreateTile(position, type);
+                tile.SetData(convertedData);
+            }
         }
 
         private void Evaluate()
@@ -82,10 +83,10 @@ namespace LightConnect.Model
                 IsWon = true;
         }
 
-        public void CreateTile(Vector2Int position, TileTypes type)
+        public Tile CreateTile(Vector2Int position, TileTypes type)
         {
             if (_tiles.ContainsKey(position))
-                return;
+                throw new Exception($"Tile {position} already exists");
 
             Tile tile;
 
@@ -102,8 +103,7 @@ namespace LightConnect.Model
             tile.EvaluationRequired += Evaluate;
             _powerEvaluator.UpdateElements();
             TileCreated?.Invoke(tile);
-
-            return;
+            return tile;
         }
 
         public void RemoveTile(Vector2Int position)

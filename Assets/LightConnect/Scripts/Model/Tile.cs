@@ -23,25 +23,21 @@ namespace LightConnect.Model
         public TileData GetData()
         {
             var data = new TileData();
-
-            data.PositionX = Position.x;
-            data.PositionY = Position.y;
-            data.WireType = (int)WireSetType;
-            data.Orientation = (int)Orientation;
-            /* data.ElementType = (int)ElementType;
-            data.Color = (int)ElementColor; */
-
+            data.Type = Type;
+            data.Position = Position;
+            data.WireSetType = WireSetType;
+            data.Orientation = Orientation;
+            WriteAdditionalData(data);
             return data;
         }
 
         public void SetData(TileData data)
         {
-            SetWireSetType((WireSetTypes)data.WireType);
-            SetOrientation((Direction)data.Orientation);
-            /* SetElementType((ElementTypes)data.ElementType);
-            SetElementColor((Color)data.Color); */
-
-            Updated?.Invoke();
+            WireSet.SetType(data.WireSetType);
+            WireSet.SetOrientation(data.Orientation);
+            ApplyAdditionalData(data);
+            InvokeUpdated();
+            InvokeEvaluationRequired();
         }
 
         public void SetWireSetType(WireSetTypes type)
@@ -96,5 +92,8 @@ namespace LightConnect.Model
         {
             EvaluationRequired?.Invoke();
         }
+
+        protected virtual void WriteAdditionalData(TileData data) { }
+        protected virtual void ApplyAdditionalData(TileData data) { }
     }
 }
