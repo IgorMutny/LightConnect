@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using LightConnect.Infrastructure;
 using LightConnect.Model;
 using UnityEngine;
 
@@ -11,12 +12,12 @@ namespace LightConnect.Core
         private LevelView _view;
         private Dictionary<Tile, TilePresenter> _presenters = new();
 
-        public LevelPresenter(Level model, LevelView view, bool shouldCalculateLevelSize)
+        public LevelPresenter(Level model, LevelView view)
         {
             _model = model;
             _view = view;
 
-            if (shouldCalculateLevelSize)
+            if (GameMode.Current == GameMode.Mode.GAMEPLAY)
                 CalculateLevelSize();
 
             _view.Initialize();

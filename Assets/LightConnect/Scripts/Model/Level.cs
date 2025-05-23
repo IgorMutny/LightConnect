@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -93,7 +94,7 @@ namespace LightConnect.Model
                 case TileTypes.WIRE: tile = new WireTile(position); break;
                 case TileTypes.BATTERY: tile = new BatteryTile(position); break;
                 case TileTypes.LAMP: tile = new LampTile(position); break;
-                //case TileTypes.WARP: tile = new WarpTile(position); break;
+                case TileTypes.WARP: tile = new WarpTile(position); break;
                 default: throw new Exception("Unknown tile type");
             }
 
@@ -112,8 +113,24 @@ namespace LightConnect.Model
             var tile = _tiles[position];
             tile.EvaluationRequired -= Evaluate;
             _tiles.Remove(position);
+
+            if (tile is WarpTile warpTile)
+                RemoveWarpConnection(warpTile);
+
             _powerEvaluator.UpdateElements();
             TileRemoved?.Invoke(tile);
+        }
+
+        public void RemoveWarpConnection(WarpTile warpTile)
+        {
+            var connectedWarp =
+                (WarpTile)_tiles.Values.FirstOrDefault(
+                    tile => tile is WarpTile connectedWarpTile &&
+                    connectedWarpTile.ConnectedPosition == warpTile.Position
+                );
+
+            if (connectedWarp != null)
+                connectedWarp.SetConnectedPosition(WarpTile.NONE);
         }
     }
 }

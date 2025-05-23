@@ -1,4 +1,5 @@
 using LightConnect.Core;
+using LightConnect.Infrastructure;
 using UnityEngine;
 
 namespace LightConnect.Construction
@@ -10,6 +11,7 @@ namespace LightConnect.Construction
         [SerializeField] private WiresPanel _wiresPanel;
         [SerializeField] private ColorsPanel _colorsPanel;
         [SerializeField] private RotationsPanel _rotationsPanel;
+        [SerializeField] private WarpConnectionPanel _warpConnectionPanel;
         [SerializeField] private LevelView _levelView;
         [SerializeField] private ConstructorView _constructorView;
 
@@ -17,6 +19,7 @@ namespace LightConnect.Construction
 
         private void Start()
         {
+            GameMode.Current = GameMode.Mode.CONSTRUCTOR;
             var constructor = new Constructor();
             _constructorPresenter = new ConstructorPresenter(constructor, _constructorView, _levelView);
             constructor.CreateNewLevel();
@@ -26,6 +29,7 @@ namespace LightConnect.Construction
             _wiresPanel.Initialize(constructor);
             _colorsPanel.Initialize(constructor);
             _rotationsPanel.Initialize(constructor);
+            _warpConnectionPanel.Initialize(constructor);
         }
 
         private void OnDestroy()

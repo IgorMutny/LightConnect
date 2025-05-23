@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LightConnect.Model
 {
-    public class BatteryTile : Tile, IColoredTile
+    public class BatteryTile : Tile, IColoredTile, IRotatableTile
     {
         public BatteryTile(Vector2Int position) : base(position) { }
 
@@ -21,7 +21,7 @@ namespace LightConnect.Model
         public override void ResetColors()
         {
             WireSet.ResetColors();
-            WireSet.AddColorToAllWires(Color);
+            AddColorToAllWires(Color);
             InvokeUpdated();
         }
 

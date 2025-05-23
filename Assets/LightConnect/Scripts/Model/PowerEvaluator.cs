@@ -63,24 +63,41 @@ namespace LightConnect.Model
             {
                 if (!path.Contains(connectedTile))
                 {
-                    HandleTile(origin, connectedTile, direction, out bool shouldContinue);
+                    HandleTile(origin, connectedTile, direction, path);
 
-                    if (shouldContinue)
-                    {
-                        var newPath = new List<Tile>(path) { connectedTile };
-                        HandlePath(newPath);
-                    }
+                    if (connectedTile is WarpTile warpTile)
+                        HandleWarp(warpTile, path);
                 }
             }
         }
 
-        private void HandleTile(Tile from, Tile to, Direction direction, out bool shouldContinue)
+        private void HandleTile(Tile from, Tile to, Direction direction, List<Tile> path)
         {
             from.HasWire(direction, out Color color);
-            shouldContinue = color != Color.None;
-
-            if (shouldContinue)
+            if (color != Color.None)
+            {
                 to.AddColor(-direction, color);
+                var newPath = new List<Tile>(path) { to };
+                HandlePath(newPath);
+            }
+        }
+
+        private void HandleWarp(WarpTile warpTile, List<Tile> path)
+        {
+            if (warpTile.ConnectedPosition == WarpTile.NONE)
+                return;
+
+            var color = warpTile.BlendedColor;
+            _level.TryGetTile(warpTile.ConnectedPosition, out Tile connectedTile);
+
+            var connectedWarp = (WarpTile)connectedTile;
+
+            if (connectedWarp != null)
+            {
+                connectedWarp.AddColorToAllWires(color);
+                var newPath = new List<Tile>(path) { connectedWarp };
+                HandlePath(newPath);
+            }
         }
 
         private Dictionary<Tile, Direction> GetConnectedTiles(Tile origin)

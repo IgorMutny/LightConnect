@@ -94,6 +94,24 @@ namespace LightConnect.Model
             }
         }
 
+        public Vector2Int ConnectedPosition
+        {
+            get
+            {
+                int x = GetBytes(ADDITIONAL_1_OFFSET);
+                int y = GetBytes(ADDITIONAL_2_OFFSET);
+                return new Vector2Int(x, y);
+            }
+
+            set
+            {
+                int x = value.x;
+                SetBytes(x, ADDITIONAL_1_OFFSET);
+                int y = value.y;
+                SetBytes(y, ADDITIONAL_2_OFFSET);
+            }
+        }
+
         private int GetBytes(int offset)
         {
             return (_value & (0b1111 << offset)) >> offset;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LightConnect.Model
 {
-    public class LampTile : Tile, IColoredTile
+    public class LampTile : Tile, IColoredTile, IRotatableTile
     {
         public LampTile(Vector2Int position) : base(position) { }
 
@@ -20,7 +20,7 @@ namespace LightConnect.Model
         public override void AddColor(Direction direction, Color color)
         {
             WireSet.AddColor(direction, color);
-            Powered = Color != Color.None && WireSet.BlendedColor == Color;
+            Powered = Color != Color.None && BlendedColor == Color;
             InvokeUpdated();
         }
 

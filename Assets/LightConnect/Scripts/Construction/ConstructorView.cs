@@ -9,12 +9,12 @@ namespace LightConnect.Construction
         [SerializeField] private GameObject _tilePlaceholderPrefab;
         [SerializeField] private Vector2Int _size;
         [SerializeField] private Transform _placeholdersParent;
-        [SerializeField] private Selections _selections;
+        [SerializeField] private Selection _selection;
 
         private float _scale;
         private float _placeholderRequiredSize;
         private Vector3 _initialWorldPosition;
-        private List<TilePlaceholder> _placeholders = new();
+        private Dictionary<Vector2Int, TilePlaceholder> _placeholders = new();
 
         public event Action<Vector2Int> TilePlaceholderClicked;
 
@@ -27,16 +27,19 @@ namespace LightConnect.Construction
             for (int x = 0; x < _size.x; x++)
                 for (int y = 0; y < _size.y; y++)
                     CreatePlaceholder(new Vector2Int(x, y));
+
+            Select(Vector2Int.zero);
         }
 
         public void Select(Vector2Int position)
         {
-            _selections.Select(position);
+            var worldPosition = _placeholders[position].transform.position;
+            _selection.SetPosition(worldPosition);
         }
 
         private void OnDestroy()
         {
-            foreach (var placeholder in _placeholders)
+            foreach (var placeholder in _placeholders.Values)
                 placeholder.Clicked -= OnPlaceholderClicked;
         }
 
@@ -51,10 +54,11 @@ namespace LightConnect.Construction
             var placeholderRect = _tilePlaceholderPrefab.GetComponent<RectTransform>();
             float placeholderDefaultSize = placeholderRect.sizeDelta.x;
             _scale = _placeholderRequiredSize / placeholderDefaultSize;
-            _selections.SetScale(_scale);
+            _selection.SetScale(_scale);
 
-            float initialX = transform.position.x - width / 2 + _placeholderRequiredSize / 2;
-            float initialY = transform.position.y - height / 2 + _placeholderRequiredSize / 2;
+            int maxDimension = Mathf.Max(Size.x, Size.y);
+            float initialX = transform.position.x - (width * Size.x / maxDimension - _placeholderRequiredSize) / 2;
+            float initialY = transform.position.y - (height * Size.y / maxDimension - _placeholderRequiredSize) / 2;
             _initialWorldPosition = new Vector3(initialX, initialY, 0);
         }
 
@@ -70,9 +74,7 @@ namespace LightConnect.Construction
             var placeholder = go.GetComponent<TilePlaceholder>();
             placeholder.Position = position;
             placeholder.Clicked += OnPlaceholderClicked;
-            _placeholders.Add(placeholder);
-
-            _selections.CreateSelection(position, worldPosition);
+            _placeholders.Add(position, placeholder);
         }
 
         private void OnPlaceholderClicked(Vector2Int position)

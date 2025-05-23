@@ -63,8 +63,9 @@ namespace LightConnect.Core
             float tileDefaultSize = tileRect.rect.size.x;
             _scale = _tileRequiredSize / tileDefaultSize;
 
-            float initialX = transform.position.x - width / 2 + _tileRequiredSize / 2;
-            float initialY = transform.position.y - height / 2 + _tileRequiredSize / 2;
+            int maxDimension = Mathf.Max(Size.x, Size.y);
+            float initialX = transform.position.x - (width * Size.x / maxDimension - _tileRequiredSize) / 2;
+            float initialY = transform.position.y - (height * Size.y / maxDimension - _tileRequiredSize) / 2;
             _initialWorldPosition = new Vector3(initialX, initialY, 0);
         }
     }

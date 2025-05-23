@@ -58,7 +58,7 @@ namespace LightConnect.Construction
 
         private void SelectWarp()
         {
-            throw new NotImplementedException();
+            CreateTile(TileTypes.WARP);
         }
     }
 }

@@ -1,3 +1,4 @@
+using LightConnect.Infrastructure;
 using LightConnect.Model;
 using Color = LightConnect.Model.Color;
 
@@ -36,11 +37,19 @@ namespace LightConnect.Core
                 bool hasWire = _model.HasWire((Direction)i, out Color color);
                 _view.SetWire(hasWire, i, color);
             }
+
+            if (GameMode.Current == GameMode.Mode.CONSTRUCTOR &&
+                _model is WarpTile warpTile)
+            {
+                var color = warpTile.ConnectedPosition != WarpTile.NONE ? Color.Green : Color.White;
+                _view.SetElementColor(color, true);
+            }
         }
 
         private void RotateModel()
         {
-            _model.Rotate(Direction.Right);
+            if (GameMode.Current == GameMode.Mode.GAMEPLAY && _model is IRotatableTile)
+                _model.Rotate(Direction.Right);
         }
 
     }

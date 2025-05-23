@@ -9,6 +9,7 @@ namespace LightConnect.Infrastructure
 
         private void Start()
         {
+            GameMode.Current = GameMode.Mode.GAMEPLAY;
             var game = new Gameplay(_levelView);
             game.Run();
         }

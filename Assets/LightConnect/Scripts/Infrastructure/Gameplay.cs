@@ -15,7 +15,7 @@ namespace LightConnect.Infrastructure
         {
             _levelView = levelView;
             _gameData = new GameData();
-            _gameData.CurrentLevelId = 1;
+            _gameData.CurrentLevelId = 15; //***//
             _levelLoader = new StreamingAssetsLevelLoader();
         }
 
@@ -32,7 +32,7 @@ namespace LightConnect.Infrastructure
             var level = new Level();
             level.SetData(levelData);
             LevelRandomizer.Randomize(level.Tiles());
-            var levelPresenter = new LevelPresenter(level, _levelView, shouldCalculateLevelSize: true);
+            var levelPresenter = new LevelPresenter(level, _levelView);
             await UniTask.WaitUntil(() => level.IsWon);
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
             levelPresenter.Dispose();

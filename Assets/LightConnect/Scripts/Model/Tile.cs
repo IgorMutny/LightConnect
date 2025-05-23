@@ -19,6 +19,7 @@ namespace LightConnect.Model
         public Vector2Int Position { get; private set; }
         public WireSetTypes WireSetType => WireSet.Type;
         public Direction Orientation => WireSet.Orientation;
+        public Color BlendedColor => WireSet.BlendedColor;
 
         public TileData GetData()
         {
@@ -74,6 +75,12 @@ namespace LightConnect.Model
         public virtual void AddColor(Direction direction, Color color)
         {
             WireSet.AddColor(direction, color);
+            InvokeUpdated();
+        }
+
+        public void AddColorToAllWires(Color color)
+        {
+            WireSet.AddColorToAllWires(color);
             InvokeUpdated();
         }
 

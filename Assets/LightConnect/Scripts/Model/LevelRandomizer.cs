@@ -12,7 +12,7 @@ namespace LightConnect.Model
 
             foreach (var tile in tiles)
             {
-                if (tile.WireSetType != WireSetTypes.NONE)
+                if (tile is IRotatableTile && tile.WireSetType != WireSetTypes.NONE)
                 {
                     tilesAmount += 1;
 

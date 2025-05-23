@@ -11,14 +11,30 @@ namespace LightConnect.Construction
         private Tile _selectedTile;
         private Level _level;
         private LevelSaveLoader _levelSaveLoader;
+        private bool _connectedWarpSelectionMode;
 
         public event Action<Level> LevelCreated;
         public event Action LevelCleared;
         public event Action<Vector2Int> TileSelected;
+        public event Action ConnectedWarpSelectionModeChanged;
 
         public Constructor()
         {
             _levelSaveLoader = new LevelSaveLoader();
+        }
+
+        public bool ConnectedWarpSelectionMode
+        {
+            get
+            {
+                return _connectedWarpSelectionMode;
+            }
+
+            set
+            {
+                _connectedWarpSelectionMode = value;
+                ConnectedWarpSelectionModeChanged?.Invoke();
+            }
         }
 
         public void ClearAndCreateNewLevel()
@@ -63,10 +79,28 @@ namespace LightConnect.Construction
 
         public void SelectTile(Vector2Int position)
         {
-            _selectedPosition = position;
-            _level.TryGetTile(position, out Tile tile);
-            _selectedTile = tile;
-            TileSelected?.Invoke(position);
+            if (ConnectedWarpSelectionMode)
+            {
+                if (_selectedTile is WarpTile warpTile &&
+                     _level.TryGetTile(position, out Tile connected) &&
+                      connected is WarpTile connectedWarp)
+                {
+                    _level.RemoveWarpConnection(warpTile);
+                    _level.RemoveWarpConnection(connectedWarp);
+
+                    warpTile.SetConnectedPosition(position);
+                    connectedWarp.SetConnectedPosition(_selectedPosition);
+                }
+
+                ConnectedWarpSelectionMode = false;
+            }
+            else
+            {
+                _selectedPosition = position;
+                _level.TryGetTile(position, out Tile tile);
+                _selectedTile = tile;
+                TileSelected?.Invoke(position);
+            }
         }
 
         public void CreateTile(TileTypes type)

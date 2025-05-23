@@ -46,7 +46,7 @@ namespace LightConnect.Construction
 
         private void OnLevelCreated(Level level)
         {
-            _levelPresenter = new LevelPresenter(level, _levelView, shouldCalculateLevelSize: false);
+            _levelPresenter = new LevelPresenter(level, _levelView);
         }
 
         private void OnLevelCleared()

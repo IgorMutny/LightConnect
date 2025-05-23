@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LightConnect.Model
 {
-    public class WireTile : Tile
+    public class WireTile : Tile, IRotatableTile
     {
         public WireTile(Vector2Int position) : base(position) { }
 
