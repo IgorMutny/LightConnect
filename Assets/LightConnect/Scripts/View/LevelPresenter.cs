@@ -27,6 +27,8 @@ namespace LightConnect.Core
 
             _model.TileCreated += OnTileCreated;
             _model.TileRemoved += OnTileRemoved;
+
+            _model.Evaluate();
         }
 
         public void Dispose()

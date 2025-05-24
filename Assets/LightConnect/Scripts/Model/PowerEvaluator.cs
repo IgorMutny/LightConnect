@@ -9,6 +9,7 @@ namespace LightConnect.Model
         private Level _level;
         private List<BatteryTile> _batteryTiles = new();
         private List<LampTile> _lampTiles = new();
+        private List<Tile> _poweredTiles = new();
 
         public PowerEvaluator(Level level)
         {
@@ -44,17 +45,25 @@ namespace LightConnect.Model
 
         public void Execute()
         {
+            _poweredTiles.Clear();
+
             foreach (var tile in _level.Tiles())
+            {
+                if (tile.HasAnyColorInWires())
+                    _poweredTiles.Add(tile);
+
                 tile.ResetColors();
+                tile.OrderInPowerChain = 0;
+            }
 
             foreach (var batteryTile in _batteryTiles)
             {
-                var path = new List<Tile>() { batteryTile };
+                var path = new Path() { batteryTile };
                 HandlePath(path);
             }
         }
 
-        private void HandlePath(List<Tile> path)
+        private void HandlePath(Path path)
         {
             var origin = path.Last();
             var connectedTiles = GetConnectedTiles(origin);
@@ -71,18 +80,22 @@ namespace LightConnect.Model
             }
         }
 
-        private void HandleTile(Tile from, Tile to, Direction direction, List<Tile> path)
+        private void HandleTile(Tile from, Tile to, Direction direction, Path path)
         {
             from.HasWire(direction, out Color color);
             if (color != Color.None)
             {
+                if (_poweredTiles.Contains(to))
+                    path.ResetOrder();
+
+                to.OrderInPowerChain = path.CurrentOrder;
                 to.AddColor(-direction, color);
-                var newPath = new List<Tile>(path) { to };
+                var newPath = new Path(path) { to };
                 HandlePath(newPath);
             }
         }
 
-        private void HandleWarp(WarpTile warpTile, List<Tile> path)
+        private void HandleWarp(WarpTile warpTile, Path path)
         {
             if (warpTile.ConnectedPosition == WarpTile.NONE)
                 return;
@@ -95,7 +108,7 @@ namespace LightConnect.Model
             if (connectedWarp != null)
             {
                 connectedWarp.AddColorToAllWires(color);
-                var newPath = new List<Tile>(path) { connectedWarp };
+                var newPath = new Path(path) { connectedWarp };
                 HandlePath(newPath);
             }
         }
@@ -136,6 +149,26 @@ namespace LightConnect.Model
         private bool AreConnected(Tile from, Tile to, Direction direction)
         {
             return from.HasWire(direction) && to.HasWire(-direction);
+        }
+
+        private class Path : List<Tile>
+        {
+            public Path() : base()
+            {
+                CurrentOrder = 0;
+            }
+
+            public Path(Path parentPath) : base(parentPath)
+            {
+                CurrentOrder = parentPath.CurrentOrder + 1;
+            }
+
+            public int CurrentOrder { get; private set; }
+
+            public void ResetOrder()
+            {
+                CurrentOrder = 0;
+            }
         }
     }
 }

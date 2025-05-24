@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,9 +13,11 @@ namespace LightConnect.Core
         [SerializeField] private TileViewSettings _tileViewSettings;
         [SerializeField] private GameObject[] _wires;
         [SerializeField] private GameObject _element;
+        [SerializeField] private float _colorChangeSpeed;
 
         private Image _elementImage;
         private Image[] _wireImages;
+        private List<Coroutine> _colorCoroutines = new();
 
         public event Action Clicked;
 
@@ -55,22 +59,42 @@ namespace LightConnect.Core
             }
         }
 
-        public void SetWire(bool hasWire, int direction, Model.Color color)
+        public void SetElement(TileTypes type, Model.Color color)
         {
-            if (hasWire)
-            {
-                _wires[direction].SetActive(true);
-                _wireImages[direction].color = _tileViewSettings.Color(color, true);
-            }
-            else
-            {
-                _wires[direction].SetActive(false);
-            }
+            SetElement(type);
+            _elementImage.color = _tileViewSettings.Color(color, false);
         }
 
-        public void SetElementColor(Model.Color color, bool powered)
+        public void SetWire(bool hasWire, int direction)
         {
-            _elementImage.color = _tileViewSettings.Color(color, powered);
+            _wires[direction].SetActive(hasWire);
+            _wireImages[direction].color = _tileViewSettings.Color(Model.Color.None, false);
+        }
+
+        public void SetElementColor(Model.Color color, bool powered, int orderInPowerChain)
+        {
+            var coroutine = StartCoroutine(SetColorCoroutine(_elementImage, color, powered, orderInPowerChain));
+            _colorCoroutines.Add(coroutine);
+        }
+
+        public void SetWireColor(int direction, Model.Color color, int orderInPowerChain)
+        {
+            var coroutine = StartCoroutine(SetColorCoroutine(_wireImages[direction], color, true, orderInPowerChain));
+            _colorCoroutines.Add(coroutine);
+        }
+
+        public void StopColorCoroutines()
+        {
+            foreach (var coroutine in _colorCoroutines)
+                StopCoroutine(coroutine);
+
+            _colorCoroutines.Clear();
+        }
+
+        private IEnumerator SetColorCoroutine(Image image, Model.Color color, bool powered, int order)
+        {
+            yield return new WaitForSeconds(order * _colorChangeSpeed);
+            image.color = _tileViewSettings.Color(color, powered);
         }
     }
 }

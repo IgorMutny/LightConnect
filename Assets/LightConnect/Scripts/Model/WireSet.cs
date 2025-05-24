@@ -60,6 +60,11 @@ namespace LightConnect.Model
             return wire != null;
         }
 
+        public bool HasAnyColorInWires()
+        {
+            return _wires.Any(wire => wire.Color != Color.None);
+        }
+
         public void AddColor(Direction direction, Color color)
         {
             var wire = _wires.FirstOrDefault(wire => wire.Orientation == direction);

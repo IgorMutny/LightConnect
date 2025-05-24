@@ -11,7 +11,7 @@ namespace LightConnect.Model
         public override void AddColor(Direction direction, Color color)
         {
             WireSet.AddColorToAllWires(color);
-            InvokeUpdated();
+            InvokeRecolorized();
         }
     }
 }

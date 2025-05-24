@@ -13,22 +13,21 @@ namespace LightConnect.Model
         public void SetColor(Color color)
         {
             Color = color;
-            InvokeUpdated();
-            InvokeEvaluationRequired();
+            InvokeContentChanged();
         }
 
         public override void AddColor(Direction direction, Color color)
         {
             WireSet.AddColor(direction, color);
             Powered = Color != Color.None && BlendedColor == Color;
-            InvokeUpdated();
+            InvokeRecolorized();
         }
 
         public override void ResetColors()
         {
             WireSet.ResetColors();
             Powered = false;
-            InvokeUpdated();
+            InvokeRecolorized();
         }
 
         protected override void WriteAdditionalData(TileData data)

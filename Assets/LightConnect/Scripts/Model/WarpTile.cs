@@ -16,8 +16,7 @@ namespace LightConnect.Model
         public void SetConnectedPosition(Vector2Int connectedPosition)
         {
             ConnectedPosition = connectedPosition;
-            InvokeUpdated();
-            InvokeEvaluationRequired();
+            InvokeContentChanged();
         }
 
         protected override void ApplyAdditionalData(TileData data)

@@ -7,8 +7,9 @@ namespace LightConnect.Model
     {
         protected WireSet WireSet = new();
 
-        public event Action Updated;
+        public event Action ContentChanged;
         public event Action EvaluationRequired;
+        public event Action Recolorized;
 
         public Tile(Vector2Int position)
         {
@@ -20,6 +21,7 @@ namespace LightConnect.Model
         public WireSetTypes WireSetType => WireSet.Type;
         public Direction Orientation => WireSet.Orientation;
         public Color BlendedColor => WireSet.BlendedColor;
+        public int OrderInPowerChain { get; set; }
 
         public TileData GetData()
         {
@@ -37,29 +39,25 @@ namespace LightConnect.Model
             WireSet.SetType(data.WireSetType);
             WireSet.SetOrientation(data.Orientation);
             ApplyAdditionalData(data);
-            InvokeUpdated();
-            InvokeEvaluationRequired();
+            InvokeContentChanged();
         }
 
         public void SetWireSetType(WireSetTypes type)
         {
             WireSet.SetType(type);
-            InvokeUpdated();
-            InvokeEvaluationRequired();
+            InvokeContentChanged();
         }
 
         public void SetOrientation(Direction orientation)
         {
             WireSet.SetOrientation(orientation);
-            InvokeUpdated();
-            InvokeEvaluationRequired();
+            InvokeContentChanged();
         }
 
         public void Rotate(Direction side)
         {
             WireSet.Rotate(side);
-            InvokeUpdated();
-            InvokeEvaluationRequired();
+            InvokeContentChanged();
         }
 
         public bool HasWire(Direction direction)
@@ -72,32 +70,38 @@ namespace LightConnect.Model
             return WireSet.HasWire(direction, out color);
         }
 
+        public bool HasAnyColorInWires()
+        {
+            return WireSet.HasAnyColorInWires();
+        }
+
         public virtual void AddColor(Direction direction, Color color)
         {
             WireSet.AddColor(direction, color);
-            InvokeUpdated();
+            InvokeRecolorized();
         }
 
         public void AddColorToAllWires(Color color)
         {
             WireSet.AddColorToAllWires(color);
-            InvokeUpdated();
+            InvokeRecolorized();
         }
 
         public virtual void ResetColors()
         {
             WireSet.ResetColors();
-            InvokeUpdated();
+            InvokeRecolorized();
         }
 
-        protected void InvokeUpdated()
+        protected void InvokeContentChanged()
         {
-            Updated?.Invoke();
-        }
-
-        protected void InvokeEvaluationRequired()
-        {
+            ContentChanged?.Invoke();
             EvaluationRequired?.Invoke();
+        }
+
+        protected void InvokeRecolorized()
+        {
+            Recolorized?.Invoke();
         }
 
         protected virtual void WriteAdditionalData(TileData data) { }

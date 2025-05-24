@@ -73,7 +73,7 @@ namespace LightConnect.Model
             }
         }
 
-        private void Evaluate()
+        public void Evaluate()
         {
             IsWon = false;
             _powerEvaluator.Execute();

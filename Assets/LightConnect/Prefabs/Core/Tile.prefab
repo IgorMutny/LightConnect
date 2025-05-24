@@ -250,6 +250,7 @@ MonoBehaviour:
   - {fileID: 1373850588098327808}
   - {fileID: 1904588681231535412}
   _element: {fileID: 2222321663212513394}
+  _colorChangeSpeed: 0.05
 --- !u!1 &1904588681231535412
 GameObject:
   m_ObjectHideFlags: 0
