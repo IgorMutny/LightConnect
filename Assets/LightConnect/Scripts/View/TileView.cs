@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,14 +8,10 @@ namespace LightConnect.Core
 {
     public class TileView : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private TileViewSettings _tileViewSettings;
-        [SerializeField] private GameObject[] _wires;
-        [SerializeField] private GameObject _element;
-        [SerializeField] private float _colorChangeSpeed;
-
-        private Image _elementImage;
-        private Image[] _wireImages;
-        private List<Coroutine> _colorCoroutines = new();
+        [SerializeField] private TileViewSettings _settings;
+        [SerializeField] private TilePartView _element;
+        [SerializeField] private TilePartView _wireSetCenter;
+        [SerializeField] private TilePartView[] _wires;
 
         public event Action Clicked;
 
@@ -33,11 +27,11 @@ namespace LightConnect.Core
 
         public void Initialize()
         {
-            _elementImage = _element.GetComponent<Image>();
-            _wireImages = new Image[_wires.Length];
+            _element.Initialize(_settings);
+            _wireSetCenter.Initialize(_settings);
 
             for (int i = 0; i < _wires.Length; i++)
-                _wireImages[i] = _wires[i].GetComponent<Image>();
+                _wires[i].Initialize(_settings);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -54,47 +48,61 @@ namespace LightConnect.Core
             else
             {
                 _element.SetActive(true);
-                var sprite = _tileViewSettings.ElementSprite(type);
-                _elementImage.sprite = sprite;
+                var sprite = _settings.ElementSprite(type);
+                _element.SetSprite(sprite);
             }
         }
 
         public void SetElement(TileTypes type, Model.Color color)
         {
             SetElement(type);
-            _elementImage.color = _tileViewSettings.Color(color, false);
+            _element.SetColor(color, false, 0);
+        }
+
+        public void SetWireSet(WireSetTypes type, Direction orientation)
+        {
+            if (type != WireSetTypes.NONE)
+            {
+                _wireSetCenter.SetActive(true);
+                var sprite = _settings.WireSetCenterSprite(type);
+                _wireSetCenter.SetSprite(sprite);
+                var rotation = Quaternion.Euler(0, 0, -(int)orientation * 90);
+                _wireSetCenter.transform.rotation = rotation;
+            }
+            else
+            {
+                _wireSetCenter.SetActive(false);
+            }
         }
 
         public void SetWire(bool hasWire, int direction)
         {
             _wires[direction].SetActive(hasWire);
-            _wireImages[direction].color = _tileViewSettings.Color(Model.Color.None, false);
+            _wires[direction].SetColor(Model.Color.None, false, 0);
         }
 
-        public void SetElementColor(Model.Color color, bool powered, int orderInPowerChain)
+        public void SetElementColor(Model.Color color, bool powered, int order)
         {
-            var coroutine = StartCoroutine(SetColorCoroutine(_elementImage, color, powered, orderInPowerChain));
-            _colorCoroutines.Add(coroutine);
+            _element.SetColor(color, powered, order);
         }
 
-        public void SetWireColor(int direction, Model.Color color, int orderInPowerChain)
+        public void SetWireColor(int direction, Model.Color color, int order)
         {
-            var coroutine = StartCoroutine(SetColorCoroutine(_wireImages[direction], color, true, orderInPowerChain));
-            _colorCoroutines.Add(coroutine);
+            _wires[direction].SetColor(color, true, order);
+        }
+
+        public void SetWireSetCenterColor(Model.Color color, int order)
+        {
+            _wireSetCenter.SetColor(color, true, order);
         }
 
         public void StopColorCoroutines()
         {
-            foreach (var coroutine in _colorCoroutines)
-                StopCoroutine(coroutine);
+            _element.StopColorCoroutines();
+            _wireSetCenter.StopColorCoroutines();
 
-            _colorCoroutines.Clear();
-        }
-
-        private IEnumerator SetColorCoroutine(Image image, Model.Color color, bool powered, int order)
-        {
-            yield return new WaitForSeconds(order * _colorChangeSpeed);
-            image.color = _tileViewSettings.Color(color, powered);
+            for (int i = 0; i < _wires.Length; i++)
+                _wires[i].StopColorCoroutines();
         }
     }
 }

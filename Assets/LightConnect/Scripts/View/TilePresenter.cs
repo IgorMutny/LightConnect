@@ -36,6 +36,8 @@ namespace LightConnect.Core
             else
                 _view.SetElement(_model.Type);
 
+            _view.SetWireSet(_model.WireSetType, _model.Orientation);
+
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
             {
                 bool hasWire = _model.HasWire((Direction)i);
@@ -55,23 +57,22 @@ namespace LightConnect.Core
             _view.StopColorCoroutines();
 
             if (_model is IColoredTile coloredTile)
-                if (coloredTile.Powered)
-                    _view.SetElementColor(coloredTile.Color, coloredTile.Powered, _model.OrderInPowerChain);
-                else
-                    _view.SetElementColor(coloredTile.Color, coloredTile.Powered, 0);
+                _view.SetElementColor(coloredTile.Color, coloredTile.Powered, _model.OrderInPowerChain);
 
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
             {
-                bool hasWire = _model.HasWire((Direction)i, out Color color);
+                _model.HasWire((Direction)i, out Color color);
 
-                if (hasWire)
-                {
-                    if (color != Color.None)
-                        _view.SetWireColor(i, color, _model.OrderInPowerChain);
-                    else
-                        _view.SetWireColor(i, color, 0);
-                }
+                if (color != Color.None)
+                    _view.SetWireColor(i, color, _model.OrderInPowerChain);
+                else
+                    _view.SetWireColor(i, Color.None, 0);
             }
+
+            if (_model.HasAnyColorInWires())
+                _view.SetWireSetCenterColor(_model.BlendedColor, _model.OrderInPowerChain);
+            else
+                _view.SetWireSetCenterColor(Color.None, 0);
 
         }
 

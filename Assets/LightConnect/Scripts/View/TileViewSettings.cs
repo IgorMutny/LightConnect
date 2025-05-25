@@ -10,13 +10,21 @@ namespace LightConnect.Core
 
     public class TileViewSettings : ScriptableObject
     {
+        [field: SerializeField] public float ColorChangeSpeed { get; private set; }
+        
         [SerializeField] private List<ElementSettings> _elements;
+        [SerializeField] private List<WireSetSettings> _wireSetCenters;
         [SerializeField] private List<ColorSettings> _poweredColors;
         [SerializeField] private List<ColorSettings> _notPoweredColors;
 
         public Sprite ElementSprite(TileTypes type)
         {
             return _elements.First(element => element.Type == type).Sprite;
+        }
+
+        public Sprite WireSetCenterSprite(WireSetTypes type)
+        {
+            return _wireSetCenters.First(wire => wire.Type == type).Sprite;
         }
 
         public UnityEngine.Color Color(Model.Color color, bool isPowered)
@@ -32,6 +40,13 @@ namespace LightConnect.Core
     public class ElementSettings
     {
         [field: SerializeField] public TileTypes Type { get; private set; }
+        [field: SerializeField] public Sprite Sprite { get; private set; }
+    }
+
+    [Serializable]
+    public class WireSetSettings
+    {
+        [field: SerializeField] public WireSetTypes Type { get; private set; }
         [field: SerializeField] public Sprite Sprite { get; private set; }
     }
 
