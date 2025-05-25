@@ -60,7 +60,7 @@ namespace LightConnect.Model
             return wire != null;
         }
 
-        public bool HasAnyColorInWires()
+        public bool HasAnyColoredWires()
         {
             return _wires.Any(wire => wire.Color != Color.None);
         }

@@ -30,7 +30,7 @@ namespace LightConnect.Core
 
             var go = Instantiate(_tilePrefab, worldPosition, Quaternion.identity, transform);
             go.transform.localScale = new Vector3(_scale, _scale, 1f);
-            go.name = $"Tile {x}-{y}";
+            go.name = $"Tile {position.x}-{position.y}";
 
             var tile = go.GetComponent<TileView>();
             tile.RaycastTarget = _raycastTarget;

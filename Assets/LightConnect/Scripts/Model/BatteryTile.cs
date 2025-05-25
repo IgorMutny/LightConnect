@@ -9,9 +9,9 @@ namespace LightConnect.Model
         public Color Color { get; private set; }
 
         public override TileTypes Type => TileTypes.BATTERY;
-        public bool Powered => true;
+        public bool ElementPowered => true;
 
-        public void SetColor(Color color)
+        public void SetElementColor(Color color)
         {
             Color = color;
             InvokeContentChanged();
@@ -21,7 +21,7 @@ namespace LightConnect.Model
         {
             WireSet.ResetColors();
             AddColorToAllWires(Color);
-            InvokeRecolorized();
+            PoweringOrder = 0;
         }
 
         protected override void WriteAdditionalData(TileData data)

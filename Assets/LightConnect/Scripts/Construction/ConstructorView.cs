@@ -70,6 +70,7 @@ namespace LightConnect.Construction
 
             var go = Instantiate(_tilePlaceholderPrefab, worldPosition, Quaternion.identity, _placeholdersParent);
             go.transform.localScale = new Vector3(_scale, _scale, 1);
+            go.name = $"Placeholder {position.x}-{position.y}";
 
             var placeholder = go.GetComponent<TilePlaceholder>();
             placeholder.Position = position;

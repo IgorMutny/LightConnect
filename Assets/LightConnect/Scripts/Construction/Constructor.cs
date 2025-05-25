@@ -130,7 +130,7 @@ namespace LightConnect.Construction
                 return;
 
             if (_selectedTile is IColoredTile coloredTile)
-                coloredTile.SetColor(color);
+                coloredTile.SetElementColor(color);
         }
 
         public void Rotate(Direction side)

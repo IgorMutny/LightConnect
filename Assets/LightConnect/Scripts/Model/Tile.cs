@@ -21,7 +21,8 @@ namespace LightConnect.Model
         public WireSetTypes WireSetType => WireSet.Type;
         public Direction Orientation => WireSet.Orientation;
         public Color BlendedColor => WireSet.BlendedColor;
-        public int OrderInPowerChain { get; set; }
+        public int PoweringOrder { get; protected set; }
+        public bool WiresPowered => WireSet.HasAnyColoredWires();
 
         public TileData GetData()
         {
@@ -70,38 +71,32 @@ namespace LightConnect.Model
             return WireSet.HasWire(direction, out color);
         }
 
-        public bool HasAnyColorInWires()
-        {
-            return WireSet.HasAnyColorInWires();
-        }
-
-        public virtual void AddColor(Direction direction, Color color)
+        public virtual void AddColor(Direction direction, Color color, int order)
         {
             WireSet.AddColor(direction, color);
-            InvokeRecolorized();
+            PoweringOrder = Mathf.Min(order, PoweringOrder);
         }
 
         public void AddColorToAllWires(Color color)
         {
             WireSet.AddColorToAllWires(color);
-            InvokeRecolorized();
         }
 
         public virtual void ResetColors()
         {
             WireSet.ResetColors();
-            InvokeRecolorized();
+            PoweringOrder = int.MaxValue;
+        }
+
+        public void InvokeRecolorized()
+        {
+            Recolorized?.Invoke();
         }
 
         protected void InvokeContentChanged()
         {
             ContentChanged?.Invoke();
             EvaluationRequired?.Invoke();
-        }
-
-        protected void InvokeRecolorized()
-        {
-            Recolorized?.Invoke();
         }
 
         protected virtual void WriteAdditionalData(TileData data) { }

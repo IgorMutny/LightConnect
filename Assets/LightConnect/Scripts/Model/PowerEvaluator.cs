@@ -37,7 +37,7 @@ namespace LightConnect.Model
                 return false;
 
             foreach (var lampTile in _lampTiles)
-                if (!lampTile.Powered)
+                if (!lampTile.ElementPowered)
                     return false;
 
             return true;
@@ -49,11 +49,10 @@ namespace LightConnect.Model
 
             foreach (var tile in _level.Tiles())
             {
-                if (tile.HasAnyColorInWires())
+                if (tile.WiresPowered)
                     _poweredTiles.Add(tile);
 
                 tile.ResetColors();
-                tile.OrderInPowerChain = 0;
             }
 
             foreach (var batteryTile in _batteryTiles)
@@ -88,8 +87,7 @@ namespace LightConnect.Model
                 if (_poweredTiles.Contains(to))
                     path.ResetOrder();
 
-                to.OrderInPowerChain = path.CurrentOrder;
-                to.AddColor(-direction, color);
+                to.AddColor(-direction, color, path.CurrentOrder);
                 var newPath = new Path(path) { to };
                 HandlePath(newPath);
             }

@@ -57,20 +57,20 @@ namespace LightConnect.Core
             _view.StopColorCoroutines();
 
             if (_model is IColoredTile coloredTile)
-                _view.SetElementColor(coloredTile.Color, coloredTile.Powered, _model.OrderInPowerChain);
+                _view.SetElementColor(coloredTile.Color, coloredTile.ElementPowered, _model.PoweringOrder);
 
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
             {
                 _model.HasWire((Direction)i, out Color color);
 
                 if (color != Color.None)
-                    _view.SetWireColor(i, color, _model.OrderInPowerChain);
+                    _view.SetWireColor(i, color, _model.PoweringOrder);
                 else
                     _view.SetWireColor(i, Color.None, 0);
             }
 
-            if (_model.HasAnyColorInWires())
-                _view.SetWireSetCenterColor(_model.BlendedColor, _model.OrderInPowerChain);
+            if (_model.WiresPowered)
+                _view.SetWireSetCenterColor(_model.BlendedColor, _model.PoweringOrder);
             else
                 _view.SetWireSetCenterColor(Color.None, 0);
 

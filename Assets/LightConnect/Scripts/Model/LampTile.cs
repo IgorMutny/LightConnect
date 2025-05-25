@@ -8,26 +8,26 @@ namespace LightConnect.Model
 
         public override TileTypes Type => TileTypes.LAMP;
         public Color Color { get; private set; }
-        public bool Powered { get; private set; }
+        public bool ElementPowered { get; private set; }
 
-        public void SetColor(Color color)
+        public void SetElementColor(Color color)
         {
             Color = color;
             InvokeContentChanged();
         }
 
-        public override void AddColor(Direction direction, Color color)
+        public override void AddColor(Direction direction, Color color, int order)
         {
             WireSet.AddColor(direction, color);
-            Powered = Color != Color.None && BlendedColor == Color;
-            InvokeRecolorized();
+            PoweringOrder = Mathf.Min(order, PoweringOrder);
+            ElementPowered = Color != Color.None && BlendedColor == Color;
         }
 
         public override void ResetColors()
         {
             WireSet.ResetColors();
-            Powered = false;
-            InvokeRecolorized();
+            ElementPowered = false;
+            PoweringOrder = int.MaxValue;
         }
 
         protected override void WriteAdditionalData(TileData data)

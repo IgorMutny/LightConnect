@@ -8,10 +8,10 @@ namespace LightConnect.Model
 
         public override TileTypes Type => TileTypes.WIRE;
 
-        public override void AddColor(Direction direction, Color color)
+        public override void AddColor(Direction direction, Color color, int order)
         {
             WireSet.AddColorToAllWires(color);
-            InvokeRecolorized();
+            PoweringOrder = Mathf.Min(order, PoweringOrder);
         }
     }
 }

@@ -3,8 +3,8 @@ namespace LightConnect.Model
     public interface IColoredTile
     {
         Color Color { get; }
-        bool Powered { get; }
+        bool ElementPowered { get; }
 
-        void SetColor(Color color);
+        void SetElementColor(Color color);
     }
 }

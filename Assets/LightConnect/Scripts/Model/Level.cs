@@ -78,6 +78,9 @@ namespace LightConnect.Model
             IsWon = false;
             _powerEvaluator.Execute();
 
+            foreach (var tile in _tiles.Values)
+                tile.InvokeRecolorized();
+
             if (_powerEvaluator.AllLampsArePowered())
                 IsWon = true;
         }
