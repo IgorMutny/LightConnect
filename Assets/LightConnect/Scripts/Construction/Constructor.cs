@@ -140,5 +140,13 @@ namespace LightConnect.Construction
 
             _selectedTile.Rotate(side);
         }
+
+        public void InvertLocked()
+        {
+            if (_selectedTile == null || _selectedTile is not WireTile wireTile)
+                return;
+
+            wireTile.SetLocked(!wireTile.Locked);
+        }
     }
 }

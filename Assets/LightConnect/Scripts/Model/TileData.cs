@@ -112,6 +112,21 @@ namespace LightConnect.Model
             }
         }
 
+        public bool Locked
+        {
+            get
+            {
+                int locked = GetBytes(ADDITIONAL_1_OFFSET);
+                return locked == 1;
+            }
+
+            set
+            {
+                int locked = value ? 1 : 0;
+                SetBytes(locked, ADDITIONAL_1_OFFSET);
+            }
+        }
+
         private int GetBytes(int offset)
         {
             return (_value & (0b1111 << offset)) >> offset;

@@ -79,7 +79,7 @@ namespace LightConnect.Model
             _powerEvaluator.Execute();
 
             foreach (var tile in _tiles.Values)
-                tile.InvokeRecolorized();
+                tile.InvokeRedrawing();
 
             if (_powerEvaluator.AllLampsArePowered())
                 IsWon = true;

@@ -7,9 +7,8 @@ namespace LightConnect.Model
     {
         protected WireSet WireSet = new();
 
-        public event Action ContentChanged;
         public event Action EvaluationRequired;
-        public event Action Recolorized;
+        public event Action RedrawingRequired;
 
         public Tile(Vector2Int position)
         {
@@ -23,6 +22,7 @@ namespace LightConnect.Model
         public Color BlendedColor => WireSet.BlendedColor;
         public int PoweringOrder { get; protected set; }
         public bool WiresPowered => WireSet.HasAnyColoredWires();
+        public bool Locked { get; protected set; }
 
         public TileData GetData()
         {
@@ -40,25 +40,25 @@ namespace LightConnect.Model
             WireSet.SetType(data.WireSetType);
             WireSet.SetOrientation(data.Orientation);
             ApplyAdditionalData(data);
-            InvokeContentChanged();
+            InvokeEvaluation();
         }
 
         public void SetWireSetType(WireSetTypes type)
         {
             WireSet.SetType(type);
-            InvokeContentChanged();
+            InvokeEvaluation();
         }
 
         public void SetOrientation(Direction orientation)
         {
             WireSet.SetOrientation(orientation);
-            InvokeContentChanged();
+            InvokeEvaluation();
         }
 
         public void Rotate(Direction side)
         {
             WireSet.Rotate(side);
-            InvokeContentChanged();
+            InvokeEvaluation();
         }
 
         public bool HasWire(Direction direction)
@@ -77,9 +77,10 @@ namespace LightConnect.Model
             PoweringOrder = Mathf.Min(order, PoweringOrder);
         }
 
-        public void AddColorToAllWires(Color color)
+        public void AddColorToAllWires(Color color, int order)
         {
             WireSet.AddColorToAllWires(color);
+            PoweringOrder = Mathf.Min(order, PoweringOrder);
         }
 
         public virtual void ResetColors()
@@ -88,14 +89,13 @@ namespace LightConnect.Model
             PoweringOrder = int.MaxValue;
         }
 
-        public void InvokeRecolorized()
+        public void InvokeRedrawing()
         {
-            Recolorized?.Invoke();
+            RedrawingRequired?.Invoke();
         }
 
-        protected void InvokeContentChanged()
+        protected void InvokeEvaluation()
         {
-            ContentChanged?.Invoke();
             EvaluationRequired?.Invoke();
         }
 

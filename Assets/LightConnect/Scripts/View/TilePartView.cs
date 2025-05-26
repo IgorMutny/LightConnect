@@ -8,14 +8,18 @@ namespace LightConnect.Core
     public class TilePartView : MonoBehaviour
     {
         [SerializeField] private Image _aura;
-        [SerializeField] private Image _image;
 
+        private Image _image;
         private TileViewSettings _settings;
         private List<Coroutine> _colorCoroutines = new();
 
         public void Initialize(TileViewSettings settings)
         {
             _settings = settings;
+            _image = GetComponent<Image>();
+
+            if (_aura != null)
+                _aura.gameObject.SetActive(false);
         }
 
         public void SetActive(bool value)

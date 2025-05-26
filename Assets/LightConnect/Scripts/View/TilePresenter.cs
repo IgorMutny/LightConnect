@@ -8,6 +8,7 @@ namespace LightConnect.Core
     {
         private Tile _model;
         private TileView _view;
+        private bool _canBeRotatedByClick;
 
         public TilePresenter(Tile model, TileView view)
         {
@@ -15,72 +16,88 @@ namespace LightConnect.Core
             _view = view;
             _view.Initialize();
             _view.Clicked += RotateModel;
-            _model.ContentChanged += RedrawView;
-            _model.Recolorized += RecolorizeView;
+            _model.RedrawingRequired += RedrawView;
+            DefineRotatability();
             RedrawView();
         }
 
         public void Dispose()
         {
             _view.Clicked -= RotateModel;
-            _model.ContentChanged -= RedrawView;
-            _model.Recolorized -= RecolorizeView;
+            _model.RedrawingRequired -= RedrawView;
         }
 
         private void RedrawView()
         {
             _view.StopColorCoroutines();
-
-            if (_model is IColoredTile coloredTile)
-                _view.SetElement(_model.Type, coloredTile.Color);
-            else
-                _view.SetElement(_model.Type);
-
-            _view.SetWireSet(_model.WireSetType, _model.Orientation);
+            RedrawElement();
+            RedrawWireSetCenter();
 
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
-            {
-                bool hasWire = _model.HasWire((Direction)i);
-                _view.SetWire(hasWire, i);
-            }
+                RedrawWire(i);
 
-            if (GameMode.Current == GameMode.Mode.CONSTRUCTOR &&
-                _model is WarpTile warpTile)
-            {
-                var color = warpTile.ConnectedPosition != WarpTile.NONE ? Color.Green : Color.White;
-                _view.SetElementColor(color, true, 0);
-            }
+            RedrawWireLocks();
+            RedrawWarpInConstructorMode();
         }
 
-        private void RecolorizeView()
+        private void RedrawElement()
         {
-            _view.StopColorCoroutines();
+            _view.SetElement(_model.Type);
 
             if (_model is IColoredTile coloredTile)
                 _view.SetElementColor(coloredTile.Color, coloredTile.ElementPowered, _model.PoweringOrder);
+        }
 
-            for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
-            {
-                _model.HasWire((Direction)i, out Color color);
-
-                if (color != Color.None)
-                    _view.SetWireColor(i, color, _model.PoweringOrder);
-                else
-                    _view.SetWireColor(i, Color.None, 0);
-            }
-
+        private void RedrawWireSetCenter()
+        {
+            _view.SetWireSet(_model.WireSetType, _model.Orientation);
             if (_model.WiresPowered)
                 _view.SetWireSetCenterColor(_model.BlendedColor, _model.PoweringOrder);
             else
                 _view.SetWireSetCenterColor(Color.None, 0);
+        }
 
+        private void RedrawWire(int i)
+        {
+            bool hasWire = _model.HasWire((Direction)i, out Color color);
+            _view.SetWire(hasWire, i);
+
+            if (!hasWire)
+                return;
+
+            if (color != Color.None)
+                _view.SetWireColor(i, color, _model.PoweringOrder);
+            else
+                _view.SetWireColor(i, Color.None, 0);
+        }
+
+        private void RedrawWireLocks()
+        {
+            for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
+                if (_model.HasWire((Direction)i))
+                    _view.SetWireLocks(i, _model.Locked);
+                else
+                    _view.SetWireLocks(i, false);
+        }
+
+        private void RedrawWarpInConstructorMode()
+        {
+            if (GameMode.Current != GameMode.Mode.CONSTRUCTOR || _model is not WarpTile warpTile)
+                return;
+
+            var color = warpTile.ConnectedPosition != WarpTile.NONE ? Color.Green : Color.White;
+            _view.SetElementColor(color, true, 0);
+        }
+
+        private void DefineRotatability()
+        {
+            _canBeRotatedByClick = GameMode.Current == GameMode.Mode.GAMEPLAY && _model is IRotatableTile;
         }
 
         private void RotateModel()
         {
-            if (GameMode.Current == GameMode.Mode.GAMEPLAY && _model is IRotatableTile)
+            if (_canBeRotatedByClick && !_model.Locked)
                 _model.Rotate(Direction.Right);
         }
-
     }
 }

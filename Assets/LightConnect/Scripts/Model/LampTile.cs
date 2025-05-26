@@ -13,7 +13,7 @@ namespace LightConnect.Model
         public void SetElementColor(Color color)
         {
             Color = color;
-            InvokeContentChanged();
+            InvokeEvaluation();
         }
 
         public override void AddColor(Direction direction, Color color, int order)

@@ -166,8 +166,7 @@ MonoBehaviour:
   _tilesPanel: {fileID: 2130216684}
   _wiresPanel: {fileID: 1412308237}
   _colorsPanel: {fileID: 330045541}
-  _rotationsPanel: {fileID: 817707194}
-  _warpConnectionPanel: {fileID: 1157895427397324845}
+  _actionsPanel: {fileID: 817707194}
   _levelView: {fileID: 1923711175}
   _constructorView: {fileID: 1157895427397324844}
 --- !u!4 &785683345
@@ -510,17 +509,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a51ccc22715fdc4448bf43baaf053991, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1157895427397324845 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3775142617743553525, guid: 7ecd259cb9f384e40958c4a1625efece, type: 3}
-  m_PrefabInstance: {fileID: 1157895427397324843}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53aa4f54a59399745abbd39de3d8b57f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807

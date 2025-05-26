@@ -101,12 +101,10 @@ namespace LightConnect.Model
             var color = warpTile.BlendedColor;
             _level.TryGetTile(warpTile.ConnectedPosition, out Tile connectedTile);
 
-            var connectedWarp = (WarpTile)connectedTile;
-
-            if (connectedWarp != null)
+            if (connectedTile != null && connectedTile is WarpTile)
             {
-                connectedWarp.AddColorToAllWires(color);
-                var newPath = new Path(path) { connectedWarp };
+                connectedTile.AddColorToAllWires(color, path.CurrentOrder);
+                var newPath = new Path(path) { connectedTile };
                 HandlePath(newPath);
             }
         }

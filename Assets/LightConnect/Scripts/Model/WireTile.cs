@@ -10,8 +10,23 @@ namespace LightConnect.Model
 
         public override void AddColor(Direction direction, Color color, int order)
         {
-            WireSet.AddColorToAllWires(color);
-            PoweringOrder = Mathf.Min(order, PoweringOrder);
+            AddColorToAllWires(color, order);
+        }
+
+        public void SetLocked(bool value)
+        {
+            Locked = value;
+            InvokeRedrawing();
+        }
+
+        protected override void WriteAdditionalData(TileData data)
+        {
+            data.Locked = Locked;
+        }
+
+        protected override void ApplyAdditionalData(TileData data)
+        {
+            Locked = data.Locked;
         }
     }
 }

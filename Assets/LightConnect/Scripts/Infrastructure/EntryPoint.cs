@@ -9,6 +9,7 @@ namespace LightConnect.Infrastructure
 
         private void Start()
         {
+            Random.InitState(System.DateTime.Now.Millisecond);
             GameMode.Current = GameMode.Mode.GAMEPLAY;
             var game = new Gameplay(_levelView);
             game.Run();

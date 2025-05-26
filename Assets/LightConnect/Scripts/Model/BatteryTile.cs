@@ -14,14 +14,14 @@ namespace LightConnect.Model
         public void SetElementColor(Color color)
         {
             Color = color;
-            InvokeContentChanged();
+            InvokeEvaluation();
         }
 
         public override void ResetColors()
         {
             WireSet.ResetColors();
-            AddColorToAllWires(Color);
             PoweringOrder = 0;
+            AddColorToAllWires(Color, PoweringOrder);
         }
 
         protected override void WriteAdditionalData(TileData data)

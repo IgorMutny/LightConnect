@@ -12,6 +12,7 @@ namespace LightConnect.Core
         [SerializeField] private TilePartView _element;
         [SerializeField] private TilePartView _wireSetCenter;
         [SerializeField] private TilePartView[] _wires;
+        [SerializeField] private GameObject[] _wireLocks;
 
         public event Action Clicked;
 
@@ -53,12 +54,6 @@ namespace LightConnect.Core
             }
         }
 
-        public void SetElement(TileTypes type, Model.Color color)
-        {
-            SetElement(type);
-            _element.SetColor(color, false, 0);
-        }
-
         public void SetWireSet(WireSetTypes type, Direction orientation)
         {
             if (type != WireSetTypes.NONE)
@@ -94,6 +89,11 @@ namespace LightConnect.Core
         public void SetWireSetCenterColor(Model.Color color, int order)
         {
             _wireSetCenter.SetColor(color, true, order);
+        }
+
+        public void SetWireLocks(int direction, bool isLocked)
+        {
+            _wireLocks[direction].SetActive(isLocked);
         }
 
         public void StopColorCoroutines()
