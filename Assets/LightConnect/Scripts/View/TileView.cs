@@ -8,11 +8,11 @@ namespace LightConnect.Core
 {
     public class TileView : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private TileViewSettings _settings;
+        [SerializeField] private TilePartView _basement;
         [SerializeField] private TilePartView _element;
-        [SerializeField] private TilePartView _wireSetCenter;
-        [SerializeField] private TilePartView[] _wires;
-        [SerializeField] private GameObject[] _wireLocks;
+        [SerializeField] private WireSetView _wireSet;
+
+        private TileViewSettings _settings;
 
         public event Action Clicked;
 
@@ -26,13 +26,13 @@ namespace LightConnect.Core
             }
         }
 
-        public void Initialize()
+        public void Initialize(TileViewSettings settings)
         {
-            _element.Initialize(_settings);
-            _wireSetCenter.Initialize(_settings);
-
-            for (int i = 0; i < _wires.Length; i++)
-                _wires[i].Initialize(_settings);
+            _settings = settings;
+            _element?.Initialize(_settings);
+            _basement?.Initialize(_settings);
+            _wireSet?.Initialize(_settings);
+            _element?.SetActive(true);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -40,69 +40,36 @@ namespace LightConnect.Core
             Clicked?.Invoke();
         }
 
-        public void SetElement(TileTypes type)
+        public void SetWireSet(WireSetTypes type)
         {
-            if (type == TileTypes.WIRE)
-            {
-                _element.SetActive(false);
-            }
-            else
-            {
-                _element.SetActive(true);
-                var sprite = _settings.ElementSprite(type);
-                _element.SetSprite(sprite);
-            }
+            _wireSet?.SetWireSet(type);
         }
 
-        public void SetWireSet(WireSetTypes type, Direction orientation)
+        public void SetOrientation(Direction orientation)
         {
-            if (type != WireSetTypes.NONE)
-            {
-                _wireSetCenter.SetActive(true);
-                var sprite = _settings.WireSetCenterSprite(type);
-                _wireSetCenter.SetSprite(sprite);
-                var rotation = Quaternion.Euler(0, 0, -(int)orientation * 90);
-                _wireSetCenter.transform.rotation = rotation;
-            }
-            else
-            {
-                _wireSetCenter.SetActive(false);
-            }
-        }
-
-        public void SetWire(bool hasWire, int direction)
-        {
-            _wires[direction].SetActive(hasWire);
-            _wires[direction].SetColor(Model.Color.None, false, 0);
+            _wireSet?.SetOrientation(orientation);
         }
 
         public void SetElementColor(Model.Color color, bool powered, int order)
         {
-            _element.SetColor(color, powered, order);
+            _element?.SetColor(color, powered, order);
         }
 
-        public void SetWireColor(int direction, Model.Color color, int order)
+        public void SetWireColor(Direction direction, Model.Color color, int order)
         {
-            _wires[direction].SetColor(color, true, order);
+            _wireSet?.SetColor(direction, color, order);
         }
 
-        public void SetWireSetCenterColor(Model.Color color, int order)
+        public void SetLocked(bool value)
         {
-            _wireSetCenter.SetColor(color, true, order);
+            _wireSet?.SetLocked(value);
         }
 
-        public void SetWireLocks(int direction, bool isLocked)
+        public void CancelColor()
         {
-            _wireLocks[direction].SetActive(isLocked);
-        }
-
-        public void StopColorCoroutines()
-        {
-            _element.StopColorCoroutines();
-            _wireSetCenter.StopColorCoroutines();
-
-            for (int i = 0; i < _wires.Length; i++)
-                _wires[i].StopColorCoroutines();
+            _basement?.CancelColor();
+            _element?.CancelColor();
+            _wireSet?.CancelColor();
         }
     }
 }

@@ -1,29 +1,27 @@
 using UnityEngine.UI;
 using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace LightConnect.Core
 {
     public class TilePartView : MonoBehaviour
     {
-        [SerializeField] private Image _aura;
-
+        protected TileViewSettings Settings;
         private Image _image;
-        private TileViewSettings _settings;
-        private List<Coroutine> _colorCoroutines = new();
+        private List<Coroutine> _coroutines = new();
 
-        public void Initialize(TileViewSettings settings)
+        protected bool IsActive { get; private set; }
+
+        public virtual void Initialize(TileViewSettings settings)
         {
-            _settings = settings;
+            Settings = settings;
             _image = GetComponent<Image>();
-
-            if (_aura != null)
-                _aura.gameObject.SetActive(false);
         }
 
-        public void SetActive(bool value)
+        public virtual void SetActive(bool value)
         {
+            IsActive = value;
             gameObject.SetActive(value);
         }
 
@@ -32,48 +30,45 @@ namespace LightConnect.Core
             _image.sprite = sprite;
         }
 
+
+        public void SetColor(Model.Color color, int order)
+        {
+            SetColor(color, true, order);
+        }
+
         public void SetColor(Model.Color color, bool powered, int order)
         {
-            if (_aura != null)
-                _aura.gameObject.SetActive(false);
+            float delay = order * Settings.ColorChangeSpeed;
 
-            if (!gameObject.activeInHierarchy)
-                return;
-
-            if (order == 0 || !powered)
+            if (powered)
             {
-                Colorize(color, powered);
+                var coroutine = StartCoroutine(StartCororizing(color, powered, delay));
+                _coroutines.Add(coroutine);
             }
             else
             {
-                var coroutine = StartCoroutine(SetColorCoroutine(color, powered, order));
-                _colorCoroutines.Add(coroutine);
+                Colorize(color, powered);
             }
         }
 
-        public void StopColorCoroutines()
+        public void CancelColor()
         {
-            foreach (var coroutine in _colorCoroutines)
+            foreach (var coroutine in _coroutines)
                 StopCoroutine(coroutine);
 
-            _colorCoroutines.Clear();
+            _coroutines.Clear();
         }
 
-        private IEnumerator SetColorCoroutine(Model.Color color, bool powered, int order)
+        protected virtual void Colorize(Model.Color color, bool powered)
         {
-            yield return new WaitForSeconds(order * _settings.ColorChangeSpeed);
+            var unityColor = Settings.Color(color, powered);
+            _image.color = unityColor;
+        }
+
+        private IEnumerator StartCororizing(Model.Color color, bool powered, float delay)
+        {
+            yield return new WaitForSeconds(delay);
             Colorize(color, powered);
-        }
-
-        private void Colorize(Model.Color color, bool powered)
-        {
-            _image.color = _settings.Color(color, powered);
-
-            if (_aura != null)
-            {
-                _aura.gameObject.SetActive(powered && color != Model.Color.None);
-                _aura.color = _settings.Color(color, powered);
-            }
         }
     }
 }

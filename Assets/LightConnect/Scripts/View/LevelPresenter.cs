@@ -56,7 +56,7 @@ namespace LightConnect.Core
 
         private void OnTileCreated(Tile tile)
         {
-            var tileView = _view.AddTile(new Vector2Int(tile.Position.x, tile.Position.y));
+            var tileView = _view.AddTile(tile.Type, new Vector2Int(tile.Position.x, tile.Position.y));
             var tilePresenter = new TilePresenter(tile, tileView);
             _presenters.Add(tile, tilePresenter);
         }

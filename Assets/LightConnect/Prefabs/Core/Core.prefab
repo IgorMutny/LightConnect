@@ -150,5 +150,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35d4411c323b7ff4d8d160a915783c32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tilePrefab: {fileID: 1439450302151463159, guid: 1aa66439b8684b949bb66b1a63e5386b, type: 3}
+  _settings: {fileID: 11400000, guid: b42741ec1da33d84d9ee85b5e47070dd, type: 2}
   _raycastTarget: 1

@@ -14,7 +14,6 @@ namespace LightConnect.Core
         {
             _model = model;
             _view = view;
-            _view.Initialize();
             _view.Clicked += RotateModel;
             _model.RedrawingRequired += RedrawView;
             DefineRotatability();
@@ -29,55 +28,27 @@ namespace LightConnect.Core
 
         private void RedrawView()
         {
-            _view.StopColorCoroutines();
-            RedrawElement();
-            RedrawWireSetCenter();
-
-            for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
-                RedrawWire(i);
-
-            RedrawWireLocks();
-            RedrawWarpInConstructorMode();
-        }
-
-        private void RedrawElement()
-        {
-            _view.SetElement(_model.Type);
+            _view.CancelColor();
 
             if (_model is IColoredTile coloredTile)
                 _view.SetElementColor(coloredTile.Color, coloredTile.ElementPowered, _model.PoweringOrder);
-        }
 
-        private void RedrawWireSetCenter()
-        {
-            _view.SetWireSet(_model.WireSetType, _model.Orientation);
-            if (_model.WiresPowered)
-                _view.SetWireSetCenterColor(_model.BlendedColor, _model.PoweringOrder);
-            else
-                _view.SetWireSetCenterColor(Color.None, 0);
-        }
+            _view.SetWireSet(_model.WireSetType);
+            _view.SetOrientation(_model.Orientation);
+            _view.SetLocked(_model.Locked);
 
-        private void RedrawWire(int i)
-        {
-            bool hasWire = _model.HasWire((Direction)i, out Color color);
-            _view.SetWire(hasWire, i);
-
-            if (!hasWire)
-                return;
-
-            if (color != Color.None)
-                _view.SetWireColor(i, color, _model.PoweringOrder);
-            else
-                _view.SetWireColor(i, Color.None, 0);
-        }
-
-        private void RedrawWireLocks()
-        {
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
-                if (_model.HasWire((Direction)i))
-                    _view.SetWireLocks(i, _model.Locked);
-                else
-                    _view.SetWireLocks(i, false);
+            {
+                bool hasWire = _model.HasWire((Direction)i, out Color color);
+
+                if (hasWire)
+                    if (color != Color.None)
+                        _view.SetWireColor((Direction)i, color, _model.PoweringOrder);
+                    else
+                        _view.SetWireColor((Direction)i, Color.None, 0);
+            }
+
+            RedrawWarpInConstructorMode();
         }
 
         private void RedrawWarpInConstructorMode()

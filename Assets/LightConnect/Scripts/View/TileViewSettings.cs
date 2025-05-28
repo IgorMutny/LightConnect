@@ -11,15 +11,15 @@ namespace LightConnect.Core
     public class TileViewSettings : ScriptableObject
     {
         [field: SerializeField] public float ColorChangeSpeed { get; private set; }
-        
-        [SerializeField] private List<ElementSettings> _elements;
+
+        [SerializeField] private List<TileSettings> _tiles;
         [SerializeField] private List<WireSetSettings> _wireSetCenters;
         [SerializeField] private List<ColorSettings> _poweredColors;
         [SerializeField] private List<ColorSettings> _notPoweredColors;
 
-        public Sprite ElementSprite(TileTypes type)
+        public GameObject Prefab(TileTypes type)
         {
-            return _elements.First(element => element.Type == type).Sprite;
+            return _tiles.First(element => element.Type == type).Prefab;
         }
 
         public Sprite WireSetCenterSprite(WireSetTypes type)
@@ -37,10 +37,10 @@ namespace LightConnect.Core
     }
 
     [Serializable]
-    public class ElementSettings
+    public class TileSettings
     {
         [field: SerializeField] public TileTypes Type { get; private set; }
-        [field: SerializeField] public Sprite Sprite { get; private set; }
+        [field: SerializeField] public GameObject Prefab { get; private set; }
     }
 
     [Serializable]

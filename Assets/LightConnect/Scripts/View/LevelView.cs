@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using LightConnect.Model;
 using UnityEngine;
 
 namespace LightConnect.Core
 {
     public class LevelView : MonoBehaviour
     {
-        [SerializeField] private GameObject _tilePrefab;
+        [SerializeField] private TileViewSettings _settings;
         [SerializeField] private bool _raycastTarget;
 
         private float _scale;
@@ -22,18 +23,20 @@ namespace LightConnect.Core
             CalculateTileValues();
         }
 
-        public TileView AddTile(Vector2Int position)
+        public TileView AddTile(TileTypes type, Vector2Int position)
         {
             float x = _initialWorldPosition.x + (position.x - InitialPosition.x) * _tileRequiredSize;
             float y = _initialWorldPosition.y + (position.y - InitialPosition.y) * _tileRequiredSize;
             var worldPosition = new Vector3(x, y, 0);
 
-            var go = Instantiate(_tilePrefab, worldPosition, Quaternion.identity, transform);
+            var prefab = _settings.Prefab(type);
+            var go = Instantiate(prefab, worldPosition, Quaternion.identity, transform);
             go.transform.localScale = new Vector3(_scale, _scale, 1f);
             go.name = $"Tile {position.x}-{position.y}";
 
             var tile = go.GetComponent<TileView>();
             tile.RaycastTarget = _raycastTarget;
+            tile.Initialize(_settings);
             _tiles.Add(position, tile);
             return tile;
         }
@@ -59,7 +62,7 @@ namespace LightConnect.Core
 
             _tileRequiredSize = Mathf.Min(width / Size.x, height / Size.y);
 
-            var tileRect = _tilePrefab.GetComponent<RectTransform>();
+            var tileRect = _settings.Prefab(TileTypes.WIRE).GetComponent<RectTransform>();
             float tileDefaultSize = tileRect.rect.size.x;
             _scale = _tileRequiredSize / tileDefaultSize;
 
