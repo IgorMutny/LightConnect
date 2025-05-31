@@ -2,6 +2,7 @@ using System;
 using Cysharp.Threading.Tasks;
 using LightConnect.Core;
 using LightConnect.Model;
+using UnityEngine;
 
 namespace LightConnect.Infrastructure
 {
@@ -33,9 +34,23 @@ namespace LightConnect.Infrastructure
             level.SetData(levelData);
             LevelRandomizer.Randomize(level.Tiles());
             var levelPresenter = new LevelPresenter(level, _levelView);
-            await UniTask.WaitUntil(() => level.IsWon);
+            await WaitForEvent(a => level.Win += a, a => level.Win -= a);
             await UniTask.Delay(TimeSpan.FromSeconds(3f));
             levelPresenter.Dispose();
+        }
+
+        private async UniTask WaitForEvent(Action<Action> subscribe, Action<Action> unsubscribe)
+        {
+            var tcs = new UniTaskCompletionSource();
+
+            void OnEvent()
+            {
+                unsubscribe(OnEvent);
+                tcs.TrySetResult();
+            }
+
+            subscribe(OnEvent);
+            await tcs.Task;
         }
     }
 }

@@ -25,6 +25,7 @@ namespace LightConnect.Core
             foreach (var tile in _model.Tiles())
                 OnTileCreated(tile);
 
+            _model.Win += OnWin;
             _model.TileCreated += OnTileCreated;
             _model.TileRemoved += OnTileRemoved;
 
@@ -33,6 +34,7 @@ namespace LightConnect.Core
 
         public void Dispose()
         {
+            _model.Win -= OnWin;
             _model.TileCreated -= OnTileCreated;
             _model.TileRemoved -= OnTileRemoved;
 
@@ -58,6 +60,7 @@ namespace LightConnect.Core
         {
             var tileView = _view.AddTile(tile.Type, new Vector2Int(tile.Position.x, tile.Position.y));
             var tilePresenter = new TilePresenter(tile, tileView);
+            tilePresenter.RotationByClickAllowed = GameMode.Current == GameMode.Mode.GAMEPLAY;
             _presenters.Add(tile, tilePresenter);
         }
 
@@ -66,6 +69,13 @@ namespace LightConnect.Core
             _view.RemoveTile(new Vector2Int(tile.Position.x, tile.Position.y));
             _presenters[tile].Dispose();
             _presenters.Remove(tile);
+        }
+
+        private void OnWin()
+        {
+            if (GameMode.Current == GameMode.Mode.GAMEPLAY)
+                foreach (var presenter in _presenters.Values)
+                    presenter.RotationByClickAllowed = false;
         }
     }
 }

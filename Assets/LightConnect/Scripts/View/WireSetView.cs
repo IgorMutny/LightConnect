@@ -1,3 +1,4 @@
+using DG.Tweening;
 using LightConnect.Model;
 using UnityEngine;
 
@@ -8,10 +9,12 @@ namespace LightConnect.Core
         [SerializeField] private WireSetCenterView _center;
         [SerializeField] private WireView[] _wires;
 
+        private TileViewSettings _settings;
         private Direction _orientation;
 
         public void Initialize(TileViewSettings settings)
         {
+            _settings = settings;
             _center.Initialize(settings);
 
             foreach (var wire in _wires)
@@ -42,8 +45,8 @@ namespace LightConnect.Core
         public void SetOrientation(Direction orientation)
         {
             _orientation = orientation;
-            var rotation = Quaternion.Euler(0, 0, -(int)orientation * 90);
-            transform.rotation = rotation;
+            float angle = -(int)orientation * 90;
+            transform.DORotate(new Vector3(0, 0, angle), _settings.ColorChangeSpeed);
         }
 
         public void SetColor(Direction direction, Model.Color color, int order)

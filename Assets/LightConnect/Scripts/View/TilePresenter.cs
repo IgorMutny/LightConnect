@@ -8,7 +8,6 @@ namespace LightConnect.Core
     {
         private Tile _model;
         private TileView _view;
-        private bool _canBeRotatedByClick;
 
         public TilePresenter(Tile model, TileView view)
         {
@@ -16,9 +15,10 @@ namespace LightConnect.Core
             _view = view;
             _view.Clicked += RotateModel;
             _model.RedrawingRequired += RedrawView;
-            DefineRotatability();
             RedrawView();
         }
+
+        public bool RotationByClickAllowed { get; set; }
 
         public void Dispose()
         {
@@ -79,14 +79,9 @@ namespace LightConnect.Core
             _view.SetElementColor(color, true, 0);
         }
 
-        private void DefineRotatability()
-        {
-            _canBeRotatedByClick = GameMode.Current == GameMode.Mode.GAMEPLAY && _model is IRotatableTile;
-        }
-
         private void RotateModel()
         {
-            if (_canBeRotatedByClick && !_model.Locked)
+            if (RotationByClickAllowed && _model is IRotatableTile && !_model.Locked)
                 _model.Rotate(Direction.Right);
         }
     }

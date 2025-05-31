@@ -12,6 +12,7 @@ namespace LightConnect.Model
         private Dictionary<Vector2Int, Tile> _tiles = new();
         private PowerEvaluator _powerEvaluator;
 
+        public event Action Win;
         public event Action<Tile> TileCreated;
         public event Action<Tile> TileRemoved;
 
@@ -19,8 +20,6 @@ namespace LightConnect.Model
         {
             _powerEvaluator = new PowerEvaluator(this);
         }
-
-        public bool IsWon { get; private set; }
 
         public void Dispose()
         {
@@ -75,14 +74,13 @@ namespace LightConnect.Model
 
         public void Evaluate()
         {
-            IsWon = false;
             _powerEvaluator.Execute();
 
             foreach (var tile in _tiles.Values)
                 tile.InvokeRedrawing();
 
             if (_powerEvaluator.AllLampsArePowered())
-                IsWon = true;
+                Win?.Invoke();
         }
 
         public Tile CreateTile(Vector2Int position, TileTypes type)

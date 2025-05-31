@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0cf68264cd28d40ab7c838d87c3aaf, type: 3}
   m_Name: TileViewSettings
   m_EditorClassIdentifier: 
-  <ColorChangeSpeed>k__BackingField: 0.1
+  <ColorChangeSpeed>k__BackingField: 0.05
   _tiles:
   - <Type>k__BackingField: 0
     <Prefab>k__BackingField: {fileID: 1439450302151463159, guid: 1aa66439b8684b949bb66b1a63e5386b, type: 3}
@@ -69,13 +69,13 @@ MonoBehaviour:
   - <Name>k__BackingField: 0
     <Color>k__BackingField: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   - <Name>k__BackingField: 1
-    <Color>k__BackingField: {r: 0, g: 0.5019608, b: 1, a: 1}
+    <Color>k__BackingField: {r: 0.1882353, g: 0.5019608, b: 0.9411765, a: 1}
   - <Name>k__BackingField: 2
-    <Color>k__BackingField: {r: 0, g: 1, b: 0.5019608, a: 1}
+    <Color>k__BackingField: {r: 0.1254902, g: 0.5647059, b: 0.9411765, a: 1}
   _notPoweredBasementColors:
   - <Name>k__BackingField: 0
     <Color>k__BackingField: {r: 0.25, g: 0.25, b: 0.25, a: 1}
   - <Name>k__BackingField: 1
-    <Color>k__BackingField: {r: 0, g: 0.2509804, b: 0.5019608, a: 1}
+    <Color>k__BackingField: {r: 0.09411765, g: 0.2509804, b: 0.47058824, a: 1}
   - <Name>k__BackingField: 2
-    <Color>k__BackingField: {r: 0, g: 0.5019608, b: 0.2509804, a: 1}
+    <Color>k__BackingField: {r: 0.0627451, g: 0.28235295, b: 0.47058824, a: 1}
