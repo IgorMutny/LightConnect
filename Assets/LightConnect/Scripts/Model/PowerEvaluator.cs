@@ -95,11 +95,11 @@ namespace LightConnect.Model
 
         private void HandleWarp(WarpTile warpTile, Path path)
         {
-            if (warpTile.ConnectedPosition == WarpTile.NONE)
+            if (warpTile.ConnectedPosition == null)
                 return;
 
             var color = warpTile.BlendedColor;
-            _level.TryGetTile(warpTile.ConnectedPosition, out Tile connectedTile);
+            _level.TryGetTile(warpTile.ConnectedPosition.Value, out Tile connectedTile);
 
             if (connectedTile != null && connectedTile is WarpTile)
             {

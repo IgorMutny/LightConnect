@@ -75,8 +75,8 @@ namespace LightConnect.Core
             if (GameMode.Current != GameMode.Mode.CONSTRUCTOR || _model is not WarpTile warpTile)
                 return;
 
-            var color = warpTile.ConnectedPosition != WarpTile.NONE ? Color.Green : Color.White;
-            _view.SetElementColor(color, true, 0);
+            var color = warpTile.ConnectedPosition.HasValue ? TileBasementView.Color.WARP_CONNECTED : TileBasementView.Color.GRAY;
+            _view.SetBasementColor(color, _model.WiresPowered, _model.PoweringOrder);
         }
 
         private void RotateModel()

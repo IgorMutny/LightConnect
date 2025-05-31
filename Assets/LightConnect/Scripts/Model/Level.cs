@@ -131,7 +131,7 @@ namespace LightConnect.Model
                 );
 
             if (connectedWarp != null)
-                connectedWarp.SetConnectedPosition(WarpTile.NONE);
+                connectedWarp.SetConnectedPosition(null);
         }
     }
 }
