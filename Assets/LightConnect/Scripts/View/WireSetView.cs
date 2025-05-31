@@ -5,15 +5,13 @@ namespace LightConnect.Core
 {
     public class WireSetView : MonoBehaviour
     {
-        [SerializeField] private TilePartView _center;
+        [SerializeField] private WireSetCenterView _center;
         [SerializeField] private WireView[] _wires;
 
-        private TileViewSettings _settings;
         private Direction _orientation;
 
         public void Initialize(TileViewSettings settings)
         {
-            _settings = settings;
             _center.Initialize(settings);
 
             foreach (var wire in _wires)
@@ -24,13 +22,12 @@ namespace LightConnect.Core
         {
             if (type != WireSetTypes.NONE)
             {
-                _center.SetActive(true);
-                var sprite = _settings.WireSetCenterSprite(type);
-                _center.SetSprite(sprite);
+                _center.gameObject.SetActive(true);
+                _center.SetSprite(type);
             }
             else
             {
-                _center.SetActive(false);
+                _center.gameObject.SetActive(false);
             }
 
             var directions = WireSetDictionary.GetDirections(type);

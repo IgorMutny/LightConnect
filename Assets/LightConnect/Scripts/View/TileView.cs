@@ -8,7 +8,7 @@ namespace LightConnect.Core
 {
     public class TileView : MonoBehaviour, IPointerClickHandler
     {
-        [SerializeField] private TilePartView _basement;
+        [SerializeField] private TileBasementView _basement;
         [SerializeField] private TilePartView _element;
         [SerializeField] private WireSetView _wireSet;
 
@@ -32,7 +32,6 @@ namespace LightConnect.Core
             _element?.Initialize(_settings);
             _basement?.Initialize(_settings);
             _wireSet?.Initialize(_settings);
-            _element?.SetActive(true);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -48,6 +47,11 @@ namespace LightConnect.Core
         public void SetOrientation(Direction orientation)
         {
             _wireSet?.SetOrientation(orientation);
+        }
+
+        public void SetBasementColor(TileBasementView.Color color, bool powered, int order)
+        {
+            _basement?.SetColor(color, powered, order);
         }
 
         public void SetElementColor(Model.Color color, bool powered, int order)

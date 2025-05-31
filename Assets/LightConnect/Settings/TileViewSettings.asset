@@ -65,3 +65,17 @@ MonoBehaviour:
     <Color>k__BackingField: {r: 0, g: 0.5019608, b: 0, a: 1}
   - <Name>k__BackingField: 7
     <Color>k__BackingField: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
+  _poweredBasementColors:
+  - <Name>k__BackingField: 0
+    <Color>k__BackingField: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  - <Name>k__BackingField: 1
+    <Color>k__BackingField: {r: 0, g: 0.5019608, b: 1, a: 1}
+  - <Name>k__BackingField: 2
+    <Color>k__BackingField: {r: 0, g: 1, b: 0.5019608, a: 1}
+  _notPoweredBasementColors:
+  - <Name>k__BackingField: 0
+    <Color>k__BackingField: {r: 0.25, g: 0.25, b: 0.25, a: 1}
+  - <Name>k__BackingField: 1
+    <Color>k__BackingField: {r: 0, g: 0.2509804, b: 0.5019608, a: 1}
+  - <Name>k__BackingField: 2
+    <Color>k__BackingField: {r: 0, g: 0.5019608, b: 0.2509804, a: 1}

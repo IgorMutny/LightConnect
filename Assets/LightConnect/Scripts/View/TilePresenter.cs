@@ -30,6 +30,8 @@ namespace LightConnect.Core
         {
             _view.CancelColor();
 
+            DefineBasementColor();
+
             if (_model is IColoredTile coloredTile)
                 _view.SetElementColor(coloredTile.Color, coloredTile.ElementPowered, _model.PoweringOrder);
 
@@ -38,17 +40,34 @@ namespace LightConnect.Core
             _view.SetLocked(_model.Locked);
 
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)
-            {
-                bool hasWire = _model.HasWire((Direction)i, out Color color);
-
-                if (hasWire)
-                    if (color != Color.None)
-                        _view.SetWireColor((Direction)i, color, _model.PoweringOrder);
-                    else
-                        _view.SetWireColor((Direction)i, Color.None, 0);
-            }
+                DefineWireColor(i);
 
             RedrawWarpInConstructorMode();
+        }
+
+        private void DefineBasementColor()
+        {
+            TileBasementView.Color basementColor;
+
+            if (_model is WarpTile || (_model is WireTile wireTile && wireTile.Locked))
+                basementColor = TileBasementView.Color.GRAY;
+            else if ((_model.Position.x + _model.Position.y) % 2 == 0)
+                basementColor = TileBasementView.Color.EVEN;
+            else
+                basementColor = TileBasementView.Color.ODD;
+
+            _view.SetBasementColor(basementColor, _model.WiresPowered, _model.PoweringOrder);
+        }
+
+        private void DefineWireColor(int i)
+        {
+            bool hasWire = _model.HasWire((Direction)i, out Color color);
+
+            if (hasWire)
+                if (color != Color.None)
+                    _view.SetWireColor((Direction)i, color, _model.PoweringOrder);
+                else
+                    _view.SetWireColor((Direction)i, Color.None, 0);
         }
 
         private void RedrawWarpInConstructorMode()

@@ -10,6 +10,7 @@ namespace LightConnect.Core
 
         private bool _isLocked;
         private bool _isColored;
+        private bool _isActive;
 
         public override void Initialize(TileViewSettings settings)
         {
@@ -17,17 +18,18 @@ namespace LightConnect.Core
             _aura.gameObject.SetActive(false);
         }
 
-        public override void SetActive(bool value)
+        public void SetActive(bool value)
         {
-            base.SetActive(value);
-            _aura.gameObject.SetActive(IsActive && _isColored);
-            _lock.SetActive(IsActive && _isLocked);
+            _isActive = value;
+            gameObject.SetActive(_isActive);
+            _aura.gameObject.SetActive(_isActive && _isColored);
+            _lock.SetActive(_isActive && _isLocked);
         }
 
         public void SetLocked(bool value)
         {
             _isLocked = value;
-            _lock.SetActive(IsActive && _isLocked);
+            _lock.SetActive(_isActive && _isLocked);
         }
 
         protected override void Colorize(Model.Color color, bool powered)
@@ -35,7 +37,7 @@ namespace LightConnect.Core
             base.Colorize(color, powered);
 
             _isColored = color != Model.Color.None;
-            _aura.gameObject.SetActive(IsActive && _isColored);
+            _aura.gameObject.SetActive(_isActive && _isColored);
 
             if (_isColored)
             {

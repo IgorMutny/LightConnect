@@ -5,25 +5,19 @@ using System.Collections.Generic;
 
 namespace LightConnect.Core
 {
-    public abstract class TilePartView : MonoBehaviour
+    public class TileBasementView : MonoBehaviour
     {
         protected TileViewSettings Settings;
-        protected Image Image;
-
+        private Image _image;
         private List<Coroutine> _coroutines = new();
 
         public virtual void Initialize(TileViewSettings settings)
         {
             Settings = settings;
-            Image = GetComponent<Image>();
+            _image = GetComponent<Image>();
         }
 
-        public void SetColor(Model.Color color, int order)
-        {
-            SetColor(color, true, order);
-        }
-
-        public void SetColor(Model.Color color, bool powered, int order)
+        public void SetColor(Color color, bool powered, int order)
         {
             float delay = order * Settings.ColorChangeSpeed;
 
@@ -46,16 +40,23 @@ namespace LightConnect.Core
             _coroutines.Clear();
         }
 
-        protected virtual void Colorize(Model.Color color, bool powered)
+        protected virtual void Colorize(Color color, bool powered)
         {
-            var unityColor = Settings.Color(color, powered);
-            Image.color = unityColor;
+            var unityColor = Settings.BasementColor(color, powered);
+            _image.color = unityColor;
         }
 
-        private IEnumerator StartColorizing(Model.Color color, bool powered, float delay)
+        private IEnumerator StartColorizing(Color color, bool powered, float delay)
         {
             yield return new WaitForSeconds(delay);
             Colorize(color, powered);
+        }
+
+        public enum Color
+        {
+            GRAY = 0,
+            ODD = 1,
+            EVEN = 2,
         }
     }
 }

@@ -16,6 +16,8 @@ namespace LightConnect.Core
         [SerializeField] private List<WireSetSettings> _wireSetCenters;
         [SerializeField] private List<ColorSettings> _poweredColors;
         [SerializeField] private List<ColorSettings> _notPoweredColors;
+        [SerializeField] private List<TileBasementColorSettings> _poweredBasementColors;
+        [SerializeField] private List<TileBasementColorSettings> _notPoweredBasementColors;
 
         public GameObject Prefab(TileTypes type)
         {
@@ -33,6 +35,14 @@ namespace LightConnect.Core
                 return _poweredColors.First(settings => (int)settings.Name == (int)color).Color;
             else
                 return _notPoweredColors.First(settings => (int)settings.Name == (int)color).Color;
+        }
+
+        public UnityEngine.Color BasementColor(TileBasementView.Color color, bool isPowered)
+        {
+            if (isPowered)
+                return _poweredBasementColors.First(settings => settings.Name == color).Color;
+            else
+                return _notPoweredBasementColors.First(settings => settings.Name == color).Color;
         }
     }
 
@@ -54,6 +64,13 @@ namespace LightConnect.Core
     public class ColorSettings
     {
         [field: SerializeField] public ColorNames Name { get; private set; }
+        [field: SerializeField] public UnityEngine.Color Color { get; private set; }
+    }
+
+    [Serializable]
+    public class TileBasementColorSettings
+    {
+        [field: SerializeField] public TileBasementView.Color Name { get; private set; }
         [field: SerializeField] public UnityEngine.Color Color { get; private set; }
     }
 
