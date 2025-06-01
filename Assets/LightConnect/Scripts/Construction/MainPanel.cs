@@ -1,78 +1,62 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace LightConnect.Construction
 {
-    public class MainPanel : Panel
+    public class MainPanel : MonoBehaviour
     {
-        private const string ALREADY_EXISTS_MESSAGE = "Level with this id already exists!";
-        private const string INVALID_ID_MESSAGE = "Invalid id!";
-        private const int INVALID_ID = -1;
-
         [SerializeField] private Button _new;
         [SerializeField] private Button _load;
         [SerializeField] private Button _save;
         [SerializeField] private TMP_InputField _levelIdInputField;
         [SerializeField] private TextMeshProUGUI _warning;
 
-        private int _levelId = INVALID_ID;
+        public event Action<string> LevelIdChanged;
+        public event Action SaveRequired;
+        public event Action LoadRequired;
+        public event Action ClearRequired;
 
-        protected override void Subscribe()
+        private void Start()
         {
             _levelIdInputField.onValueChanged.AddListener(SetLevelName);
-            _new.onClick.AddListener(New);
+            _new.onClick.AddListener(Clear);
             _save.onClick.AddListener(Save);
             _load.onClick.AddListener(Load);
         }
 
-        protected override void Unsubscribe()
+        private void OnDestroy()
         {
             _levelIdInputField.onValueChanged.RemoveListener(SetLevelName);
-            _new.onClick.RemoveListener(New);
+            _new.onClick.RemoveListener(Clear);
             _save.onClick.RemoveListener(Save);
             _load.onClick.RemoveListener(Load);
         }
 
+        public void SetWarningText(string text)
+        {
+            _warning.text = text;
+        }
+
         private void SetLevelName(string stringId)
         {
-            bool result = int.TryParse(stringId, out int levelId);
-
-            if (result)
-            {
-                _levelId = levelId;
-
-                if (Constructor.LevelExists(_levelId))
-                    _warning.text = ALREADY_EXISTS_MESSAGE;
-                else
-                    _warning.text = string.Empty;
-            }
-            else
-            {
-                _levelId = INVALID_ID;
-                _warning.text = INVALID_ID_MESSAGE;
-            }
+            LevelIdChanged?.Invoke(stringId);
         }
 
         private void Save()
         {
-            if (_levelId != INVALID_ID)
-                Constructor.Save(_levelId);
-            else
-                _warning.text = INVALID_ID_MESSAGE;
+            SaveRequired?.Invoke();
         }
 
         private void Load()
         {
-            if (_levelId != INVALID_ID)
-                Constructor.Load(_levelId);
-            else
-                _warning.text = INVALID_ID_MESSAGE;
+            LoadRequired?.Invoke();
         }
 
-        private void New()
+        private void Clear()
         {
-            Constructor.ClearAndCreateNewLevel();
+            ClearRequired?.Invoke();
         }
     }
 }

@@ -1,10 +1,11 @@
+using System;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace LightConnect.Construction
 {
-    public class ActionsPanel : Panel
+    public class ActionsPanel : MonoBehaviour
     {
         [SerializeField] private Button _rotateRight;
         [SerializeField] private Button _rotateLeft;
@@ -13,50 +14,51 @@ namespace LightConnect.Construction
 
         private Image _connectionModeButtonImage;
 
-        protected override void Subscribe()
+        public event Action<Direction> RotationRequired;
+        public event Action ConnectionModeClicked;
+        public event Action InvertLocksRequired;
+
+        private void Start()
         {
             _rotateLeft.onClick.AddListener(RotateLeft);
             _rotateRight.onClick.AddListener(RotateRight);
             _connectionModeButton.onClick.AddListener(OnConnectionModeClicked);
             _wireLocksButton.onClick.AddListener(OnWireLocksClicked);
 
-            Constructor.ConnectedWarpSelectionModeChanged += OnModeChanged;
             _connectionModeButtonImage = _connectionModeButton.GetComponent<Image>();
         }
 
-        protected override void Unsubscribe()
+        private void OnDestroy()
         {
             _rotateLeft.onClick.RemoveListener(RotateLeft);
             _rotateRight.onClick.RemoveListener(RotateRight);
             _connectionModeButton.onClick.RemoveListener(OnConnectionModeClicked);
             _wireLocksButton.onClick.RemoveListener(OnWireLocksClicked);
+        }
 
-            Constructor.ConnectedWarpSelectionModeChanged -= OnModeChanged;
+        public void ChangeConnectedWardSelectionMode(bool isConnectedWarpSelectionMode)
+        {
+            _connectionModeButtonImage.color = isConnectedWarpSelectionMode ? UnityEngine.Color.red : UnityEngine.Color.white;
         }
 
         private void RotateRight()
         {
-            Constructor.Rotate(Direction.Right);
+            RotationRequired?.Invoke(Direction.Right);
         }
 
         private void RotateLeft()
         {
-            Constructor.Rotate(Direction.Left);
+            RotationRequired?.Invoke(Direction.Left);
         }
 
         private void OnConnectionModeClicked()
         {
-            Constructor.ConnectedWarpSelectionMode = !Constructor.ConnectedWarpSelectionMode;
-        }
-
-        private void OnModeChanged()
-        {
-            _connectionModeButtonImage.color = Constructor.ConnectedWarpSelectionMode ? UnityEngine.Color.red : UnityEngine.Color.white;
+            ConnectionModeClicked?.Invoke();
         }
 
         private void OnWireLocksClicked()
         {
-            Constructor.InvertLocked();
+            InvertLocksRequired?.Invoke();
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace LightConnect.Construction
 {
-    public class TilesPanel : Panel
+    public class TilesPanel : MonoBehaviour
     {
         [SerializeField] private Button _none;
         [SerializeField] private Button _wire;
@@ -13,7 +13,10 @@ namespace LightConnect.Construction
         [SerializeField] private Button _lamp;
         [SerializeField] private Button _warp;
 
-        protected override void Subscribe()
+        public event Action<TileTypes> CreateTileRequired;
+        public event Action RemoveTileRequired;
+
+        private void Start()
         {
             _none.onClick.AddListener(SelectNone);
             _wire.onClick.AddListener(SelectWire);
@@ -22,7 +25,7 @@ namespace LightConnect.Construction
             _warp.onClick.AddListener(SelectWarp);
         }
 
-        protected override void Unsubscribe()
+        private void OnDestroy()
         {
             _none.onClick.RemoveListener(SelectNone);
             _wire.onClick.RemoveListener(SelectWire);
@@ -33,12 +36,12 @@ namespace LightConnect.Construction
 
         private void CreateTile(TileTypes type)
         {
-            Constructor.CreateTile(type);
+            CreateTileRequired?.Invoke(type);
         }
 
         private void SelectNone()
         {
-            Constructor.RemoveTile();
+            RemoveTileRequired?.Invoke();
         }
 
         private void SelectWire()

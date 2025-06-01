@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -7,8 +6,9 @@ namespace LightConnect.Model
     {
         private const float MIN_VALID_ROTATED_TILES_RATIO = 0.5f;
 
-        public static void Randomize(IEnumerable<Tile> tiles)
+        public static void Randomize(Level level)
         {
+            var tiles = level.Tiles();
             int tilesAmount = 0;
             int rotatedTilesAmount = 0;
 
@@ -29,11 +29,11 @@ namespace LightConnect.Model
                 }
             }
 
-            if (ShouldRerandomize(tilesAmount, rotatedTilesAmount))
-                Randomize(tiles);
+            if (level.IsWinning() || NeedMoreRotations(tilesAmount, rotatedTilesAmount))
+                Randomize(level);
         }
 
-        private static bool ShouldRerandomize(int tilesAmount, int rotatedTilesAmount)
+        private static bool NeedMoreRotations(int tilesAmount, int rotatedTilesAmount)
         {
             float rotatedTilesRatio =
                 tilesAmount == 0 ?

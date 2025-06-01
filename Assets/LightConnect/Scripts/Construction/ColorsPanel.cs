@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Color = LightConnect.Model.Color;
 
 namespace LightConnect.Construction
 {
-    public class ColorsPanel : Panel
+    public class ColorsPanel : MonoBehaviour
     {
         [SerializeField] private Button _red;
         [SerializeField] private Button _yellow;
@@ -13,7 +14,9 @@ namespace LightConnect.Construction
         [SerializeField] private Button _green;
         [SerializeField] private Button _magenta;
 
-        protected override void Subscribe()
+        public event Action<Color> SetColorRequired;
+
+        private void Start()
         {
             _red.onClick.AddListener(SelectRed);
             _yellow.onClick.AddListener(SelectYellow);
@@ -23,7 +26,7 @@ namespace LightConnect.Construction
             _magenta.onClick.AddListener(SelectMagenta);
         }
 
-        protected override void Unsubscribe()
+        private void OnDestroy()
         {
             _red.onClick.RemoveListener(SelectRed);
             _yellow.onClick.RemoveListener(SelectYellow);
@@ -35,7 +38,7 @@ namespace LightConnect.Construction
 
         private void SelectColor(Color color)
         {
-            Constructor.SetTileColor(color);
+            SetColorRequired?.Invoke(color);
         }
 
         private void SelectYellow()

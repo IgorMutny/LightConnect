@@ -37,12 +37,6 @@ namespace LightConnect.Construction
             }
         }
 
-        public void ClearAndCreateNewLevel()
-        {
-            Clear();
-            CreateNewLevel();
-        }
-
         public void CreateNewLevel()
         {
             _level = new Level();
@@ -56,8 +50,6 @@ namespace LightConnect.Construction
 
         public void Load(int levelId)
         {
-            Clear();
-
             var levelData = _levelSaveLoader.Load(levelId);
             _level = new Level();
             _level.SetData(levelData);
@@ -116,7 +108,7 @@ namespace LightConnect.Construction
             _selectedTile = null;
         }
 
-        public void SetWire(WireSetTypes type)
+        public void SetWireSetType(WireSetTypes type)
         {
             if (_selectedTile == null)
                 return;
@@ -124,7 +116,7 @@ namespace LightConnect.Construction
             _selectedTile.SetWireSetType(type);
         }
 
-        public void SetTileColor(Color color)
+        public void SetColor(Color color)
         {
             if (_selectedTile == null)
                 return;
@@ -141,7 +133,7 @@ namespace LightConnect.Construction
             _selectedTile.Rotate(side);
         }
 
-        public void InvertLocked()
+        public void InvertLocks()
         {
             if (_selectedTile == null || _selectedTile is not WireTile wireTile)
                 return;

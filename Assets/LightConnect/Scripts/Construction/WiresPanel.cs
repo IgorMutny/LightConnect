@@ -1,10 +1,11 @@
+using System;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace LightConnect.Construction
 {
-    public class WiresPanel : Panel
+    public class WiresPanel : MonoBehaviour
     {
         [SerializeField] private Button _none;
         [SerializeField] private Button _single;
@@ -12,7 +13,9 @@ namespace LightConnect.Construction
         [SerializeField] private Button _bent;
         [SerializeField] private Button _triple;
 
-        protected override void Subscribe()
+        public event Action<WireSetTypes> SetWireSetTypeRequired;
+
+        private void Start()
         {
             _none.onClick.AddListener(SelectNone);
             _single.onClick.AddListener(SelectSingle);
@@ -21,7 +24,7 @@ namespace LightConnect.Construction
             _triple.onClick.AddListener(SelectTriple);
         }
 
-        protected override void Unsubscribe()
+        private void OnDestroy()
         {
             _none.onClick.RemoveListener(SelectNone);
             _single.onClick.RemoveListener(SelectSingle);
@@ -32,7 +35,7 @@ namespace LightConnect.Construction
 
         private void SelectWire(WireSetTypes type)
         {
-            Constructor.SetWire(type);
+            SetWireSetTypeRequired?.Invoke(type);
         }
 
         private void SelectSingle()

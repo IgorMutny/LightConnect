@@ -79,8 +79,13 @@ namespace LightConnect.Model
             foreach (var tile in _tiles.Values)
                 tile.InvokeRedrawing();
 
-            if (_powerEvaluator.AllLampsArePowered())
+            if (IsWinning())
                 Win?.Invoke();
+        }
+
+        public bool IsWinning()
+        {
+            return _powerEvaluator.AllLampsArePowered();
         }
 
         public Tile CreateTile(Vector2Int position, TileTypes type)
