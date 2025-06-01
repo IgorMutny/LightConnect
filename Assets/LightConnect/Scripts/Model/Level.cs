@@ -96,7 +96,7 @@ namespace LightConnect.Model
                 case TileTypes.BATTERY: tile = new BatteryTile(position); break;
                 case TileTypes.LAMP: tile = new LampTile(position); break;
                 case TileTypes.WARP: tile = new WarpTile(position); break;
-                default: throw new Exception("Unknown tile type");
+                default: throw new Exception($"Unknown tile type, position {position}");
             }
 
             _tiles.Add(position, tile);

@@ -13,6 +13,7 @@ namespace LightConnect.Model
         private const int ORIENTATION_OFFSET = 12;
         private const int ADDITIONAL_1_OFFSET = 8;
         private const int ADDITIONAL_2_OFFSET = 4;
+        private const int ADDITIONAL_3_OFFSET = 0;
 
         [SerializeField] private int _value;
 
@@ -94,21 +95,37 @@ namespace LightConnect.Model
             }
         }
 
-        public Vector2Int ConnectedPosition
+        public Vector2Int? ConnectedPosition
         {
             get
             {
                 int x = GetBytes(ADDITIONAL_1_OFFSET);
                 int y = GetBytes(ADDITIONAL_2_OFFSET);
-                return new Vector2Int(x, y);
+                int hasValue = GetBytes(ADDITIONAL_3_OFFSET);
+
+                if (hasValue == 0)
+                    return null;
+                else
+                    return new Vector2Int(x, y);
             }
 
             set
             {
-                int x = value.x;
-                SetBytes(x, ADDITIONAL_1_OFFSET);
-                int y = value.y;
-                SetBytes(y, ADDITIONAL_2_OFFSET);
+                if (value.HasValue)
+                {
+                    int hasValue = 1;
+                    int x = value.Value.x;
+                    int y = value.Value.y;
+                    SetBytes(x, ADDITIONAL_1_OFFSET);
+                    SetBytes(y, ADDITIONAL_2_OFFSET);
+                    SetBytes(hasValue, ADDITIONAL_3_OFFSET);
+                }
+                else
+                {
+                    SetBytes(0, ADDITIONAL_1_OFFSET);
+                    SetBytes(0, ADDITIONAL_2_OFFSET);
+                    SetBytes(0, ADDITIONAL_3_OFFSET);
+                }
             }
         }
 
@@ -147,7 +164,18 @@ namespace LightConnect.Model
         }
         public override string ToString()
         {
-            return Convert.ToString(_value, 2).PadLeft(32, '0');
+            var str = Convert.ToString(_value, 2).PadLeft(32, '0');
+
+            var builder = new System.Text.StringBuilder();
+            for (int i = 0; i < str.Length; i++)
+            {
+                builder.Append(str[i]);
+
+                if ((i + 1) % 4 == 0 && i + 1 < str.Length)
+                    builder.Append('-');
+            }
+
+            return builder.ToString();
         }
 
         public static explicit operator int(TileData data)

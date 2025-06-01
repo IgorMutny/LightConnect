@@ -16,7 +16,7 @@ namespace LightConnect.Infrastructure
         {
             _levelView = levelView;
             _gameData = new GameData();
-            _gameData.CurrentLevelId = 16; //***//
+            _gameData.CurrentLevelId = 15; //***//
             _levelLoader = new StreamingAssetsLevelLoader();
         }
 
