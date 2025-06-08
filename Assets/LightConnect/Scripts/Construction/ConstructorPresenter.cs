@@ -1,4 +1,4 @@
-using LightConnect.Core;
+using LightConnect.View;
 using LightConnect.Model;
 using UnityEngine;
 using Color = LightConnect.Model.Color;

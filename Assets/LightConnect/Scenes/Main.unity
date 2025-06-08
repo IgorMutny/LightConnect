@@ -409,17 +409,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1599042263 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6257363226373486343, guid: 6cc89537b9721fd4796a2b122830e7cb, type: 3}
-  m_PrefabInstance: {fileID: 4487476327132287650}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35d4411c323b7ff4d8d160a915783c32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2015374677
 GameObject:
   m_ObjectHideFlags: 0
@@ -449,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd4cd09aaf3def3408cc923a26528a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelView: {fileID: 1599042263}
+  _gameplayView: {fileID: 4487476327132287651}
 --- !u!4 &2015374679
 Transform:
   m_ObjectHideFlags: 0
@@ -475,7 +464,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3708310244010106471, guid: 6cc89537b9721fd4796a2b122830e7cb, type: 3}
       propertyPath: m_Name
-      value: Core
+      value: Gameplay
       objectReference: {fileID: 0}
     - target: {fileID: 8131468809943007159, guid: 6cc89537b9721fd4796a2b122830e7cb, type: 3}
       propertyPath: m_Pivot.x
@@ -562,6 +551,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6cc89537b9721fd4796a2b122830e7cb, type: 3}
+--- !u!114 &4487476327132287651 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4257347878222390329, guid: 6cc89537b9721fd4796a2b122830e7cb, type: 3}
+  m_PrefabInstance: {fileID: 4487476327132287650}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8625c7c271baa364f9fd113edf17e99f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

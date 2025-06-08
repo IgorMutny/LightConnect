@@ -2,7 +2,7 @@ using LightConnect.Infrastructure;
 using LightConnect.Model;
 using Color = LightConnect.Model.Color;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class TilePresenter
     {

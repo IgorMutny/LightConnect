@@ -4,7 +4,7 @@ using System.Linq;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     [CreateAssetMenu(menuName = nameof(TileViewSettings))]
 

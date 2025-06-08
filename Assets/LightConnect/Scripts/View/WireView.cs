@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class WireView : TilePartView
     {

@@ -3,7 +3,7 @@ using System.Linq;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class LevelView : MonoBehaviour
     {
@@ -44,7 +44,10 @@ namespace LightConnect.Core
         public void RemoveTile(Vector2Int position)
         {
             var tile = _tiles[position];
-            Destroy(tile.gameObject);
+
+            if (tile != null)
+                Destroy(tile.gameObject);
+
             _tiles.Remove(position);
         }
 

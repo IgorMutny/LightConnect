@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public abstract class TilePartView : MonoBehaviour
     {

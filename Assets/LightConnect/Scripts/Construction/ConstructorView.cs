@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using LightConnect.Core;
+using LightConnect.View;
 using UnityEngine;
 
 namespace LightConnect.Construction

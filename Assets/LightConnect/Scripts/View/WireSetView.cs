@@ -2,7 +2,7 @@ using DG.Tweening;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class WireSetView : MonoBehaviour
     {

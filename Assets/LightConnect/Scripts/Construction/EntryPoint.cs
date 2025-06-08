@@ -1,4 +1,4 @@
-using LightConnect.Core;
+using LightConnect.View;
 using LightConnect.Infrastructure;
 using UnityEngine;
 

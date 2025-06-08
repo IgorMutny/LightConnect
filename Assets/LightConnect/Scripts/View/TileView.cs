@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class TileView : MonoBehaviour, IPointerClickHandler
     {

@@ -1,6 +1,6 @@
 using LightConnect.Model;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class WireSetCenterView : TilePartView
     {

@@ -4,7 +4,7 @@ using LightConnect.Infrastructure;
 using LightConnect.Model;
 using UnityEngine;
 
-namespace LightConnect.Core
+namespace LightConnect.View
 {
     public class LevelPresenter
     {
