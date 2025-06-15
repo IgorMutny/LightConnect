@@ -1,5 +1,4 @@
 using System;
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using LightConnect.Infrastructure;
 using UnityEngine;
@@ -13,20 +12,19 @@ namespace LightConnect.Model
 
         private GameData _gameData;
         private ILevelLoader _levelLoader;
+        private IGameStateLoader _gameStateLoader;
         private bool _nextLevelLoadingRequired;
         private HintHandler _hintHandler;
 
         public event Action<Level> LevelCreated;
-        public event Action ShowWinEffectsRequired;
-        public event Action ShowLoadingScreenRequired;
-        public event Action HideLoadingScreenRequired;
-        public event Action HideWinEffectsRequired;
-        public event Action DisposeLevelRequired;
+        public event Action LevelCompleted;
+        public event Action LevelLoaded;
+        public event Action LevelLoadingStarted;
 
         public Gameplay()
         {
-            _gameData = new GameData();
-            _gameData.CurrentLevelId = 35; //***//
+            _gameStateLoader = new PlayerPrefsGameStateLoader();
+            _gameData = _gameStateLoader.Load();
             _levelLoader = new StreamingAssetsLevelLoader();
         }
 
@@ -38,6 +36,8 @@ namespace LightConnect.Model
             {
                 await RunLevel(_gameData.CurrentLevelId);
                 _gameData.CurrentLevelId += 1;
+                _gameStateLoader.Save(_gameData);
+
                 await UniTask.WaitUntil(() => _nextLevelLoadingRequired);
                 _nextLevelLoadingRequired = false;
             }
@@ -55,9 +55,7 @@ namespace LightConnect.Model
 
         private async UniTask RunLevel(int levelNumber)
         {
-            HideWinEffectsRequired?.Invoke();
-            ShowLoadingScreenRequired?.Invoke();
-            DisposeLevelRequired?.Invoke();
+            LevelLoadingStarted?.Invoke();
 
             var levelData = await _levelLoader.Load(levelNumber);
             var level = new Level();
@@ -67,12 +65,12 @@ namespace LightConnect.Model
             LevelCreated?.Invoke(level);
 
             await UniTask.Delay(TimeSpan.FromSeconds(_levelLoadingDelay));
-            HideLoadingScreenRequired?.Invoke();
+            LevelLoaded?.Invoke();
 
             await WaitForEvent(a => level.Win += a, a => level.Win -= a);
 
             await UniTask.Delay(TimeSpan.FromSeconds(_levelCompletedDelay));
-            ShowWinEffectsRequired?.Invoke();
+            LevelCompleted?.Invoke();
             _hintHandler = null;
         }
 

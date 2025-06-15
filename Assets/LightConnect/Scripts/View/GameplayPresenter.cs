@@ -15,11 +15,9 @@ namespace LightConnect.View
             _view = view;
 
             _model.LevelCreated += OnLevelCreated;
-            _model.DisposeLevelRequired += DisposeLevel;
-            _model.ShowWinEffectsRequired += ShowWinEffects;
-            _model.HideWinEffectsRequired += HideWinEffects;
-            _model.ShowLoadingScreenRequired += ShowLoadingScreen;
-            _model.HideLoadingScreenRequired += HideLoadingScreen;
+            _model.LevelCompleted += OnLevelCompleted;
+            _model.LevelLoadingStarted += OnLevelLoadingStarted;
+            _model.LevelLoaded += OnLevelLoaded;
 
             _view.NextButtonClicked += LoadNextLevel;
             _view.HintButtonClicked += Help;
@@ -28,15 +26,24 @@ namespace LightConnect.View
         public void Dispose()
         {
             DisposeLevel();
+
             _model.LevelCreated -= OnLevelCreated;
-            _model.DisposeLevelRequired -= DisposeLevel;
-            _model.ShowWinEffectsRequired -= ShowWinEffects;
-            _model.HideWinEffectsRequired -= HideWinEffects;
-            _model.ShowLoadingScreenRequired -= ShowLoadingScreen;
-            _model.HideLoadingScreenRequired -= HideLoadingScreen;
+            _model.LevelCompleted -= OnLevelCompleted;
+            _model.LevelLoadingStarted -= OnLevelLoadingStarted;
+            _model.LevelLoaded -= OnLevelLoaded;
 
             _view.NextButtonClicked -= LoadNextLevel;
             _view.HintButtonClicked -= Help;
+        }
+
+        private void OnLevelLoadingStarted()
+        {
+            _view.HideWinText();
+            _view.HideNextButton();
+
+            _view.ShowLoadingScreen();
+
+            DisposeLevel();
         }
 
         private void OnLevelCreated(Level level)
@@ -46,33 +53,22 @@ namespace LightConnect.View
             _view.ShowHintButton();
         }
 
-        private void ShowWinEffects()
+        private void OnLevelLoaded()
+        {
+            _view.HideLoadingScreen();
+        }
+
+        private void OnLevelCompleted()
         {
             _view.ShowWinText();
             _view.ShowNextButton();
             _view.HideHintButton();
         }
 
-        private void HideWinEffects()
-        {
-            _view.HideWinText();
-            _view.HideNextButton();
-        }
-
         private void DisposeLevel()
         {
             _levelPresenter?.Dispose();
             _levelPresenter = null;
-        }
-
-        private void ShowLoadingScreen()
-        {
-            _view.ShowLoadingScreen();
-        }
-
-        private void HideLoadingScreen()
-        {
-            _view.HideLoadingScreen();
         }
 
         private void LoadNextLevel()
