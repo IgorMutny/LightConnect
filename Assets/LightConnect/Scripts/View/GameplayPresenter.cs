@@ -22,6 +22,7 @@ namespace LightConnect.View
             _model.HideLoadingScreenRequired += HideLoadingScreen;
 
             _view.NextButtonClicked += LoadNextLevel;
+            _view.HintButtonClicked += Help;
         }
 
         public void Dispose()
@@ -35,17 +36,20 @@ namespace LightConnect.View
             _model.HideLoadingScreenRequired -= HideLoadingScreen;
 
             _view.NextButtonClicked -= LoadNextLevel;
+            _view.HintButtonClicked -= Help;
         }
 
         private void OnLevelCreated(Level level)
         {
             _levelPresenter = new LevelPresenter(level, _view.Level);
+            _view.ShowHintButton();
         }
 
         private void ShowWinEffects()
         {
             _view.ShowWinText();
             _view.ShowNextButton();
+            _view.HideHintButton();
         }
 
         private void HideWinEffects()
@@ -73,6 +77,11 @@ namespace LightConnect.View
         private void LoadNextLevel()
         {
             _model.RequestLoadNextLevel();
+        }
+
+        private void Help()
+        {
+            _model.Help();
         }
     }
 }

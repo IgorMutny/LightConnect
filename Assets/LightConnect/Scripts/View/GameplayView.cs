@@ -11,8 +11,10 @@ namespace LightConnect.View
         [SerializeField] private LoadingScreen _loadingScreen;
         [SerializeField] private WinText _winText;
         [SerializeField] private Button _nextButton;
+        [SerializeField] private Button _hintButton;
 
         public event Action NextButtonClicked;
+        public event Action HintButtonClicked;
 
         public void ShowLoadingScreen()
         {
@@ -49,6 +51,23 @@ namespace LightConnect.View
         private void OnNextButtonClicked()
         {
             NextButtonClicked?.Invoke();
+        }
+
+        public void ShowHintButton()
+        {
+            _hintButton.gameObject.SetActive(true);
+            _hintButton.onClick.AddListener(OnHintButtonClicked);
+        }
+
+        public void HideHintButton()
+        {
+            _hintButton.onClick.RemoveListener(OnHintButtonClicked);
+            _hintButton.gameObject.SetActive(false);
+        }
+
+        private void OnHintButtonClicked()
+        {
+            HintButtonClicked?.Invoke();
         }
     }
 }

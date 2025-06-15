@@ -14,6 +14,7 @@ namespace LightConnect.Model
         private GameData _gameData;
         private ILevelLoader _levelLoader;
         private bool _nextLevelLoadingRequired;
+        private HintHandler _hintHandler;
 
         public event Action<Level> LevelCreated;
         public event Action ShowWinEffectsRequired;
@@ -40,6 +41,11 @@ namespace LightConnect.Model
             }
         }
 
+        public void Help()
+        {
+            _hintHandler?.TryHelp();
+        }
+
         public void RequestLoadNextLevel()
         {
             _nextLevelLoadingRequired = true;
@@ -50,16 +56,22 @@ namespace LightConnect.Model
             HideWinEffectsRequired?.Invoke();
             ShowLoadingScreenRequired?.Invoke();
             DisposeLevelRequired?.Invoke();
+
             var levelData = await _levelLoader.Load(levelNumber);
             var level = new Level();
             level.SetData(levelData);
+            _hintHandler = new HintHandler(level);
             LevelRandomizer.Randomize(level);
             LevelCreated?.Invoke(level);
+
             await UniTask.Delay(TimeSpan.FromSeconds(_levelLoadingDelay));
             HideLoadingScreenRequired?.Invoke();
+
             await WaitForEvent(a => level.Win += a, a => level.Win -= a);
+
             await UniTask.Delay(TimeSpan.FromSeconds(_levelCompletedDelay));
             ShowWinEffectsRequired?.Invoke();
+            _hintHandler = null;
         }
 
         private async UniTask WaitForEvent(Action<Action> subscribe, Action<Action> unsubscribe)
