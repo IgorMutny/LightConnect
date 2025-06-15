@@ -82,16 +82,19 @@ namespace LightConnect.View
 
         private void OnNextButtonClicked()
         {
+            AudioService.Instance?.PlayButtonSound();
             NextButtonClicked?.Invoke();
         }
 
         private void OnHintButtonClicked()
         {
+            AudioService.Instance?.PlayButtonSound();
             HintButtonClicked?.Invoke();
         }
 
         private void ShowOptionsScreen()
         {
+            AudioService.Instance?.PlayButtonSound();
             _optionsScreen.gameObject.SetActive(true);
             _optionsScreen.CloseRequired += HideOptionsScreen;
         }

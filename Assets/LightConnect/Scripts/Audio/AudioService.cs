@@ -31,5 +31,11 @@ namespace LightConnect.Audio
             _audioSource.Stop();
             _audioSource.PlayOneShot(_audioSettings.WinClip);
         }
+
+        public void PlayButtonSound()
+        {
+            _audioSource.Stop();
+            _audioSource.PlayOneShot(_audioSettings.ButtonClip);
+        }
     }
 }

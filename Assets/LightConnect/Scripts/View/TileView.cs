@@ -47,10 +47,10 @@ namespace LightConnect.View
 
         public void SetOrientation(Direction orientation, bool soundsAllowed)
         {
-            _wireSet?.SetOrientation(orientation);
-
             if (soundsAllowed)
                 AudioService.Instance?.PlayClickSound();
+
+            _wireSet?.SetOrientation(orientation);
         }
 
         public void SetBasementColor(TileBasementView.Color color, bool powered, int order)
