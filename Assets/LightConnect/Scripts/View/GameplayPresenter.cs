@@ -42,6 +42,7 @@ namespace LightConnect.View
         private void OnLevelCreated(Level level)
         {
             _levelPresenter = new LevelPresenter(level, _view.Level);
+            _view.SetLevelNumber(_model.CurrentLevelNumber);
             _view.ShowHintButton();
         }
 

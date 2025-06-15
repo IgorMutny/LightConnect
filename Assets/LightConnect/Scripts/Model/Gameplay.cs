@@ -30,6 +30,8 @@ namespace LightConnect.Model
             _levelLoader = new StreamingAssetsLevelLoader();
         }
 
+        public int CurrentLevelNumber => _gameData.CurrentLevelId;
+
         public async void Run()
         {
             while (Application.isPlaying)
