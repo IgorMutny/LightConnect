@@ -439,6 +439,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gameplayView: {fileID: 4487476327132287651}
+  _audioSettings: {fileID: 11400000, guid: 40b547a9641988043b48301786e0d3bd, type: 2}
 --- !u!4 &2015374679
 Transform:
   m_ObjectHideFlags: 0

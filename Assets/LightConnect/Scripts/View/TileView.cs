@@ -1,4 +1,5 @@
 using System;
+using LightConnect.Audio;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,9 +45,12 @@ namespace LightConnect.View
             _wireSet?.SetWireSet(type);
         }
 
-        public void SetOrientation(Direction orientation)
+        public void SetOrientation(Direction orientation, bool soundsAllowed)
         {
             _wireSet?.SetOrientation(orientation);
+
+            if (soundsAllowed)
+                AudioService.Instance?.PlayClickSound();
         }
 
         public void SetBasementColor(TileBasementView.Color color, bool powered, int order)

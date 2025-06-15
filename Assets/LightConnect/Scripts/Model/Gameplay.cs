@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using LightConnect.Infrastructure;
 using UnityEngine;
@@ -21,11 +22,11 @@ namespace LightConnect.Model
         public event Action LevelLoaded;
         public event Action LevelLoadingStarted;
 
-        public Gameplay()
+        public Gameplay(IGameStateLoader gameStateLoader, ILevelLoader levelLoader)
         {
-            _gameStateLoader = new PlayerPrefsGameStateLoader();
+            _gameStateLoader = gameStateLoader;
             _gameData = _gameStateLoader.Load();
-            _levelLoader = new StreamingAssetsLevelLoader();
+            _levelLoader = levelLoader;
         }
 
         public int CurrentLevelNumber => _gameData.CurrentLevelId;

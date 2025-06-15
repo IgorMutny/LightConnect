@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using LightConnect.Audio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,24 +45,20 @@ namespace LightConnect.View
             _loadingScreen.Hide();
         }
 
-        public void ShowWinText()
+        public void ShowWinEffects()
         {
             _winText.Show();
-        }
 
-        public void HideWinText()
-        {
-            _winText.Hide();
-        }
-
-        public void ShowNextButton()
-        {
             _nextButton.gameObject.SetActive(true);
             _nextButton.onClick.AddListener(OnNextButtonClicked);
+
+            AudioService.Instance?.PlayWinSound();
         }
 
-        public void HideNextButton()
+        public void HideWinEffects()
         {
+            _winText.Hide();
+
             _nextButton.onClick.RemoveListener(OnNextButtonClicked);
             _nextButton.gameObject.SetActive(false);
         }

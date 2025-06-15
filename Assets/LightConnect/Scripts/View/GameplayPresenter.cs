@@ -38,8 +38,7 @@ namespace LightConnect.View
 
         private void OnLevelLoadingStarted()
         {
-            _view.HideWinText();
-            _view.HideNextButton();
+            _view.HideWinEffects();
 
             _view.ShowLoadingScreen();
 
@@ -56,12 +55,12 @@ namespace LightConnect.View
         private void OnLevelLoaded()
         {
             _view.HideLoadingScreen();
+            _levelPresenter.AllowSounds();
         }
 
         private void OnLevelCompleted()
         {
-            _view.ShowWinText();
-            _view.ShowNextButton();
+            _view.ShowWinEffects();
             _view.HideHintButton();
         }
 

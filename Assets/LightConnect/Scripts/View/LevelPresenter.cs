@@ -3,6 +3,7 @@ using System.Linq;
 using LightConnect.Infrastructure;
 using LightConnect.Model;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace LightConnect.View
 {
@@ -30,6 +31,12 @@ namespace LightConnect.View
             _model.TileRemoved += OnTileRemoved;
 
             _model.Evaluate();
+        }
+
+        public void AllowSounds()
+        {
+            foreach (var e in _presenters)
+                e.Value.SoundsAllowed = true;
         }
 
         public void Dispose()
