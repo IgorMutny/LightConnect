@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,13 +13,26 @@ namespace LightConnect.View
         [field: SerializeField] public LevelView Level { get; private set; }
 
         [SerializeField] private LoadingScreen _loadingScreen;
+        [SerializeField] private OptionsScreen _optionsScreen;
         [SerializeField] private WinText _winText;
         [SerializeField] private Button _nextButton;
         [SerializeField] private Button _hintButton;
+        [SerializeField] private Button _optionsButton;
         [SerializeField] private TextMeshProUGUI _levelNumber;
 
         public event Action NextButtonClicked;
         public event Action HintButtonClicked;
+
+        private void Start()
+        {
+            HideOptionsScreen();
+            _optionsButton.onClick.AddListener(ShowOptionsScreen);
+        }
+
+        private void OnDestroy()
+        {
+            _optionsButton.onClick.RemoveListener(ShowOptionsScreen);
+        }
 
         public void ShowLoadingScreen()
         {
@@ -77,6 +91,18 @@ namespace LightConnect.View
         private void OnHintButtonClicked()
         {
             HintButtonClicked?.Invoke();
+        }
+
+        private void ShowOptionsScreen()
+        {
+            _optionsScreen.gameObject.SetActive(true);
+            _optionsScreen.CloseRequired += HideOptionsScreen;
+        }
+
+        private void HideOptionsScreen()
+        {
+            _optionsScreen.CloseRequired -= HideOptionsScreen;
+            _optionsScreen.gameObject.SetActive(false);
         }
     }
 }
