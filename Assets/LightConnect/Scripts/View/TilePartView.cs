@@ -7,15 +7,15 @@ namespace LightConnect.View
 {
     public abstract class TilePartView : MonoBehaviour
     {
+        [SerializeField] protected Image Image;
+
         protected TileViewSettings Settings;
-        protected Image Image;
 
         private List<Coroutine> _coroutines = new();
 
         public virtual void Initialize(TileViewSettings settings)
         {
             Settings = settings;
-            Image = GetComponent<Image>();
         }
 
         public void SetColor(Model.Color color, int order)

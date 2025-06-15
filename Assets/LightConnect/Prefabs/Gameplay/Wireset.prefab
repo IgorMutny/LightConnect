@@ -88,6 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335094b32be6def43a39cf489b091abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Image: {fileID: 633945484958585023}
   _aura: {fileID: 3770291812349032981}
   _lock: {fileID: 7929566688676310858}
 --- !u!1 &1495417613634240513
@@ -328,6 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335094b32be6def43a39cf489b091abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Image: {fileID: 7289743732822904057}
   _aura: {fileID: 2489793978427311756}
   _lock: {fileID: 8570978048384370550}
 --- !u!1 &3012014800325890971
@@ -418,6 +420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335094b32be6def43a39cf489b091abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Image: {fileID: 3536589416082969793}
   _aura: {fileID: 1334653962469638354}
   _lock: {fileID: 2071401237215154322}
 --- !u!1 &3505888272510808047
@@ -508,6 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 335094b32be6def43a39cf489b091abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Image: {fileID: 2531532191923133868}
   _aura: {fileID: 5602440457514987996}
   _lock: {fileID: 1495417613634240513}
 --- !u!1 &3782849809776921660
@@ -1040,6 +1044,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6a44281fd5b0504f89007b8ac9d4961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Image: {fileID: 8323772826779808604}
 --- !u!1 &8570978048384370550
 GameObject:
   m_ObjectHideFlags: 0

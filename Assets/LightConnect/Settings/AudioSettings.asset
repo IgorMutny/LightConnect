@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ab66c1c8bcbc643bcb913469bd3a8f, type: 3}
   m_Name: AudioSettings
   m_EditorClassIdentifier: 
-  <ClickClip>k__BackingField: {fileID: 8300000, guid: c475d39cde0913e468d359da9e81ba89, type: 3}
-  <WinClip>k__BackingField: {fileID: 0}
+  <ClickClip>k__BackingField: {fileID: 8300000, guid: a0ba656da1531d94fbd0b47a2471e625, type: 3}
+  <WinClip>k__BackingField: {fileID: 8300000, guid: cc80799de2438744b988744b0b1d7b58, type: 3}
+  <ButtonClip>k__BackingField: {fileID: 8300000, guid: c475d39cde0913e468d359da9e81ba89, type: 3}
