@@ -1,5 +1,6 @@
 using LightConnect.Audio;
 using LightConnect.Model;
+using LightConnect.Tutorial;
 using LightConnect.View;
 using UnityEngine;
 using AudioSettings = LightConnect.Audio.AudioSettings;
@@ -10,6 +11,7 @@ namespace LightConnect.Infrastructure
     {
         [SerializeField] private GameplayView _gameplayView;
         [SerializeField] private AudioSettings _audioSettings;
+        [SerializeField] private TutorialSettings _tutorialSettings;
 
         private GameplayPresenter _gameplayPresenter;
 
@@ -19,9 +21,11 @@ namespace LightConnect.Infrastructure
             Application.targetFrameRate = 60;
             GameMode.Current = GameMode.Mode.GAMEPLAY;
 
-            var gameStateLoader = new PlayerPrefsGameStateLoader();
+            var gameStateLoader = new CheatingGameStateLoader();
             var levelLoader = new StreamingAssetsLevelLoader();
+
             new AudioService(_audioSettings);
+            new TutorialService(_tutorialSettings);
 
             var gameplay = new Gameplay(gameStateLoader, levelLoader);
             _gameplayPresenter = new GameplayPresenter(gameplay, _gameplayView);

@@ -1,4 +1,5 @@
 using LightConnect.Model;
+using LightConnect.Tutorial;
 
 namespace LightConnect.View
 {
@@ -18,6 +19,7 @@ namespace LightConnect.View
             _model.LevelCompleted += OnLevelCompleted;
             _model.LevelLoadingStarted += OnLevelLoadingStarted;
             _model.LevelLoaded += OnLevelLoaded;
+            _model.TutorialRequired += OnTutorialRequired;
 
             _view.NextButtonClicked += LoadNextLevel;
             _view.HintButtonClicked += Help;
@@ -31,6 +33,7 @@ namespace LightConnect.View
             _model.LevelCompleted -= OnLevelCompleted;
             _model.LevelLoadingStarted -= OnLevelLoadingStarted;
             _model.LevelLoaded -= OnLevelLoaded;
+            _model.TutorialRequired -= OnTutorialRequired;
 
             _view.NextButtonClicked -= LoadNextLevel;
             _view.HintButtonClicked -= Help;
@@ -78,6 +81,11 @@ namespace LightConnect.View
         private void Help()
         {
             _model.Help();
+        }
+
+        private void OnTutorialRequired(TutorialMessage message)
+        {
+            _view.ShowTutorialScreen(message);
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using LightConnect.Infrastructure;
+using LightConnect.Tutorial;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -21,6 +22,7 @@ namespace LightConnect.Model
         public event Action LevelCompleted;
         public event Action LevelLoaded;
         public event Action LevelLoadingStarted;
+        public event Action<TutorialMessage> TutorialRequired;
 
         public Gameplay(IGameStateLoader gameStateLoader, ILevelLoader levelLoader)
         {
@@ -54,11 +56,11 @@ namespace LightConnect.Model
             _nextLevelLoadingRequired = true;
         }
 
-        private async UniTask RunLevel(int levelNumber)
+        private async UniTask RunLevel(int levelId)
         {
             LevelLoadingStarted?.Invoke();
 
-            var levelData = await _levelLoader.Load(levelNumber);
+            var levelData = await _levelLoader.Load(levelId);
             var level = new Level();
             level.SetData(levelData);
             _hintHandler = new HintHandler(level);
@@ -67,6 +69,9 @@ namespace LightConnect.Model
 
             await UniTask.Delay(TimeSpan.FromSeconds(_levelLoadingDelay));
             LevelLoaded?.Invoke();
+
+            if (TutorialService.Instance.GetMessageForLevel(levelId, out TutorialMessage message))
+                TutorialRequired?.Invoke(message);
 
             await WaitForEvent(a => level.Win += a, a => level.Win -= a);
 

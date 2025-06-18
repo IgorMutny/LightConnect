@@ -6,14 +6,22 @@ namespace LightConnect.View
 {
     public class OptionsScreen : MonoBehaviour, IPointerClickHandler
     {
-        public event Action CloseRequired;
-
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.pointerPressRaycast.gameObject == gameObject)
             {
-                CloseRequired?.Invoke();
+                Hide();
             }
+        }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
-using System.Runtime.CompilerServices;
 using LightConnect.Audio;
+using LightConnect.Tutorial;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +15,7 @@ namespace LightConnect.View
 
         [SerializeField] private LoadingScreen _loadingScreen;
         [SerializeField] private OptionsScreen _optionsScreen;
+        [SerializeField] private TutorialScreen _tutorialScreen;
         [SerializeField] private WinText _winText;
         [SerializeField] private Button _nextButton;
         [SerializeField] private Button _hintButton;
@@ -26,7 +27,8 @@ namespace LightConnect.View
 
         private void Start()
         {
-            HideOptionsScreen();
+            _optionsScreen.Hide();
+            _tutorialScreen.Hide();
             _optionsButton.onClick.AddListener(ShowOptionsScreen);
         }
 
@@ -43,6 +45,12 @@ namespace LightConnect.View
         public void HideLoadingScreen()
         {
             _loadingScreen.Hide();
+        }
+
+        public void ShowTutorialScreen(TutorialMessage message)
+        {
+            _tutorialScreen.Initialize(message);
+            _tutorialScreen.Show();
         }
 
         public void ShowWinEffects()
@@ -95,14 +103,7 @@ namespace LightConnect.View
         private void ShowOptionsScreen()
         {
             AudioService.Instance?.PlayButtonSound();
-            _optionsScreen.gameObject.SetActive(true);
-            _optionsScreen.CloseRequired += HideOptionsScreen;
-        }
-
-        private void HideOptionsScreen()
-        {
-            _optionsScreen.CloseRequired -= HideOptionsScreen;
-            _optionsScreen.gameObject.SetActive(false);
+            _optionsScreen.Show();
         }
     }
 }
