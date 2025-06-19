@@ -124,6 +124,7 @@ namespace LightConnect.Model
                 RemoveWarpConnection(warpTile);
 
             _powerEvaluator.UpdateElements();
+            Evaluate();
             TileRemoved?.Invoke(tile);
         }
 
