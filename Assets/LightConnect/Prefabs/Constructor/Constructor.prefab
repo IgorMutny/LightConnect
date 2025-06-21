@@ -3945,7 +3945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilePlaceholderPrefab: {fileID: 1439450302151463159, guid: 2d57a2b8a60f3654ca44e5c67fde0d30, type: 3}
-  _size: {x: 16, y: 16}
+  _size: {x: 10, y: 10}
   _selection: {fileID: 5754090418998067602}
 --- !u!1 &5674239753709586998
 GameObject:
@@ -5119,7 +5119,7 @@ RectTransform:
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 50, y: 50}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &3361682746050558127
 CanvasRenderer:
   m_ObjectHideFlags: 0

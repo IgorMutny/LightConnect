@@ -10,9 +10,8 @@ namespace LightConnect.Construction
         [SerializeField] private Vector2Int _size;
         [SerializeField] private Selection _selection;
 
-        private float _scale;
-        private float _placeholderRequiredSize;
-        private Vector3 _initialWorldPosition;
+        private RectTransform _rect;
+        private float _placeholderSize;
         private Dictionary<Vector2Int, TilePlaceholder> _placeholders = new();
 
         public event Action<Vector2Int> TilePlaceholderClicked;
@@ -21,7 +20,9 @@ namespace LightConnect.Construction
 
         public void Initialize()
         {
-            CalculatePlaceholderValues();
+            _rect = GetComponent<RectTransform>();
+
+            CalculatePlaceholderSize();
 
             for (int x = 0; x < _size.x; x++)
                 for (int y = 0; y < _size.y; y++)
@@ -42,33 +43,29 @@ namespace LightConnect.Construction
                 placeholder.Clicked -= OnPlaceholderClicked;
         }
 
-        private void CalculatePlaceholderValues()
+        private void CalculatePlaceholderSize()
         {
-            var rect = GetComponent<RectTransform>();
-            float width = rect.rect.size.x;
-            float height = rect.rect.size.y;
+            float width = _rect.sizeDelta.x;
+            float height = _rect.sizeDelta.y;
+            _placeholderSize = Mathf.Min(width / _size.x, height / _size.y);
 
-            _placeholderRequiredSize = Mathf.Min(width / _size.x, height / _size.y);
-
-            var placeholderRect = _tilePlaceholderPrefab.GetComponent<RectTransform>();
-            float placeholderDefaultSize = placeholderRect.sizeDelta.x;
-            _scale = _placeholderRequiredSize / placeholderDefaultSize;
-            _selection.SetScale(_scale);
-
-            int maxDimension = Mathf.Max(Size.x, Size.y);
-            float initialX = transform.position.x - (width * Size.x / maxDimension - _placeholderRequiredSize) / 2;
-            float initialY = transform.position.y - (height * Size.y / maxDimension - _placeholderRequiredSize) / 2;
-            _initialWorldPosition = new Vector3(initialX, initialY, 0);
+            _selection.GetComponent<RectTransform>().sizeDelta = new Vector2(_placeholderSize, _placeholderSize);
         }
 
         private void CreatePlaceholder(Vector2Int position)
         {
-            float x = _initialWorldPosition.x + position.x * _placeholderRequiredSize;
-            float y = _initialWorldPosition.y + position.y * _placeholderRequiredSize;
-            var worldPosition = new Vector3(x, y, 0);
+            var go = Instantiate(_tilePlaceholderPrefab, transform);
 
-            var go = Instantiate(_tilePlaceholderPrefab, worldPosition, Quaternion.identity, transform);
-            go.transform.localScale = new Vector3(_scale, _scale, 1);
+            var placeholderRect = go.GetComponent<RectTransform>();
+            placeholderRect.anchorMin = placeholderRect.anchorMax = Vector2.zero;
+            placeholderRect.pivot = Vector2.zero;
+
+            float x = position.x * _placeholderSize;
+            float y = position.y * _placeholderSize;
+
+            placeholderRect.anchoredPosition = new Vector2(x, y);
+            placeholderRect.sizeDelta = new Vector2(_placeholderSize, _placeholderSize);
+
             go.name = $"Placeholder {position.x}-{position.y}";
 
             var placeholder = go.GetComponent<TilePlaceholder>();

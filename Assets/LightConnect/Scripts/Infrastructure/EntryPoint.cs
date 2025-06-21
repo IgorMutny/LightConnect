@@ -29,6 +29,12 @@ namespace LightConnect.Infrastructure
             gameplay.Run();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+                Application.Quit();
+        }
+
         private void OnDestroy()
         {
             _gameplayPresenter.Dispose();
