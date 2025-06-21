@@ -19,7 +19,6 @@ namespace LightConnect.View
         }
 
         public bool RotationByClickAllowed { get; set; }
-        public bool SoundsAllowed { get; set; }
 
         public void Dispose()
         {
@@ -37,7 +36,7 @@ namespace LightConnect.View
                 _view.SetElementColor(coloredTile.Color, coloredTile.ElementPowered, _model.PoweringOrder);
 
             _view.SetWireSet(_model.WireSetType);
-            _view.SetOrientation(_model.Orientation, SoundsAllowed);
+            _view.SetOrientation(_model.Orientation);
             _view.SetLocked(_model.Locked);
 
             for (int i = 0; i < Direction.DIRECTIONS_COUNT; i++)

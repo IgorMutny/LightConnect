@@ -14,6 +14,7 @@ namespace LightConnect.View
         [SerializeField] private WireSetView _wireSet;
 
         private TileViewSettings _settings;
+        private Direction _cachedOrientation;
 
         public event Action Clicked;
 
@@ -45,12 +46,14 @@ namespace LightConnect.View
             _wireSet?.SetWireSet(type);
         }
 
-        public void SetOrientation(Direction orientation, bool soundsAllowed)
+        public void SetOrientation(Direction orientation)
         {
-            if (soundsAllowed)
-                AudioService.Instance?.PlayClickSound();
+            if (_cachedOrientation == orientation)
+                return;
 
+            AudioService.Instance?.PlayClickSound();
             _wireSet?.SetOrientation(orientation);
+            _cachedOrientation = orientation;
         }
 
         public void SetBasementColor(TileBasementView.Color color, bool powered, int order)

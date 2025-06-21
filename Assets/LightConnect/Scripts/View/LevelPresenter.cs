@@ -33,12 +33,6 @@ namespace LightConnect.View
             _model.Evaluate();
         }
 
-        public void AllowSounds()
-        {
-            foreach (var e in _presenters)
-                e.Value.SoundsAllowed = true;
-        }
-
         public void Dispose()
         {
             _model.Win -= OnWin;

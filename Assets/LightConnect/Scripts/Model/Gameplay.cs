@@ -1,8 +1,10 @@
 using System;
 using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
+using LightConnect.Audio;
 using LightConnect.Infrastructure;
 using LightConnect.Tutorial;
+using UnityEditor;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -18,23 +20,26 @@ namespace LightConnect.Model
         private bool _nextLevelLoadingRequired;
         private HintHandler _hintHandler;
 
+        public event Action<float, float> OptionsInitialized;
         public event Action<Level> LevelCreated;
         public event Action LevelCompleted;
         public event Action LevelLoaded;
         public event Action LevelLoadingStarted;
         public event Action<TutorialMessage> TutorialRequired;
 
-        public Gameplay(IGameStateLoader gameStateLoader, ILevelLoader levelLoader)
+        public Gameplay()
         {
-            _gameStateLoader = gameStateLoader;
+            _gameStateLoader = new PlayerPrefsGameStateLoader();
             _gameData = _gameStateLoader.Load();
-            _levelLoader = levelLoader;
+            _levelLoader = new StreamingAssetsLevelLoader();
         }
 
         public int CurrentLevelNumber => _gameData.CurrentLevelId;
 
         public async void Run()
         {
+            InitializeOptions();
+
             while (Application.isPlaying)
             {
                 await RunLevel(_gameData.CurrentLevelId);
@@ -54,6 +59,20 @@ namespace LightConnect.Model
         public void RequestLoadNextLevel()
         {
             _nextLevelLoadingRequired = true;
+        }
+
+        public void SetSoundVolume(float value)
+        {
+            _gameData.SoundVolume = value;
+            _gameStateLoader.Save(_gameData);
+            AudioService.Instance.SetSoundVolume(value);
+        }
+
+        public void SetMusicVolume(float value)
+        {
+            _gameData.MusicVolume = value;
+            _gameStateLoader.Save(_gameData);
+            AudioService.Instance.SetMusicVolume(value);
         }
 
         private async UniTask RunLevel(int levelId)
@@ -92,6 +111,14 @@ namespace LightConnect.Model
 
             subscribe(OnEvent);
             await tcs.Task;
+        }
+
+        private void InitializeOptions()
+        {
+            OptionsInitialized?.Invoke(_gameData.SoundVolume, _gameData.MusicVolume);
+
+            AudioService.Instance.SetSoundVolume(_gameData.SoundVolume);
+            AudioService.Instance.SetMusicVolume(_gameData.MusicVolume);
         }
     }
 }

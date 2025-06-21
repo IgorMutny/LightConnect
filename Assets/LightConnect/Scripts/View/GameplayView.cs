@@ -12,6 +12,7 @@ namespace LightConnect.View
         private const string LEVEL_TEXT = "LEVEL ";
 
         [field: SerializeField] public LevelView Level { get; private set; }
+        [field: SerializeField] public OptionsPanel OptionsPanel { get; private set; }
 
         [SerializeField] private LoadingScreen _loadingScreen;
         [SerializeField] private OptionsScreen _optionsScreen;

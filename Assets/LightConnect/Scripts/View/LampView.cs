@@ -1,3 +1,4 @@
+using LightConnect.Audio;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,8 @@ namespace LightConnect.View
     public class LampView : TilePartView
     {
         [SerializeField] private Image _aura;
+
+        private bool _cachedPowered;
 
         public override void Initialize(TileViewSettings settings)
         {
@@ -25,6 +28,14 @@ namespace LightConnect.View
             {
                 var unityColor = Settings.Color(color, powered);
                 _aura.color = unityColor;
+            }
+
+            if (_cachedPowered != powered)
+            {
+                if (powered)
+                    AudioService.Instance?.PlayLampSound();
+
+                _cachedPowered = powered;
             }
         }
     }

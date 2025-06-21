@@ -1,3 +1,4 @@
+using LightConnect.Audio;
 using LightConnect.Model;
 using LightConnect.Tutorial;
 
@@ -20,9 +21,12 @@ namespace LightConnect.View
             _model.LevelLoadingStarted += OnLevelLoadingStarted;
             _model.LevelLoaded += OnLevelLoaded;
             _model.TutorialRequired += OnTutorialRequired;
+            _model.OptionsInitialized += OnOptionsInitialized;
 
             _view.NextButtonClicked += LoadNextLevel;
             _view.HintButtonClicked += Help;
+            _view.OptionsPanel.SoundVolumeChanged += OnSoundVolumeChanged;
+            _view.OptionsPanel.MusicVolumeChanged += OnMusicVolumeChanged;
         }
 
         public void Dispose()
@@ -34,9 +38,12 @@ namespace LightConnect.View
             _model.LevelLoadingStarted -= OnLevelLoadingStarted;
             _model.LevelLoaded -= OnLevelLoaded;
             _model.TutorialRequired -= OnTutorialRequired;
+            _model.OptionsInitialized -= OnOptionsInitialized;
 
             _view.NextButtonClicked -= LoadNextLevel;
             _view.HintButtonClicked -= Help;
+            _view.OptionsPanel.SoundVolumeChanged -= OnSoundVolumeChanged;
+            _view.OptionsPanel.MusicVolumeChanged -= OnMusicVolumeChanged;
         }
 
         private void OnLevelLoadingStarted()
@@ -58,13 +65,14 @@ namespace LightConnect.View
         private void OnLevelLoaded()
         {
             _view.HideLoadingScreen();
-            _levelPresenter.AllowSounds();
+            AudioService.Instance?.EnableGameplaySounds();
         }
 
         private void OnLevelCompleted()
         {
             _view.ShowWinEffects();
             _view.HideHintButton();
+            AudioService.Instance?.DisableGameplaySounds();
         }
 
         private void DisposeLevel()
@@ -86,6 +94,21 @@ namespace LightConnect.View
         private void OnTutorialRequired(TutorialMessage message)
         {
             _view.ShowTutorialScreen(message);
+        }
+
+        private void OnOptionsInitialized(float soundVolume, float musicVolume)
+        {
+            _view.OptionsPanel.SetInitialValues(soundVolume, musicVolume);
+        }
+
+        private void OnSoundVolumeChanged(float value)
+        {
+            _model.SetSoundVolume(value);
+        }
+
+        private void OnMusicVolumeChanged(float value)
+        {
+            _model.SetMusicVolume(value);
         }
     }
 }

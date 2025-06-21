@@ -21,13 +21,10 @@ namespace LightConnect.Infrastructure
             Application.targetFrameRate = 60;
             GameMode.Current = GameMode.Mode.GAMEPLAY;
 
-            var gameStateLoader = new CheatingGameStateLoader();
-            var levelLoader = new StreamingAssetsLevelLoader();
-
             new AudioService(_audioSettings);
             new TutorialService(_tutorialSettings);
 
-            var gameplay = new Gameplay(gameStateLoader, levelLoader);
+            var gameplay = new Gameplay();
             _gameplayPresenter = new GameplayPresenter(gameplay, _gameplayView);
             gameplay.Run();
         }
