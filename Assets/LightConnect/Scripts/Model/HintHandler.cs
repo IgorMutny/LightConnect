@@ -23,7 +23,22 @@ namespace LightConnect.Model
             }
         }
 
-        public bool TryHelp()
+        public bool HasWrongOrientatedTiles()
+        {
+            List<Tile> wrongOrientatedTiles = FindWrongOrientatedTiles();
+            return wrongOrientatedTiles.Count > 0;
+        }
+
+        public void Help()
+        {
+            List<Tile> wrongOrientatedTiles = FindWrongOrientatedTiles();
+
+            for (int i = 0; i < MAX_CORRECTIONS_PER_HINT; i++)
+                if (wrongOrientatedTiles.Count > 0)
+                    CorrectRandomOrientation(wrongOrientatedTiles);
+        }
+
+        private List<Tile> FindWrongOrientatedTiles()
         {
             List<Tile> wrongOrientatedTiles = new();
 
@@ -35,14 +50,7 @@ namespace LightConnect.Model
                     wrongOrientatedTiles.Add(tile);
             }
 
-            if (wrongOrientatedTiles.Count == 0)
-                return false;
-            else
-                for (int i = 0; i < MAX_CORRECTIONS_PER_HINT; i++)
-                    if (wrongOrientatedTiles.Count > 0)
-                        CorrectRandomOrientation(wrongOrientatedTiles);
-
-            return true;
+            return wrongOrientatedTiles;
         }
 
         private void CorrectRandomOrientation(List<Tile> wrongOrientatedTiles)

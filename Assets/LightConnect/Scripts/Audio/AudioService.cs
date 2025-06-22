@@ -49,6 +49,22 @@ namespace LightConnect.Audio
             _gameplaySoundsEnabled = false;
         }
 
+        public void Pause()
+        {
+            _musicSource.Pause();
+
+            foreach (var source in _audioSources)
+                source.Pause();
+        }
+
+        public void Resume()
+        {
+            _musicSource.UnPause();
+
+            foreach (var source in _audioSources)
+                source.UnPause();
+        }
+
         public void PlayClickSound()
         {
             if (!_gameplaySoundsEnabled)

@@ -25,9 +25,13 @@ namespace LightConnect.Infrastructure
             GameMode.Current = GameMode.Mode.GAMEPLAY;
 
             new AudioService(_audioSettings);
-            new TutorialService(_tutorialSettings);
 
-            var gameplay = new Gameplay();
+            var tutorialService = new TutorialService(_tutorialSettings);
+            var levelLoader = new StreamingAssetsLevelLoader();
+            var gameStateLoader = new PlayerPrefsGameStateLoader();
+            var adService = new FakeAdService(_uiView);
+
+            var gameplay = new Gameplay(gameStateLoader, levelLoader, tutorialService, adService);
 
             _uiPresenter = new UIPresenter(gameplay, _uiView);
             _levelPresenter = new LevelPresenter(gameplay, _levelView);

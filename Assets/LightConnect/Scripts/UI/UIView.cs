@@ -12,6 +12,7 @@ namespace LightConnect.UI
         private const string LEVEL_TEXT = "LEVEL ";
 
         [SerializeField] private LoadingScreen _loadingScreen;
+        [SerializeField] private LoadingScreen _adScreen;
         [SerializeField] private OptionsScreen _optionsScreen;
         [SerializeField] private TutorialScreen _tutorialScreen;
         [SerializeField] private WinText _winText;
@@ -45,6 +46,16 @@ namespace LightConnect.UI
         public void HideLoadingScreen()
         {
             _loadingScreen.Hide();
+        }
+
+        public void ShowAdScreen()
+        {
+            _adScreen.Show();
+        }
+
+        public void HideAdScreen()
+        {
+            _adScreen.Hide();
         }
 
         public void ShowTutorialScreen(TutorialMessage message)

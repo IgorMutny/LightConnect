@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using LightConnect.Audio;
 using LightConnect.Infrastructure;
@@ -17,6 +18,8 @@ namespace LightConnect.Model
         private IGameStateLoader _gameStateLoader;
         private bool _nextLevelLoadingRequired;
         private HintHandler _hintHandler;
+        private TutorialService _tutorialService;
+        private IAdService _adService;
 
         public event Action<float, float> OptionsInitialized;
         public event Action LevelLoadingStarted;
@@ -26,12 +29,13 @@ namespace LightConnect.Model
         public event Action LevelWon;
         public event Action LevelFinished;
 
-        public Gameplay()
+        public Gameplay(IGameStateLoader gameStateLoader, ILevelLoader levelLoader, TutorialService tutorialService, IAdService adService)
         {
-            _gameStateLoader = new PlayerPrefsGameStateLoader();
-            //_gameStateLoader = new CheatingGameStateLoader();
+            _gameStateLoader = gameStateLoader;
             _gameData = _gameStateLoader.Load();
-            _levelLoader = new StreamingAssetsLevelLoader();
+            _levelLoader = levelLoader;
+            _tutorialService = tutorialService;
+            _adService = adService;
         }
 
         public int CurrentLevelId => _gameData.CurrentLevelId;
@@ -49,13 +53,23 @@ namespace LightConnect.Model
 
                 await UniTask.WaitUntil(() => _nextLevelLoadingRequired);
                 _nextLevelLoadingRequired = false;
+
+                await _adService.ShowInterstitialsIfAllowed();
+
                 LevelFinished?.Invoke();
+
             }
         }
 
-        public void Help()
+        public async Task Help()
         {
-            _hintHandler?.TryHelp();
+            if (_hintHandler.HasWrongOrientatedTiles())
+            {
+                var result = await _adService.ShowRewarded();
+
+                if (result)
+                    _hintHandler.Help();
+            }
         }
 
         public void RequestLoadNextLevel()
@@ -93,7 +107,7 @@ namespace LightConnect.Model
 
             LevelReady?.Invoke();
 
-            if (TutorialService.Instance.GetMessageForLevel(levelId, out TutorialMessage message))
+            if (_tutorialService.GetMessageForLevel(levelId, out TutorialMessage message))
                 TutorialRequired?.Invoke(message);
 
             await WaitForEvent(a => level.Win += a, a => level.Win -= a);

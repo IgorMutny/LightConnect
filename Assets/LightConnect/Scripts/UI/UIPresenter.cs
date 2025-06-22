@@ -74,7 +74,7 @@ namespace LightConnect.UI
 
         private void Help()
         {
-            _gameplay.Help();
+            _ = _gameplay.Help();
         }
 
         private void OnTutorialRequired(TutorialMessage message)
