@@ -60,7 +60,8 @@ namespace LightConnect.View
 
         public void SetConfettiActive(bool value)
         {
-            _confetti?.SetActive(value);
+            if (_confetti != null)
+                _confetti.SetActive(value);
         }
     }
 }

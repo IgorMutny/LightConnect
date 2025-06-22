@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using LightConnect.Infrastructure;
 using LightConnect.Model;
 using UnityEngine;
 
@@ -36,8 +35,7 @@ namespace LightConnect.View
         {
             _model = model;
 
-            if (GameMode.Current == GameMode.Mode.GAMEPLAY)
-                CalculateLevelSize();
+            CalculateLevelSize();
 
             _view.Initialize();
 
@@ -80,7 +78,7 @@ namespace LightConnect.View
         {
             var tileView = _view.AddTile(tile.Type, new Vector2Int(tile.Position.x, tile.Position.y));
             var tilePresenter = new TilePresenter(tile, tileView);
-            tilePresenter.RotationByClickAllowed = GameMode.Current == GameMode.Mode.GAMEPLAY;
+            tilePresenter.RotationByClickAllowed = true;
             _presenters.Add(tile, tilePresenter);
         }
 
@@ -93,9 +91,8 @@ namespace LightConnect.View
 
         private void OnWin()
         {
-            if (GameMode.Current == GameMode.Mode.GAMEPLAY)
-                foreach (var presenter in _presenters.Values)
-                    presenter.RotationByClickAllowed = false;
+            foreach (var presenter in _presenters.Values)
+                presenter.RotationByClickAllowed = false;
 
             _view.SetConfettiActive(true);
         }

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace LightConnect.Construction
 {
-    public class Panels : MonoBehaviour
+    public class UIView : MonoBehaviour
     {
         [field: SerializeField] public MainPanel MainPanel { get; private set; }
         [field: SerializeField] public TilesPanel TilesPanel { get; private set; }

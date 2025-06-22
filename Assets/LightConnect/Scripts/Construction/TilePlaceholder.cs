@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace LightConnect.Construction
 {
@@ -15,12 +14,12 @@ namespace LightConnect.Construction
 
         public void Initialize()
         {
-            var image = GetComponent<Image>();
+            var renderer = GetComponent<SpriteRenderer>();
 
             if ((Position.x + Position.y) % 2 == 0)
-                image.color = _evenColor;
+                renderer.color = _evenColor;
             else
-                image.color = _oddColor;
+                renderer.color = _oddColor;
         }
 
         public void OnPointerClick(PointerEventData eventData)

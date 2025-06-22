@@ -4,27 +4,30 @@ using UnityEngine;
 
 namespace LightConnect.Construction
 {
-    public class Placeholders : MonoBehaviour
+    public class PlaceholdersView : MonoBehaviour
     {
-        [SerializeField] private GameObject _tilePlaceholderPrefab;
+        [SerializeField] private int _defaultSize;
+        [SerializeField] private float _minScale;
+        [SerializeField] private float _maxScale;
+        [SerializeField] private GameObject _placeholderPrefab;
         [SerializeField, Range(1, 16)] private int _dimensionSize;
         [SerializeField] private Selection _selection;
 
-        private RectTransform _rect;
         private Vector2Int _size;
-        private float _placeholderSize;
         private Dictionary<Vector2Int, TilePlaceholder> _placeholders = new();
 
         public event Action<Vector2Int> TilePlaceholderClicked;
 
-        public Vector2Int Size => _size;
+        public int DimensionSize => _dimensionSize;
 
         public void Initialize()
         {
-            _rect = GetComponent<RectTransform>();
             _size = new Vector2Int(_dimensionSize, _dimensionSize);
 
-            CalculatePlaceholderSize();
+            float scale = (float)_defaultSize / Mathf.Max(_size.x, _size.y);
+            scale = Mathf.Clamp(scale, _minScale, _maxScale);
+            transform.localScale = new Vector3(scale, scale, 1);
+            _selection.transform.localScale = transform.localScale;
 
             for (int x = 0; x < _size.x; x++)
                 for (int y = 0; y < _size.y; y++)
@@ -45,30 +48,14 @@ namespace LightConnect.Construction
                 placeholder.Clicked -= OnPlaceholderClicked;
         }
 
-        private void CalculatePlaceholderSize()
-        {
-            float width = _rect.sizeDelta.x;
-            float height = _rect.sizeDelta.y;
-            _placeholderSize = Mathf.Min(width / _size.x, height / _size.y);
-
-            _selection.GetComponent<RectTransform>().sizeDelta = new Vector2(_placeholderSize, _placeholderSize);
-        }
-
         private void CreatePlaceholder(Vector2Int position)
         {
-            var go = Instantiate(_tilePlaceholderPrefab, transform);
+            float x = position.x - (float)_size.x / 2 + 0.5f;
+            float y = position.y - (float)_size.y / 2 + 0.5f;
 
-            var placeholderRect = go.GetComponent<RectTransform>();
-            placeholderRect.anchorMin = placeholderRect.anchorMax = Vector2.zero;
-            placeholderRect.pivot = Vector2.zero;
-
-            float x = position.x * _placeholderSize;
-            float y = position.y * _placeholderSize;
-
-            placeholderRect.anchoredPosition = new Vector2(x, y);
-            placeholderRect.sizeDelta = new Vector2(_placeholderSize, _placeholderSize);
-
+            var go = Instantiate(_placeholderPrefab, transform);
             go.name = $"Placeholder {position.x}-{position.y}";
+            go.transform.localPosition = new Vector3(x, y, 0);
 
             var placeholder = go.GetComponent<TilePlaceholder>();
             placeholder.Position = position;

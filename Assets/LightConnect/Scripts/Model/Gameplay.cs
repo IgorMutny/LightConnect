@@ -28,8 +28,8 @@ namespace LightConnect.Model
 
         public Gameplay()
         {
-            //_gameStateLoader = new PlayerPrefsGameStateLoader();
-            _gameStateLoader = new CheatingGameStateLoader();
+            _gameStateLoader = new PlayerPrefsGameStateLoader();
+            //_gameStateLoader = new CheatingGameStateLoader();
             _gameData = _gameStateLoader.Load();
             _levelLoader = new StreamingAssetsLevelLoader();
         }
