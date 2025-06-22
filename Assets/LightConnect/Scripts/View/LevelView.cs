@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LightConnect.Model;
+using TMPro;
 using UnityEngine;
 
 namespace LightConnect.View
@@ -12,6 +13,7 @@ namespace LightConnect.View
 
         private RectTransform _rect;
         private float _tileSize;
+        private Vector2 _initialPositionOffset;
         private Dictionary<Vector2Int, TileView> _tiles = new();
 
         public Vector2Int InitialPosition { private get; set; }
@@ -19,12 +21,16 @@ namespace LightConnect.View
 
         public void Initialize()
         {
+            Debug.Log($"init with size {Size}");
             _rect = GetComponent<RectTransform>();
+
+            CalculateOffset();
             CalculateTileSize();
         }
 
         public TileView AddTile(TileTypes type, Vector2Int position)
         {
+            Debug.Log($"add tile");
             var prefab = _settings.Prefab(type);
             var go = Instantiate(prefab, transform);
 
@@ -32,8 +38,8 @@ namespace LightConnect.View
             tileRect.anchorMin = tileRect.anchorMax = Vector2.zero;
             tileRect.pivot = Vector2.zero;
 
-            float x = (position.x - InitialPosition.x) * _tileSize;
-            float y = (position.y - InitialPosition.y) * _tileSize;
+            float x = (position.x - InitialPosition.x + _initialPositionOffset.x / 2) * _tileSize;
+            float y = (position.y - InitialPosition.y + _initialPositionOffset.y / 2) * _tileSize;
 
             tileRect.anchoredPosition = new Vector2(x, y);
             tileRect.sizeDelta = new Vector2(_tileSize, _tileSize);
@@ -69,6 +75,17 @@ namespace LightConnect.View
             float width = _rect.sizeDelta.x;
             float height = _rect.sizeDelta.y;
             _tileSize = Mathf.Min(width / Size.x, height / Size.y);
+        }
+
+        private void CalculateOffset()
+        {
+            _initialPositionOffset = Vector2.zero;
+
+            if (Size.y < Size.x)
+                _initialPositionOffset.y = Size.x - Size.y;
+
+            if (Size.x < Size.y)
+                _initialPositionOffset.x = Size.y - Size.x;
         }
     }
 }

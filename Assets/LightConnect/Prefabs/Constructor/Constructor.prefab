@@ -3945,7 +3945,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tilePlaceholderPrefab: {fileID: 1439450302151463159, guid: 2d57a2b8a60f3654ca44e5c67fde0d30, type: 3}
-  _size: {x: 10, y: 10}
+  _dimensionSize: 16
   _selection: {fileID: 5754090418998067602}
 --- !u!1 &5674239753709586998
 GameObject:

@@ -7,10 +7,11 @@ namespace LightConnect.Construction
     public class Placeholders : MonoBehaviour
     {
         [SerializeField] private GameObject _tilePlaceholderPrefab;
-        [SerializeField] private Vector2Int _size;
+        [SerializeField, Range(1, 16)] private int _dimensionSize;
         [SerializeField] private Selection _selection;
 
         private RectTransform _rect;
+        private Vector2Int _size;
         private float _placeholderSize;
         private Dictionary<Vector2Int, TilePlaceholder> _placeholders = new();
 
@@ -21,6 +22,7 @@ namespace LightConnect.Construction
         public void Initialize()
         {
             _rect = GetComponent<RectTransform>();
+            _size = new Vector2Int(_dimensionSize, _dimensionSize);
 
             CalculatePlaceholderSize();
 
