@@ -1,6 +1,7 @@
 using LightConnect.Audio;
 using LightConnect.Model;
 using LightConnect.Tutorial;
+using LightConnect.UI;
 using LightConnect.View;
 using UnityEngine;
 using AudioSettings = LightConnect.Audio.AudioSettings;
@@ -9,11 +10,13 @@ namespace LightConnect.Infrastructure
 {
     public class EntryPoint : MonoBehaviour
     {
-        [SerializeField] private GameplayView _gameplayView;
         [SerializeField] private AudioSettings _audioSettings;
         [SerializeField] private TutorialSettings _tutorialSettings;
+        [SerializeField] private LevelView _levelView;
+        [SerializeField] private UIView _uiView;
 
-        private GameplayPresenter _gameplayPresenter;
+        private UIPresenter _uiPresenter;
+        private LevelPresenter _levelPresenter;
 
         private void Start()
         {
@@ -25,7 +28,10 @@ namespace LightConnect.Infrastructure
             new TutorialService(_tutorialSettings);
 
             var gameplay = new Gameplay();
-            _gameplayPresenter = new GameplayPresenter(gameplay, _gameplayView);
+
+            _uiPresenter = new UIPresenter(gameplay, _uiView);
+            _levelPresenter = new LevelPresenter(gameplay, _levelView);
+
             gameplay.Run();
         }
 
@@ -37,7 +43,8 @@ namespace LightConnect.Infrastructure
 
         private void OnDestroy()
         {
-            _gameplayPresenter.Dispose();
+            _uiPresenter.Dispose();
+            _levelPresenter.Dispose();
         }
     }
 }

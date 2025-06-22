@@ -1,4 +1,3 @@
-using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +6,7 @@ namespace LightConnect.View
 {
     public abstract class TilePartView : MonoBehaviour
     {
-        [SerializeField] protected Image Image;
+        [SerializeField] protected SpriteRenderer Renderer;
 
         protected TileViewSettings Settings;
 
@@ -49,7 +48,7 @@ namespace LightConnect.View
         protected virtual void Colorize(Model.Color color, bool powered)
         {
             var unityColor = Settings.Color(color, powered);
-            Image.color = unityColor;
+            Renderer.color = unityColor;
         }
 
         private IEnumerator StartColorizing(Model.Color color, bool powered, float delay)

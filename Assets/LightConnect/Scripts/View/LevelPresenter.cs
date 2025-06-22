@@ -3,20 +3,38 @@ using System.Linq;
 using LightConnect.Infrastructure;
 using LightConnect.Model;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace LightConnect.View
 {
     public class LevelPresenter
     {
+        private Gameplay _gameplay;
         private Level _model;
         private LevelView _view;
         private Dictionary<Tile, TilePresenter> _presenters = new();
 
-        public LevelPresenter(Level model, LevelView view)
+        public LevelPresenter(Gameplay gameplay, LevelView view)
+        {
+            _gameplay = gameplay;
+            _view = view;
+
+            _gameplay.LevelCreated += OnLevelCreated;
+            _gameplay.LevelFinished += OnLevelFinished;
+
+            _view.SetConfettiActive(false);
+        }
+
+        public void Dispose()
+        {
+            OnLevelFinished();
+
+            _gameplay.LevelCreated -= OnLevelCreated;
+            _gameplay.LevelFinished -= OnLevelFinished;
+        }
+
+        private void OnLevelCreated(Level model)
         {
             _model = model;
-            _view = view;
 
             if (GameMode.Current == GameMode.Mode.GAMEPLAY)
                 CalculateLevelSize();
@@ -33,7 +51,7 @@ namespace LightConnect.View
             _model.Evaluate();
         }
 
-        public void Dispose()
+        private void OnLevelFinished()
         {
             _model.Win -= OnWin;
             _model.TileCreated -= OnTileCreated;
@@ -42,6 +60,7 @@ namespace LightConnect.View
             foreach (var presenter in _presenters.Values)
                 presenter.Dispose();
 
+            _view.SetConfettiActive(false);
             _view.Clear();
         }
 
@@ -77,6 +96,8 @@ namespace LightConnect.View
             if (GameMode.Current == GameMode.Mode.GAMEPLAY)
                 foreach (var presenter in _presenters.Values)
                     presenter.RotationByClickAllowed = false;
+
+            _view.SetConfettiActive(true);
         }
     }
 }

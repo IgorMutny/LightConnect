@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.View
+namespace LightConnect.UI
 {
     public class TutorialScreen : MonoBehaviour
     {

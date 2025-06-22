@@ -2,7 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-namespace LightConnect.View
+namespace LightConnect.UI
 {
     public class WinText : MonoBehaviour
     {

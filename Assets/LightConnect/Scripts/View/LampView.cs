@@ -1,12 +1,11 @@
 using LightConnect.Audio;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace LightConnect.View
 {
     public class LampView : TilePartView
     {
-        [SerializeField] private Image _aura;
+        [SerializeField] private SpriteRenderer _aura;
 
         private bool _cachedPowered;
 

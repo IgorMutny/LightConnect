@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using Cysharp.Threading.Tasks;
-using LightConnect.Model;
 using UnityEngine;
 
 namespace LightConnect.Infrastructure

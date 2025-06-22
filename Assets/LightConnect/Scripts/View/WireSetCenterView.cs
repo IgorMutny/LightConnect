@@ -7,7 +7,7 @@ namespace LightConnect.View
         public void SetSprite(WireSetTypes type)
         {
             var sprite = Settings.WireSetCenterSprite(type);
-            Image.sprite = sprite;
+            Renderer.sprite = sprite;
         }
     }
 }

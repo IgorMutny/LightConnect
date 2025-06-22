@@ -5,14 +5,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LightConnect.View
+namespace LightConnect.UI
 {
-    public class GameplayView : MonoBehaviour
+    public class UIView : MonoBehaviour
     {
         private const string LEVEL_TEXT = "LEVEL ";
-
-        [field: SerializeField] public LevelView Level { get; private set; }
-        [field: SerializeField] public OptionsPanel OptionsPanel { get; private set; }
 
         [SerializeField] private LoadingScreen _loadingScreen;
         [SerializeField] private OptionsScreen _optionsScreen;
@@ -21,10 +18,12 @@ namespace LightConnect.View
         [SerializeField] private Button _nextButton;
         [SerializeField] private Button _hintButton;
         [SerializeField] private Button _optionsButton;
-        [SerializeField] private TextMeshProUGUI _levelNumber;
+        [SerializeField] private TextMeshProUGUI _levelTitle;
 
         public event Action NextButtonClicked;
         public event Action HintButtonClicked;
+
+        public OptionsScreen Options => _optionsScreen;
 
         private void Start()
         {
@@ -84,9 +83,9 @@ namespace LightConnect.View
             _hintButton.gameObject.SetActive(false);
         }
 
-        public void SetLevelNumber(int number)
+        public void SetLevelId(int id)
         {
-            _levelNumber.text = LEVEL_TEXT + number.ToString();
+            _levelTitle.text = LEVEL_TEXT + id.ToString();
         }
 
         private void OnNextButtonClicked()

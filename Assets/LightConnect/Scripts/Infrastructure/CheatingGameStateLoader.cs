@@ -2,7 +2,7 @@ namespace LightConnect.Infrastructure
 {
     public class CheatingGameStateLoader : IGameStateLoader
     {
-        private const int REQUIRED_LEVEL_ID = 37;
+        private const int REQUIRED_LEVEL_ID = 42;
 
         public GameData Load()
         {

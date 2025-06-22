@@ -1,19 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using LightConnect.Model;
-using TMPro;
 using UnityEngine;
 
 namespace LightConnect.View
 {
     public class LevelView : MonoBehaviour
     {
+        [SerializeField] private int _defaultSize;
+        [SerializeField] private float _minScale;
+        [SerializeField] private float _maxScale;
         [SerializeField] private TileViewSettings _settings;
-        [SerializeField] private bool _raycastTarget;
+        [SerializeField] private GameObject _confetti;
 
-        private RectTransform _rect;
-        private float _tileSize;
-        private Vector2 _initialPositionOffset;
         private Dictionary<Vector2Int, TileView> _tiles = new();
 
         public Vector2Int InitialPosition { private get; set; }
@@ -21,33 +20,22 @@ namespace LightConnect.View
 
         public void Initialize()
         {
-            Debug.Log($"init with size {Size}");
-            _rect = GetComponent<RectTransform>();
-
-            CalculateOffset();
-            CalculateTileSize();
+            float scale = (float)_defaultSize / Mathf.Max(Size.x, Size.y);
+            scale = Mathf.Clamp(scale, _minScale, _maxScale);
+            transform.localScale = new Vector3(scale, scale, 1);
         }
 
         public TileView AddTile(TileTypes type, Vector2Int position)
         {
-            Debug.Log($"add tile");
+            float x = position.x - InitialPosition.x - (float)Size.x / 2 + 0.5f;
+            float y = position.y - InitialPosition.y - (float)Size.y / 2 + 0.5f;
+
             var prefab = _settings.Prefab(type);
             var go = Instantiate(prefab, transform);
-
-            var tileRect = go.GetComponent<RectTransform>();
-            tileRect.anchorMin = tileRect.anchorMax = Vector2.zero;
-            tileRect.pivot = Vector2.zero;
-
-            float x = (position.x - InitialPosition.x + _initialPositionOffset.x / 2) * _tileSize;
-            float y = (position.y - InitialPosition.y + _initialPositionOffset.y / 2) * _tileSize;
-
-            tileRect.anchoredPosition = new Vector2(x, y);
-            tileRect.sizeDelta = new Vector2(_tileSize, _tileSize);
-
             go.name = $"Tile {position.x}-{position.y}";
+            go.transform.localPosition = new Vector3(x, y, 0);
 
             var tile = go.GetComponent<TileView>();
-            tile.RaycastTarget = _raycastTarget;
             tile.Initialize(_settings);
             _tiles.Add(position, tile);
 
@@ -70,22 +58,9 @@ namespace LightConnect.View
                 RemoveTile(position);
         }
 
-        private void CalculateTileSize()
+        public void SetConfettiActive(bool value)
         {
-            float width = _rect.sizeDelta.x;
-            float height = _rect.sizeDelta.y;
-            _tileSize = Mathf.Min(width / Size.x, height / Size.y);
-        }
-
-        private void CalculateOffset()
-        {
-            _initialPositionOffset = Vector2.zero;
-
-            if (Size.y < Size.x)
-                _initialPositionOffset.y = Size.x - Size.y;
-
-            if (Size.x < Size.y)
-                _initialPositionOffset.x = Size.y - Size.x;
+            _confetti?.SetActive(value);
         }
     }
 }

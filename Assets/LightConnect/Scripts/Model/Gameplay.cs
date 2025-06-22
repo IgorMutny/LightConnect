@@ -1,10 +1,8 @@
 using System;
-using System.Runtime.CompilerServices;
 using Cysharp.Threading.Tasks;
 using LightConnect.Audio;
 using LightConnect.Infrastructure;
 using LightConnect.Tutorial;
-using UnityEditor;
 using UnityEngine;
 
 namespace LightConnect.Model
@@ -21,21 +19,22 @@ namespace LightConnect.Model
         private HintHandler _hintHandler;
 
         public event Action<float, float> OptionsInitialized;
-        public event Action<Level> LevelCreated;
-        public event Action LevelCompleted;
-        public event Action LevelLoaded;
         public event Action LevelLoadingStarted;
+        public event Action<Level> LevelCreated;
+        public event Action LevelReady;
         public event Action<TutorialMessage> TutorialRequired;
+        public event Action LevelWon;
+        public event Action LevelFinished;
 
         public Gameplay()
         {
-            _gameStateLoader = new PlayerPrefsGameStateLoader();
-            //_gameStateLoader = new CheatingGameStateLoader();
+            //_gameStateLoader = new PlayerPrefsGameStateLoader();
+            _gameStateLoader = new CheatingGameStateLoader();
             _gameData = _gameStateLoader.Load();
             _levelLoader = new StreamingAssetsLevelLoader();
         }
 
-        public int CurrentLevelNumber => _gameData.CurrentLevelId;
+        public int CurrentLevelId => _gameData.CurrentLevelId;
 
         public async void Run()
         {
@@ -44,11 +43,13 @@ namespace LightConnect.Model
             while (Application.isPlaying)
             {
                 await RunLevel(_gameData.CurrentLevelId);
+
                 _gameData.CurrentLevelId += 1;
                 _gameStateLoader.Save(_gameData);
 
                 await UniTask.WaitUntil(() => _nextLevelLoadingRequired);
                 _nextLevelLoadingRequired = false;
+                LevelFinished?.Invoke();
             }
         }
 
@@ -85,10 +86,12 @@ namespace LightConnect.Model
             level.SetData(levelData);
             _hintHandler = new HintHandler(level);
             LevelRandomizer.Randomize(level);
+
             LevelCreated?.Invoke(level);
 
             await UniTask.Delay(TimeSpan.FromSeconds(_levelLoadingDelay));
-            LevelLoaded?.Invoke();
+
+            LevelReady?.Invoke();
 
             if (TutorialService.Instance.GetMessageForLevel(levelId, out TutorialMessage message))
                 TutorialRequired?.Invoke(message);
@@ -96,7 +99,8 @@ namespace LightConnect.Model
             await WaitForEvent(a => level.Win += a, a => level.Win -= a);
 
             await UniTask.Delay(TimeSpan.FromSeconds(_levelCompletedDelay));
-            LevelCompleted?.Invoke();
+
+            LevelWon?.Invoke();
             _hintHandler = null;
         }
 

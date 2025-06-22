@@ -3,7 +3,6 @@ using LightConnect.Audio;
 using LightConnect.Model;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace LightConnect.View
 {
@@ -17,16 +16,6 @@ namespace LightConnect.View
         private Direction _cachedOrientation;
 
         public event Action Clicked;
-
-        public bool RaycastTarget
-        {
-            set
-            {
-                var images = GetComponentsInChildren<Image>();
-                foreach (var image in images)
-                    image.raycastTarget = value;
-            }
-        }
 
         public void Initialize(TileViewSettings settings)
         {

@@ -1,4 +1,3 @@
-using UnityEngine.UI;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,13 +7,13 @@ namespace LightConnect.View
     public class TileBasementView : MonoBehaviour
     {
         protected TileViewSettings Settings;
-        private Image _image;
+        private SpriteRenderer _renderer;
         private List<Coroutine> _coroutines = new();
 
         public virtual void Initialize(TileViewSettings settings)
         {
             Settings = settings;
-            _image = GetComponent<Image>();
+            _renderer = GetComponent<SpriteRenderer>();
         }
 
         public void SetColor(Color color, bool powered, int order)
@@ -43,7 +42,7 @@ namespace LightConnect.View
         protected virtual void Colorize(Color color, bool powered)
         {
             var unityColor = Settings.BasementColor(color, powered);
-            _image.color = unityColor;
+            _renderer.color = unityColor;
         }
 
         private IEnumerator StartColorizing(Color color, bool powered, float delay)

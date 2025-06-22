@@ -1,11 +1,10 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace LightConnect.View
 {
     public class WireView : TilePartView
     {
-        [SerializeField] private Image _aura;
+        [SerializeField] private SpriteRenderer _aura;
         [SerializeField] private GameObject _lock;
 
         private bool _isLocked;

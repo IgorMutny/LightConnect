@@ -3,7 +3,7 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-namespace LightConnect.View
+namespace LightConnect.UI
 {
     public class LoadingScreen : MonoBehaviour
     {

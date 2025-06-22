@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LightConnect.View
+namespace LightConnect.UI
 {
-    public class OptionsPanel : MonoBehaviour
+    public class OptionsScreen : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private Slider _soundVolume;
         [SerializeField] private Slider _musicVolume;
@@ -22,6 +23,24 @@ namespace LightConnect.View
         {
             _soundVolume.onValueChanged.RemoveListener(OnSoundVolumeChanged);
             _musicVolume.onValueChanged.RemoveListener(OnMusicVolumeChanged);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.pointerPressRaycast.gameObject == gameObject)
+            {
+                Hide();
+            }
+        }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
         }
 
         public void SetInitialValues(float soundVolume, float musicVolume)
