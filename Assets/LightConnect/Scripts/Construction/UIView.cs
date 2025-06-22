@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 
 namespace LightConnect.Construction
@@ -11,3 +13,5 @@ namespace LightConnect.Construction
         [field: SerializeField] public ActionsPanel ActionsPanel { get; private set; }
     }
 }
+
+#endif

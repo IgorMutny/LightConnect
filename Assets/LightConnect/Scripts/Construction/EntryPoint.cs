@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using LightConnect.View;
 using LightConnect.Infrastructure;
 using UnityEngine;
@@ -38,3 +40,5 @@ namespace LightConnect.Construction
         }
     }
 }
+
+#endif

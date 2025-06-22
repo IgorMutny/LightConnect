@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using TMPro;
 using UnityEngine;
@@ -60,3 +62,5 @@ namespace LightConnect.Construction
         }
     }
 }
+
+#endif

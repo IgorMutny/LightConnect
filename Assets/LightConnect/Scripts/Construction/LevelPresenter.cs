@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System.Collections.Generic;
 using LightConnect.Model;
 using LightConnect.View;
@@ -76,3 +78,5 @@ namespace LightConnect.Construction
         }
     }
 }
+
+#endif

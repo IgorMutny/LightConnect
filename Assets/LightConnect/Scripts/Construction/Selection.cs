@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+#if UNITY_EDITOR
+
 using UnityEngine;
 
 namespace LightConnect.Construction
@@ -16,3 +17,5 @@ namespace LightConnect.Construction
         }
     }
 }
+
+#endif

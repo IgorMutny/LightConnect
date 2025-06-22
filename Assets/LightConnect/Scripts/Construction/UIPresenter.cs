@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using LightConnect.Model;
 
 namespace LightConnect.Construction
@@ -142,3 +144,5 @@ namespace LightConnect.Construction
         }
     }
 }
+
+#endif

@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using System;
 using System.IO;
 using LightConnect.Model;
@@ -45,3 +47,5 @@ namespace LightConnect.Construction
         }
     }
 }
+
+#endif
